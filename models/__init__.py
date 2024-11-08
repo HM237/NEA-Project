@@ -1,0 +1,1 @@
+from .models import User, Nikah, Payment, Clashed, Madrassah
