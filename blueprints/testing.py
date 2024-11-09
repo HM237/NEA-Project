@@ -7,27 +7,27 @@ testing_bp = Blueprint('testing', __name__)
 #Home Page
 @testing_bp.route('/')
 def home_page():
-    return render_template("home_page.html")
+    return render_template("pages/home_page.html")
 
 #Route to the Nikah Page
 @testing_bp.route('/nikah')
 def nikah_page():
-    return render_template("nikah_page.html")
+    return render_template("pages/nikah_page.html")
 
 #Route to the Madrasah Page
 @testing_bp.route('/madrasah')
 def madrasah_page():
-    return render_template("madrasah_page.html")
+    return render_template("pages/madrasah_page.html")
 
 # Route to the Nikah Form 
 @testing_bp.route("/nikahbooking")
 def nikah_booking():
-    return render_template("nikah_form.html")
+    return render_template("forms/nikah_form.html")
 
 #Route to the Madrasah Form
 @testing_bp.route("/madrasahbooking")
 def madrasah_booking():
-    return render_template("madrasah_form.html")
+    return render_template("forms/madrasah_form.html")
 
 #Development needed
 @testing_bp.route("/verification", methods = ['POST'])
