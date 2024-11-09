@@ -48,8 +48,8 @@ class Payment:
              cursor = conn.cursor()
              cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,CVC, Price) VALUES (?,?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.CVC, self.price))
              conn.commit()
-#Madrassah class which inserts into Madrassah Table
-class Madrassah:
+#Madrasah class which inserts into Madrasah Table
+class Madrasah:
     def __init__(self, user_id, time, date, child_fname, child_lname, child_date_of_birth ):
         self.user_id = user_id
         self.time = time
@@ -61,7 +61,7 @@ class Madrassah:
     def add(self):
         with sqlite3.connect('test2.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Madrassah (UserID,Time, Date, ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?,?,?)', (self.user_id,self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth ))
+             cursor.execute('INSERT INTO  Madrasah (UserID,Time, Date, ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?,?,?)', (self.user_id,self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth ))
 #Clashed class which checks for unavailable bookings
 class Clashed:
     def __init__(self,time, date):
@@ -73,7 +73,7 @@ class Clashed:
         exists = False
         with sqlite3.connect('test2.db') as conn:
             cursor = conn.cursor()
-            tables = ['Nikah', 'Madrassah', 'Service']
+            tables = ['Nikah', 'Madrasah', 'Service']
             for table in tables:
                 sql = f'SELECT * FROM User u JOIN {table} t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"'
                 cursor.execute(sql)

@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
 
-    <title> Booking Madrassah </title>
+    <title> Booking Madrasah </title>
 
 </head>
 
 <body>
 
-    <h1> Madrassah Form </h1>
+    <h1> Madrasah Form </h1>
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul>
@@ -20,7 +20,7 @@
         {% endif %}
     {% endwith %}
 
-    <form id = "MadrassahForm" method = 'POST' action="{{ url_for('testing.addmadrassah') }}" autocomplete="off">
+    <form id = "MadrasahForm" method = 'POST' action="{{ url_for('testing.addmadrasah') }}" autocomplete="off">
 
         <div>
             <label for='first-name'>First Name:</label>

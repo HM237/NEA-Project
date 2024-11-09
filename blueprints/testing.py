@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from models import User, Nikah, Payment,Madrassah, Clashed
+from models import User, Nikah, Payment,Madrasah, Clashed
 import sqlite3
 
 testing_bp = Blueprint('testing', __name__)
@@ -14,20 +14,20 @@ def home_page():
 def nikah_page():
     return render_template("nikah_page.html")
 
-#Route to the Madrassah Page
-@testing_bp.route('/madrassah')
-def madrassah_page():
-    return render_template("madrassah_page.html")
+#Route to the Madrasah Page
+@testing_bp.route('/madrasah')
+def madrasah_page():
+    return render_template("madrasah_page.html")
 
 # Route to the Nikah Form 
 @testing_bp.route("/nikahbooking")
 def nikah_booking():
     return render_template("nikah_form.html")
 
-#Route to the Madrassah Form
-@testing_bp.route("/madrassahbooking")
-def madrassah_booking():
-    return render_template("madrassah_form.html")
+#Route to the Madrasah Form
+@testing_bp.route("/madrasahbooking")
+def madrasah_booking():
+    return render_template("madrasah_form.html")
 
 #Development needed
 @testing_bp.route("/verification", methods = ['POST'])
@@ -88,9 +88,9 @@ def addnikah():
         return redirect(url_for('testing.nikah_booking'))
 
 
-#Process for Madrassah Table which retrieves the user input from the madrassah_form
-@testing_bp.route("/process-madrassah", methods=['GET','POST'])
-def addmadrassah():
+#Process for Madrasah Table which retrieves the user input from the madrasah_form
+@testing_bp.route("/process-madrasah", methods=['GET','POST'])
+def addmadrasah():
     if request.method == 'POST':        
         time = request.form["time"]
         date = request.form["date"]
@@ -99,10 +99,10 @@ def addmadrassah():
 
         if Clashed.clashed(time, date):
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'clashed')
-            return redirect(url_for('testing.addmadrassah'))
+            return redirect(url_for('testing.addmadrasah'))
         
         else:
-            #requesting data from the madrassah_form             
+            #requesting data from the madrasah_form             
             first_name = request.form["first_name"]
             last_name = request.form["last_name"]               
             email = request.form["email"]                
@@ -126,10 +126,10 @@ def addmadrassah():
             connection.commit()
             cursor.close()
             
-            #calling the class Madrassah and storing the data for the Madrassah Table 
-            new_madrassah = Madrassah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
-            new_madrassah.add()  
+            #calling the class Madrasah and storing the data for the Madrasah Table 
+            new_madrasah = Madrasah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
+            new_madrasah.add()  
                 
             return render_template("success.html")
     else:
-        return redirect(url_for('testing.madrassah_booking'))    
+        return redirect(url_for('testing.madrasah_booking'))    
