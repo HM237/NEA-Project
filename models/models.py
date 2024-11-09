@@ -75,8 +75,7 @@ class Clashed:
             cursor = conn.cursor()
             tables = ['Nikah', 'Madrasah', 'Service']
             for table in tables:
-                sql = f'SELECT * FROM User u JOIN {table} t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"'
-                cursor.execute(sql)
+                cursor.execute(f'SELECT * FROM User u JOIN {table} t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"')
                 try:
                     result = cursor.fetchone()[0] > 0
                     if result:
