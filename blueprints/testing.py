@@ -33,7 +33,7 @@ def madrasah_booking():
 @testing_bp.route("/verification", methods = ['POST'])
 def verification():
     print("Working pls?")
-    return ("home_page.html")
+    return render_template("pages/home_page.html")
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @testing_bp.route("/process-nikah", methods=['GET','POST'])
