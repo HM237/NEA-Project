@@ -44,7 +44,7 @@ def addnikah():
         #checking for any bookings that could clash using the class Clashed
         if Clashed.clashed(time, date):
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
-            return redirect(url_for('testing.addnikah'))
+            return redirect(url_for('forms.addnikah'))
         else:
             #requesting data from the nikah_form             
             first_name = request.form["first_name"]
@@ -85,7 +85,7 @@ def addnikah():
                 
             return render_template("success.html")
     else:
-        return redirect(url_for('testing.nikah_booking'))
+        return redirect(url_for('forms.addnikah'))
 
 
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
@@ -99,7 +99,7 @@ def addmadrasah():
 
         if Clashed.clashed(time, date):
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'clashed')
-            return redirect(url_for('testing.addmadrasah'))
+            return redirect(url_for('forms.addmadrasah'))
         
         else:
             #requesting data from the madrasah_form             
@@ -131,4 +131,4 @@ def addmadrasah():
                 
             return render_template("success.html")
     else:
-        return redirect(url_for('testing.madrasah_booking'))    
+        return redirect(url_for('forms.addmadrasah'))    

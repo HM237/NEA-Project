@@ -20,8 +20,7 @@
         {% endif %}
     {% endwith %}
 
-    <form id = "{{ form_id }}" method = 'POST' action="{{ form_action }}" autocomplete="off">
-
+    {%block form%}{% endblock%}
         <div>
             <label for='first-name'>First Name:</label>
             <input type = 'text' id="first-name" name="first_name" placeholder="Hudaifa" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
@@ -51,13 +50,6 @@
         <br>
 
         {%block content%}{%endblock%}
-
-        <br>
-
-        <div>
-            <label for=" child-date-of-birth"> Child's Date of Birth: </label>
-            <input type="date" id="child-date-of-birth" name="child_date_of_birth" min="2000-01-01" max="2020-01-01" required>
-        </div>
 
         <br>
         
