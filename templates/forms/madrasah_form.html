@@ -1,7 +1,11 @@
-{% extend "forms/base_form.html" %}
-{% block title %} Madrassah Form {%endblock%}
-{% block head %} Madrassah Form {% endblock %}
+{% extends "forms/base_form.html" %}
+{% block title %} Madrasah Form  {%endblock%}
+{% block head %} Madrasah Form  {% endblock %}
+{% block form_id %}
+    MadrasahForm
+{% endblock %}
 {%block content%}
+{% block form_action %} {{ url_for('testing.addmadrasah') }} {% endblock %}
     <div>
         <label for="date-of-birth"> Parent's Date of Birth (Optional): </label>
         <input type="date" id="date-of-birth" name="date_of_birth" min="1908-05-01" max="2005-01-01" placeholder="NOT REQUIRED">

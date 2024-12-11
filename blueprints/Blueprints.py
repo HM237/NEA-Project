@@ -2,41 +2,41 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from models import User, Nikah, Payment,Madrasah, Clashed
 import sqlite3
 
-testing_bp = Blueprint('testing', __name__)
+bp = Blueprint('forms', __name__)
 
 #Home Page
-@testing_bp.route('/')
+@bp.route('/')
 def home_page():
     return render_template("pages/home_page.html")
 
 #Route to the Nikah Page
-@testing_bp.route('/nikah')
+@bp.route('/nikah')
 def nikah_page():
     return render_template("pages/nikah_page.html")
 
 #Route to the Madrasah Page
-@testing_bp.route('/madrasah')
+@bp.route('/madrasah')
 def madrasah_page():
     return render_template("pages/madrasah_page.html")
 
 # Route to the Nikah Form 
-@testing_bp.route("/nikahbooking")
+@bp.route("/nikahbooking")
 def nikah_booking():
     return render_template("forms/nikah_form.html")
 
 #Route to the Madrasah Form
-@testing_bp.route("/madrasahbooking")
+@bp.route("/madrasahbooking")
 def madrasah_booking():
     return render_template("forms/madrasah_form.html")
 
 #Development needed
-@testing_bp.route("/verification", methods = ['POST'])
+@bp.route("/verification", methods = ['POST'])
 def verification():
     print("Working pls?")
     return render_template("pages/home_page.html")
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
-@testing_bp.route("/process-nikah", methods=['GET','POST'])
+@bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
     if request.method == 'POST':        
         time = request.form["time"]
@@ -89,7 +89,7 @@ def addnikah():
 
 
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
-@testing_bp.route("/process-madrasah", methods=['GET','POST'])
+@bp.route("/process-madrasah", methods=['GET','POST'])
 def addmadrasah():
     if request.method == 'POST':        
         time = request.form["time"]
