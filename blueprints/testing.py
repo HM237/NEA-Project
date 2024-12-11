@@ -116,7 +116,6 @@ def addmadrasah():
             #calling the class User and storign the data for the User Table
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth)
             new_user.add()
-            
             #retrieving the correct coressponding UserID 
             connection = sqlite3.connect('test2.db')
             cursor = connection.cursor()

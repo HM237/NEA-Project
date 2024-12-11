@@ -1,107 +1,30 @@
-<!DOCTYPE html>
+{% extend "forms/base_form.html" %}
+{% block title %} Madrassah Form {%endblock%}
+{% block head %} Madrassah Form {% endblock %}
+{%block content%}
+    <div>
+        <label for="date-of-birth"> Parent's Date of Birth (Optional): </label>
+        <input type="date" id="date-of-birth" name="date_of_birth" min="1908-05-01" max="2005-01-01" placeholder="NOT REQUIRED">
+    </div>
 
-<html lang="en">
-<head>
+    <br>
 
-    <title> Booking Madrasah </title>
+    <div>
+        <label for ='child-fname'>Child's First name:</label>
+        <input type = 'text' id="child-fname" name="child_fname" required>
+    </div>
 
-</head>
+    <br>
 
-<body>
+    <div>
+        <label for ='child_lname'>Child's Last Name:</label>
+        <input type = 'text' id="child-lname" name="child_lname"  required>
+    </div>
 
-    <h1> Madrasah Form </h1>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <h3>{{ message }}</h3>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+    <br>
 
-    <form id = "MadrasahForm" method = 'POST' action="{{ url_for('testing.addmadrasah') }}" autocomplete="off">
-
-        <div>
-            <label for='first-name'>First Name:</label>
-            <input type = 'text' id="first-name" name="first_name" placeholder="Hudaifa" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for='last-name'>Last Name:</label>
-            <input type = 'text' id= "last-name" name="last_name" placeholder="Mohamed" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
-        </div>
-
-        <br>
-        
-        <div>
-            <label for ='email'> Email: </label>
-            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for='phone-number'>Phone Number:</label>
-            <input type="tel" id="phone-number" name="phone_number">
-        </div>
-
-        <br>
-
-        <div>
-            <label for=" date-of-birth"> Parent's Date of Birth (Optional): </label>
-            <input type="date" id="date-of-birth" name="date_of_birth" min="1908-05-01" max="2005-01-01" placeholder="NOT REQUIRED">
-        </div>
-
-        <br>
-
-        <div>
-            <label for ='child-fname'>Child's First name:</label>
-            <input type = 'text' id="child-fname" name="child_fname" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for ='child_lname'>Child's Last Name:</label>
-            <input type = 'text' id="child-lname" name="child_lname"  required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for=" child-date-of-birth"> Child's Date of Birth: </label>
-            <input type="date" id="child-date-of-birth" name="child_date_of_birth" min="2000-01-01" max="2020-01-01" required>
-        </div>
-
-        <br>
-        
-        <div>
-            <label for=" date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2024-01-02" max="2027-01-01" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for=" time"> Time of Booking: </label>
-            <input type="time" id="time" name="time" step= "600" min="16:45:00" max="19:30:00" required>
-        </div>
-        
-        <br>
-
-        <div>
-            <input type="reset">
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit"> Submit </button>
-        </div>            
-
-    </form>
-</body>    
-</html>
+    <div>
+        <label for="child-date-of-birth"> Child's Date of Birth: </label>
+        <input type="date" id="child-date-of-birth" name="child_date_of_birth" min="2000-01-01" max="2020-01-01" required>
+    </div>
+{%endblock%}
