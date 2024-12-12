@@ -23,14 +23,14 @@
     <form id = "MadrasahForm" method = 'POST' action="{{ url_for('routes.addmadrasah') }}" autocomplete="off">
 
         <div>
-            <label for='first-name'>First Name:</label>
+            <label for='first-name'>Parent's First Name:</label>
             <input type = 'text' id="first-name" name="first_name" placeholder="Hudaifa" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
         <br>
 
         <div>
-            <label for='last-name'>Last Name:</label>
+            <label for='last-name'>Parent's Last Name:</label>
             <input type = 'text' id= "last-name" name="last_name" placeholder="Mohamed" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
@@ -58,7 +58,7 @@
         <br>
 
         <div>
-            <label for ='child-fname'>Child's First name:</label>
+            <label for ='child-fname'>Child's First Name:</label>
             <input type = 'text' id="child-fname" name="child_fname" required>
         </div>
 
