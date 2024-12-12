@@ -1,1 +1,1 @@
-from .Blueprints import bp
+from .testing import testing_bp

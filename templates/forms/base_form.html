@@ -6,21 +6,10 @@
     <title>{% block title %}{% endblock %}</title>
 
 </head>
-
+{%block body%}{%endblock%}
 <body>
-
-    <h1>{% block head %}{% endblock %}</h1>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <h3>{{ message }}</h3>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-
-    {%block form%}{% endblock%}
+    {%block exception%} {%endblock%}
+    {%block form%} {% endblock%}
         <div>
             <label for='first-name'>First Name:</label>
             <input type = 'text' id="first-name" name="first_name" placeholder="Hudaifa" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
@@ -49,7 +38,7 @@
 
         <br>
 
-        {%block content%}{%endblock%}
+        {%block content%} {%endblock%}
 
         <br>
         

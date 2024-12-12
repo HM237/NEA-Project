@@ -2,53 +2,49 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from models import User, Nikah, Payment,Madrasah, Clashed
 import sqlite3
 
-bp = Blueprint('forms', __name__)
+testing_bp = Blueprint('testing', __name__)
 
 #Home Page
-@bp.route('/')
+@testing_bp.route('/')
 def home_page():
     return render_template("pages/home_page.html")
 
 #Route to the Nikah Page
-@bp.route('/nikah')
+@testing_bp.route('/nikah')
 def nikah_page():
     return render_template("pages/nikah_page.html")
 
 #Route to the Madrasah Page
-@bp.route('/madrasah')
+@testing_bp.route('/madrasah')
 def madrasah_page():
     return render_template("pages/madrasah_page.html")
 
 # Route to the Nikah Form 
-@bp.route("/nikahbooking")
+@testing_bp.route("/nikahbooking")
 def nikah_booking():
     return render_template("forms/nikah_form.html")
 
 #Route to the Madrasah Form
-@bp.route("/madrasahbooking")
+@testing_bp.route("/madrasahbooking")
 def madrasah_booking():
     return render_template("forms/madrasah_form.html")
 
 #Development needed
-@bp.route("/verification", methods = ['POST'])
+@testing_bp.route("/verification", methods = ['POST'])
 def verification():
     print("Working pls?")
     return render_template("pages/home_page.html")
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
-@bp.route("/process-nikah", methods=['GET','POST'])
+@testing_bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
     if request.method == 'POST':        
         time = request.form["time"]
         date = request.form["date"]
         #checking for any bookings that could clash using the class Clashed
-        print('CHECKING FOR CLASHED RN')
-
         if Clashed.clashed(time, date):
-            print(f'The result is : {Clashed.clashed(time,date)}')            
-            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date. JUST WORK', 'error')
-            print(f'The stupid result was : {Clashed.clashed(time,date)}')            
-            return redirect(url_for('forms.addnikah'))
+            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
+            return redirect(url_for('testing.addnikah'))
         else:
             #requesting data from the nikah_form             
             first_name = request.form["first_name"]
@@ -89,23 +85,21 @@ def addnikah():
                 
             return render_template("success.html")
     else:
-        return redirect(url_for('forms.addnikah'))
+        return redirect(url_for('testing.nikah_booking'))
 
 
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
-@bp.route("/process-madrasah", methods=['GET','POST'])
+@testing_bp.route("/process-madrasah", methods=['GET','POST'])
 def addmadrasah():
     if request.method == 'POST':        
         time = request.form["time"]
         date = request.form["date"]
         #checking for any bookings that could clash
-        print('CHECKING FOR CLASHED RN')
+        print(f'the result is : {Clashed.clashed(time,date)}')
 
         if Clashed.clashed(time, date):
-            print(f'The result is : {Clashed.clashed(time,date)}')            
-            flash('The date and time you selected are already damn taken. Please choose another time.', 'error')
-            print(f'The stupid result was : {Clashed.clashed(time,date)}')            
-            return redirect(url_for('forms.addmadrasah'))
+            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'clashed')
+            return redirect(url_for('testing.addmadrasah'))
         
         else:
             #requesting data from the madrasah_form             
@@ -122,6 +116,7 @@ def addmadrasah():
             #calling the class User and storign the data for the User Table
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth)
             new_user.add()
+            
             #retrieving the correct coressponding UserID 
             connection = sqlite3.connect('test2.db')
             cursor = connection.cursor()
@@ -134,8 +129,7 @@ def addmadrasah():
             #calling the class Madrasah and storing the data for the Madrasah Table 
             new_madrasah = Madrasah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add()  
-            
-            flash('Booking successful!', 'success')                
+                
             return render_template("success.html")
     else:
-        return redirect(url_for('forms.addmadrasah'))    
+        return redirect(url_for('testing.madrasah_booking'))    

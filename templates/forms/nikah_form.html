@@ -24,7 +24,7 @@
         {% endif %}
     {% endwith %}
 
-    <form id= "NikahForm" method = 'POST' onsubmit=" return validateForm()"  action="{{ url_for('forms.addnikah') }}" autocomplete="off">
+    <form id= "NikahForm" method = 'POST' onsubmit=" return validateForm()"  action="{{ url_for('testing.addnikah') }}" autocomplete="off">
 
         <div>
             <label for='first-name'>First Name:</label>
@@ -142,7 +142,7 @@
         <br>
 
         <div>
-            <button type="submit" formaction="{{ url_for('forms.verification') }}"> Send Verification Email </button>
+            <button type="submit" formaction="{{ url_for('testing.verification') }}"> Send Verification Email </button>
         </div>
 
         <br>
