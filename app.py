@@ -1,5 +1,5 @@
 from flask import Flask
-from blueprints import testing_bp
+from blueprints import bp
 
 def app():
     # create and configure the app
@@ -8,7 +8,7 @@ def app():
         SECRET_KEY='dev',
     )
 
-    app.register_blueprint(testing_bp)
+    app.register_blueprint(bp)
 
     return app
 

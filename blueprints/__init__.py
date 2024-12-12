@@ -1,1 +1,1 @@
-from .testing import testing_bp
+from .routes import bp
