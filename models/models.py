@@ -92,6 +92,9 @@ class Clashed:
 
 #Verification class which will execute the verification processs
 class Verification:
-    def __init__(self):
-        pass 
+    def __init__(self, email):
+        self.email = email
     
+    def send_verification_email(self):
+        pass
+
