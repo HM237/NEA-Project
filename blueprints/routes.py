@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from models import User, Nikah, Payment,Madrasah, Clashed
+from models import User, Nikah, Madrasah,Payment, Clashed, Verification
 import sqlite3
 
 bp = Blueprint('routes', __name__)

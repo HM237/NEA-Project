@@ -88,4 +88,10 @@ class Clashed:
                         break
                 except Exception as e:
                     print(e)
-        return exists 
+        return exists
+
+#Verification class which will execute the verification processs
+class Verification:
+    def __init__(self):
+        pass 
+    
