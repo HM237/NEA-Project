@@ -14,6 +14,11 @@ def home_page():
 def aboutus_page():
     return render_template("pages/aboutus_page.html")
 
+#Route to the FAQ Page
+@bp.route('/faq')
+def faq_page():
+    return render_template("pages/faq_page.html")
+
 #Route to the Nikah Page
 @bp.route('/nikah')
 def nikah_page():
@@ -24,6 +29,15 @@ def nikah_page():
 def madrasah_page():
     return render_template("pages/madrasah_page.html")
 
+#Route to the Tours Page
+@bp.route('/tours')
+def tours_page():
+    return render_template("pages/tours_page.html")
+
+#Route to the Service Page
+@bp.route('/service')
+def service_page():
+    return render_template("pages/service_page.html")
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
 def nikah_booking():
