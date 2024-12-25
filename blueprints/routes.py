@@ -9,6 +9,11 @@ bp = Blueprint('routes', __name__)
 def home_page():
     return render_template("pages/home_page.html")
 
+#About Us
+@bp.route('/about-us')
+def aboutus_page():
+    return render_template("pages/aboutus_page.html")
+
 #Route to the Nikah Page
 @bp.route('/nikah')
 def nikah_page():
