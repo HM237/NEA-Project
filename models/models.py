@@ -1,4 +1,10 @@
 import sqlite3
+import os
+import smtplib
+import  random
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 #User class which inserts into User Table
 class User:
     def __init__(self, first_name, last_name, email, phone_number, date_of_birth):
@@ -96,5 +102,62 @@ class Verification:
         self.email = email
     
     def send_verification_email(self):
-        pass
+        sender_email = os.environ.get('MY_EMAIL')
+        password = os.environ.get('MY_PASSWORD')
+        receiver_email = f'{self.email}'
+    
+        if sender_email:
+            print(f'Successful retrieved sender email')
 
+        # Create the message object
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = "Verification Code"
+
+        #generating a random number
+        verification_number = random.randint(100000,999999)
+
+        #email
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Email Example</title>
+        </head>
+        <body>
+            <h1 style="font-size: 30px;">Masjid Al-Ansar Verification Code!</h1>
+            <p style="font-size: 18px;">Hello<br>
+            Please use the verification code below for your booking at Masjid Al-Ansar. Make sure you don't share it with anyone. </p>
+            
+            <p style="font-size: 20px; font-weight: bold;">Verification Code: {verification_number}</p>
+            
+            
+            <p style="font-size: 16px; color: red;">If you didn't generate this code, someone else might be trying to use you email account.</p>
+            <p style="font-size: 18px;">Thanks,<br> Masjid Al-Ansar Team </p>
+            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/">Masjid Al-Ansar</a> </p>
+        </body>
+        </html>
+        """
+
+        # Attaching the HTML content to the message
+        msg.attach(MIMEText(html_content, 'html'))
+
+        # Connecting to the Gmail SMTP server and sending the email
+        try:
+            # Establishing a secure session with Gmail's SMTP server
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()  
+            server.login(sender_email, password)  
+
+            # Sending the email
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+            print("Email sent successfully!")
+
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            server.quit()
+        return verification_number 

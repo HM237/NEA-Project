@@ -30,9 +30,16 @@ def madrasah_booking():
     return render_template("forms/madrasah_form.html")
 
 #Development needed
-@bp.route("/verification", methods = ['POST'])
+@bp.route("/verification", methods = ['GET','POST'])
 def verification():
-    email = "yes"
+    if request.method == 'POST':
+        email = request.form['email']
+    print(email)
+
+    checking_email = Verification(email= email)
+    verification_number = checking_email.send_verification_email()
+    
+    print(f'the verification is : {verification_number}')
     return render_template("pages/home_page.html")
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
