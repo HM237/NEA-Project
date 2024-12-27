@@ -20,7 +20,7 @@
         {% endif %}
     {% endwith %}
 
-    <form id = "MadrasahForm" method = 'POST' action="{{ url_for('routes.addmadrasah') }}" autocomplete="off">
+    <form id = "{{ form_id }}" method = 'POST' action="{{ action_url }}" autocomplete="off">
 
         <div>
             <label for='first-name'>{%block label1 %}{%endblock%}</label>

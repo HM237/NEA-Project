@@ -18,7 +18,9 @@ def aboutus_page():
 #Route to the Temporary Page
 @bp.route('/temporary')
 def temporary():
-    return render_template("forms/temporary.html")
+    form_id = "MadrasahForm"
+    action_url = url_for('routes.addmadrasah')
+    return render_template("forms/temporary.html", form_id=form_id, action_url=action_url)
 
 #Route to the FAQ Page
 @bp.route('/faq')
@@ -66,7 +68,7 @@ def verification():
     verification_number = checking_email.send_verification_email()
     
     print(f'the verification is : {verification_number}')
-    return render_template("pages/home_page.html")
+    return 'k'
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
