@@ -98,14 +98,14 @@
 
         <div>
             <label for=" date-of-birth"> Date of Birth: </label>
-            <input type="date" id="date-of-birth" name="date_of_birth" min="1908-05-01" max="2005-01-01" required>
+            <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" required>
         </div>
 
         <br>
         
         <div>
             <label for=" date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2024-01-02" max="2028-01-01" required>
+            <input type="date" id="date" name="date" min="2024-01-02" max="2029-01-01" required>
         </div>
 
         <br>
@@ -159,7 +159,7 @@
 
     </form>
     <script>
-        // function which makes sure the user types the CVC upon choosing Card
+        // function which makes sure the user type the CVC upon choosing Card
         function toggleInput() {
             const CardVerificationCode = document.getElementById('CardVerificationCode');
             const selectedOption = document.getElementById('payment_method').value;

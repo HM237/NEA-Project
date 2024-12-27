@@ -52,7 +52,7 @@
 
         <div>
             <label for=" date-of-birth"> Parent's Date of Birth (Optional): </label>
-            <input type="date" id="date-of-birth" name="date_of_birth" min="1908-05-01" max="2005-01-01" placeholder="NOT REQUIRED">
+            <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
         </div>
 
         <br>
@@ -80,7 +80,7 @@
         
         <div>
             <label for=" date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2024-01-02" max="2027-01-01" required>
+            <input type="date" id="date" name="date" min="2024-01-02" max="2030-01-01" required>
         </div>
 
         <br>
@@ -92,6 +92,13 @@
         
         <br>
         
+        <div>
+            <label for ='VerificationCode'>Verification Code:</label>
+            <input type = 'number' id="verification_code" name="verification_code" required>
+        </div>
+
+        <br>
+
         <div>
             <button type="submit" formaction="{{ url_for('routes.verification') }}"> Send Verification Email </button>
         </div>

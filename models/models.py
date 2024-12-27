@@ -129,15 +129,15 @@ class Verification:
         </head>
         <body>
             <h1 style="font-size: 30px;">Masjid Al-Ansar Verification Code!</h1>
-            <p style="font-size: 18px;">Hello<br>
-            Please use the verification code below for your booking at Masjid Al-Ansar. Make sure you don't share it with anyone. </p>
+            <p style="font-size: 18px;">Hello,<br>
+            Please use the verification code below for your booking at Masjid Al-Ansar. The code will be valid for 15 seconds. Make sure you don't share it with anyone. </p>
             
             <p style="font-size: 20px; font-weight: bold;">Verification Code: {verification_number}</p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this code, someone else might be trying to use you email account.</p>
             <p style="font-size: 18px;">Thanks,<br> Masjid Al-Ansar Team </p>
-            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/">Masjid Al-Ansar</a> </p>
+            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/about-us">Masjid Al-Ansar</a> </p>
         </body>
         </html>
         """

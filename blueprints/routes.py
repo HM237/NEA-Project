@@ -4,12 +4,12 @@ import sqlite3
 
 bp = Blueprint('routes', __name__)
 
-#Home Page
+#Route to the Home Page
 @bp.route('/')
 def home_page():
     return render_template("pages/home_page.html")
 
-#About Us
+#Route to the About Us Page
 @bp.route('/about-us')
 def aboutus_page():
     return render_template("pages/aboutus_page.html")
@@ -38,6 +38,7 @@ def tours_page():
 @bp.route('/service')
 def service_page():
     return render_template("pages/service_page.html")
+
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
 def nikah_booking():
@@ -48,7 +49,7 @@ def nikah_booking():
 def madrasah_booking():
     return render_template("forms/madrasah_form.html")
 
-#Development needed
+#Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
 def verification():
     if request.method == 'POST':
