@@ -1,0 +1,35 @@
+{% extends "forms/base_form.html" %}
+{% block title %}Testing the Title part 1{% endblock %}
+{% block head %} Testing the Header part 2{% endblock %}
+{%block label1 %} Label 1 Test{%endblock%}
+{%block label2 %} Label 2 Test{%endblock%}
+{%block label3 %} Label 3 Test{%endblock%}
+{% block content %}
+<div>
+    <label for="parent-date-of-birth"> Parent's Date of Birth (Optional): </label>
+    <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
+</div>
+
+<br>
+
+<div>
+    <label for ='child-fname'>Child's First Name:</label>
+    <input type = 'text' id="child-fname" name="child_fname" required>
+</div>
+
+<br>
+
+<div>
+    <label for ='child_lname'>Child's Last Name:</label>
+    <input type = 'text' id="child-lname" name="child_lname"  required>
+</div>
+
+<br>
+
+<div>
+    <label for=" child-date-of-birth"> Child's Date of Birth: </label>
+    <input type="date" id="child-date-of-birth" name="child_date_of_birth" min="2000-01-01" max="2020-01-01" required>
+</div>
+
+<br>
+{%endblock%}

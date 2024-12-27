@@ -14,6 +14,12 @@ def home_page():
 def aboutus_page():
     return render_template("pages/aboutus_page.html")
 
+
+#Route to the Temporary Page
+@bp.route('/temporary')
+def temporary():
+    return render_template("forms/temporary.html")
+
 #Route to the FAQ Page
 @bp.route('/faq')
 def faq_page():

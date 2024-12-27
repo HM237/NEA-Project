@@ -3,23 +3,35 @@
 <html lang="en">
 <head>
 
-    <title>{% block title %}{% endblock %}</title>
+    <title> {%block title%}{%endblock%} </title>
 
 </head>
-{%block body%}{%endblock%}
+
 <body>
-    {%block exception%} {%endblock%}
-    {%block form%} {% endblock%}
+
+    <h1> {%block head%} {%endblock%} </h1>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <h3>{{ message }}</h3>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form id = "MadrasahForm" method = 'POST' action="{{ url_for('routes.addmadrasah') }}" autocomplete="off">
+
         <div>
-            <label for='first-name'>First Name:</label>
-            <input type = 'text' id="first-name" name="first_name" placeholder="Hudaifa" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <label for='first-name'>{%block label1 %}{%endblock%}</label>
+            <input type = 'text' id="first-name" name="first_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
         <br>
 
         <div>
-            <label for='last-name'>Last Name:</label>
-            <input type = 'text' id= "last-name" name="last_name" placeholder="Mohamed" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <label for='last-name'>{%block label2%} {%endblock%}</label>
+            <input type = 'text' id= "last-name" name="last_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
         <br>
@@ -38,22 +50,33 @@
 
         <br>
 
-        {%block content%} {%endblock%}
-
-        <br>
+        {% block content %} {%endblock%}
         
         <div>
-            <label for="date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2024-01-02" max="2027-01-01" required>
+            <label for=" date"> Date of Booking: </label>
+            <input type="date" id="date" name="date" min="2024-01-02" max="2030-01-01" required>
         </div>
 
         <br>
 
         <div>
-            <label for="time"> Time of Booking: </label>
+            <label for=" time"> Time of Booking: </label>
             <input type="time" id="time" name="time" step= "600" min="16:45:00" max="19:30:00" required>
         </div>
         
+        <br>
+        
+        <div>
+            <label for ='VerificationCode'>Verification Code:</label>
+            <input type = 'number' id="verification_code" name="verification_code" required>
+        </div>
+
+        <br>
+
+        <div>
+            <button type="submit" formaction="{{ url_for('routes.verification') }}"> Send Verification Email </button>
+        </div>
+
         <br>
 
         <div>
