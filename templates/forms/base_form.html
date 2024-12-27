@@ -4,6 +4,7 @@
 <head>
 
     <title> {%block title%}{%endblock%} </title>
+    {% block style %} {% endblock %}
 
 </head>
 
@@ -20,7 +21,7 @@
         {% endif %}
     {% endwith %}
 
-    <form id = "{{ form_id }}" method = 'POST' action="{{ action_url }}" autocomplete="off">
+    <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
         <div>
             <label for='first-name'>{%block label1 %}{%endblock%}</label>
@@ -89,6 +90,7 @@
             <button type="submit"> Submit </button>
         </div>            
 
-    </form>
+    </form> 
+    {% block scripts %} {% endblock %}       
 </body>    
 </html>

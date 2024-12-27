@@ -1,35 +1,114 @@
 {% extends "forms/base_form.html" %}
-{% block title %}Testing the Title part 1{% endblock %}
-{% block head %} Testing the Header part 3{% endblock %}
-{%block label1 %} Label 1 Test{%endblock%}
-{%block label2 %} Label 2 Test{%endblock%}
-{%block label3 %} Label 3 Test{%endblock%}
+
+{% block title %}Testing the Nikah part 1{% endblock %}
+
+{% block style %}
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block head %} Testing the Header part 1{% endblock %}
+
+{%block label1 %} First Name of Organiser {%endblock%}
+
+{%block label2 %} Last Name of Organsier {%endblock%}
+
 {% block content %}
 <div>
-    <label for="parent-date-of-birth"> Parent's Date of Birth (Optional): </label>
-    <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
+    <label for='groom-first-name'>Groom's First Name:</label>
+    <input type = 'text' id= "groom-first-name" name="groom_first_name" placeholder="Groom's First Name" required>
+</div>
+
+<br>    
+
+<div>
+    <label for='groom-last-name'>Groom's First Name:</label>
+    <input type = 'text' id= "groom-last-name" name="groom_last_name" placeholder="Groom's Last Name" required>
+</div>
+
+<br>    
+
+<div>
+    <label for='bride-first-name'>Bride's First Name:</label>
+    <input type = 'text' id= "bride-first-name" name="bride_first_name" placeholder="Bride's First Name" required>
+</div>
+
+<br>    
+
+<div>
+    <label for='bride-last-name'>Bride's Last Name:</label>
+    <input type = 'text' id= "bride-last-name" name="bride_last_name" placeholder="Bride's Last Name" required>
 </div>
 
 <br>
 
 <div>
-    <label for ='child-fname'>Child's First Name:</label>
-    <input type = 'text' id="child-fname" name="child_fname" required>
+    <label for ='address-line'>Address Line:</label>
+    <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd" required>
 </div>
 
 <br>
 
 <div>
-    <label for ='child_lname'>Child's Last Name:</label>
-    <input type = 'text' id="child-lname" name="child_lname"  required>
+    <label for ='post-code'>Post Code:</label>
+    <input type = 'text' id="post-code" name="post_code" placeholder="LE4 9EA"  required>
 </div>
 
 <br>
 
 <div>
-    <label for=" child-date-of-birth"> Child's Date of Birth: </label>
-    <input type="date" id="child-date-of-birth" name="child_date_of_birth" min="2000-01-01" max="2020-01-01" required>
+    <label for="payment_method">Select a payment method for £130:</label>
+    <select id="payment_method" name="payment_method" onchange="toggleInput()">
+        <option value="">--Choose an option--</option>
+        <option value="CARD">CARD</option>
+        <option value="CASH">CASH</option>
+    </select>
+    
+    <div id="CardVerificationCode" class="hidden">
+        <br>
+        <label for="CVC">CVC required:</label>
+        <input type="number" id="CVC" name="CVC">
+    </div>
 </div>
 
 <br>
+{%endblock%}
+{%block scripts %} 
+<script>
+    // function which makes sure the user type the CVC upon choosing Card
+    function toggleInput() {
+        const CardVerificationCode = document.getElementById('CardVerificationCode');
+        const selectedOption = document.getElementById('payment_method').value;
+        const CVC = document.getElementById('CVC');
+
+        if (selectedOption === 'CARD') {
+            CardVerificationCode.style.display = 'block';
+            CVC.required = true;
+        } else {
+            CardVerificationCode.style.display = 'none';
+            CVC.required = false;
+            CVC.value = '';
+        }
+    }
+    // function which makes sure the user chooses card/cash
+    function validateForm() {
+        const selectedOption = document.getElementById('payment_method').value;
+        const CVC = document.getElementById('CVC');
+        
+        if (!selectedOption) {
+            alert('Please select a payment option.');
+            return false; 
+        }
+
+        if (selectedOption === 'CARD' && !CVC.value) {
+            alert('Please fill in the input field.');
+            return false; 
+        }
+
+        return true;
+    }
+</script>
 {%endblock%}

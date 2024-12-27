@@ -18,8 +18,8 @@ def aboutus_page():
 #Route to the Temporary Page
 @bp.route('/temporary')
 def temporary():
-    form_id = "MadrasahForm"
-    action_url = url_for('routes.addmadrasah')
+    form_id = "NikahForm"
+    action_url = url_for('routes.addnikah')
     return render_template("forms/temporary.html", form_id=form_id, action_url=action_url)
 
 #Route to the FAQ Page
@@ -55,7 +55,9 @@ def nikah_booking():
 #Route to the Madrasah Form
 @bp.route("/madrasahbooking")
 def madrasah_booking():
-    return render_template("forms/madrasah_form.html")
+    form_id = "MadrasahForm"
+    action_url = url_for('routes.addmadrasah')
+    return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url)
 
 #Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
