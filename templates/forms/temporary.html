@@ -1,6 +1,6 @@
 {% extends "forms/base_form.html" %}
 
-{% block title %}Testing the Nikah part 1{% endblock %}
+{% block title %} Nikah Booking {% endblock %}
 
 {% block style %}
 <style>
@@ -10,13 +10,21 @@
 </style>
 {% endblock %}
 
-{% block head %} Testing the Header part 1{% endblock %}
+{% block head %} Nikah Form {% endblock %}
 
-{%block label1 %} First Name of Organiser {%endblock%}
+{%block label1 %} First Name of Organiser: {%endblock%}
 
-{%block label2 %} Last Name of Organsier {%endblock%}
+{%block label2 %} Last Name of Organsier: {%endblock%}
 
 {% block content %}
+
+<div>
+    <label for="date-of-birth">Organiser's Date of Birth: </label>
+    <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
+</div>
+
+<br>
+
 <div>
     <label for='groom-first-name'>Groom's First Name:</label>
     <input type = 'text' id= "groom-first-name" name="groom_first_name" placeholder="Groom's First Name" required>

@@ -1,196 +1,122 @@
-<!DOCTYPE html>
+{% extends "forms/base_form.html" %}
 
-<html lang="en">
-<head>
+{% block title %} Nikah Booking {% endblock %}
 
-    <title> Booking Nikah </title>
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
+{% block style %}
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
 
-<body>
+{% block head %} Nikah Form {% endblock %}
 
-    <h1> Nikah Form </h1>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <h3>{{ message }}</h3>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+{%block label1 %} First Name of Organiser: {%endblock%}
 
-    <form id= "NikahForm" method = 'POST' onsubmit=" return validateForm()"  action="{{ url_for('routes.addnikah') }}" autocomplete="off">
+{%block label2 %} Last Name of Organsier: {%endblock%}
 
-        <div>
-            <label for='first-name'>First Name of Organiser:</label>
-            <input type = 'text' id="first-name" name="first_name" placeholder="First Name" required>
-        </div>
+{% block content %}
 
-        <br>
+<div>
+    <label for="date-of-birth">Organiser's Date of Birth: </label>
+    <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
+</div>
 
-        <div>
-            <label for='last-name'>Last Name of Organiser:</label>
-            <input type = 'text' id= "last-name" name="last_name" placeholder="Last Name" required>
-        </div>
+<br>
 
-        <br>    
+<div>
+    <label for='groom-first-name'>Groom's First Name:</label>
+    <input type = 'text' id= "groom-first-name" name="groom_first_name" placeholder="Groom's First Name" required>
+</div>
 
-        <div>
-            <label for='groom-first-name'>Groom's First Name:</label>
-            <input type = 'text' id= "groom-first-name" name="groom_first_name" placeholder="Groom's First Name" required>
-        </div>
+<br>    
 
-        <br>    
+<div>
+    <label for='groom-last-name'>Groom's First Name:</label>
+    <input type = 'text' id= "groom-last-name" name="groom_last_name" placeholder="Groom's Last Name" required>
+</div>
 
-        <div>
-            <label for='groom-last-name'>Groom's First Name:</label>
-            <input type = 'text' id= "groom-last-name" name="groom_last_name" placeholder="Groom's Last Name" required>
-        </div>
+<br>    
 
-        <br>    
+<div>
+    <label for='bride-first-name'>Bride's First Name:</label>
+    <input type = 'text' id= "bride-first-name" name="bride_first_name" placeholder="Bride's First Name" required>
+</div>
 
-        <div>
-            <label for='bride-first-name'>Bride's First Name:</label>
-            <input type = 'text' id= "bride-first-name" name="bride_first_name" placeholder="Bride's First Name" required>
-        </div>
+<br>    
 
-        <br>    
+<div>
+    <label for='bride-last-name'>Bride's Last Name:</label>
+    <input type = 'text' id= "bride-last-name" name="bride_last_name" placeholder="Bride's Last Name" required>
+</div>
 
-        <div>
-            <label for='bride-last-name'>Bride's Last Name:</label>
-            <input type = 'text' id= "bride-last-name" name="bride_last_name" placeholder="Bride's Last Name" required>
-        </div>
+<br>
 
-        <br>
-        
-        <div>
-            <label for ='email'> Email: </label>
-            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" required>
-        </div>
+<div>
+    <label for ='address-line'>Address Line:</label>
+    <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd" required>
+</div>
 
-        <br>
+<br>
 
-        <div>
-            <label for='phone-number'>Phone Number:</label>
-            <input type="tel" id="phone-number" name="phone_number">
-        </div>
+<div>
+    <label for ='post-code'>Post Code:</label>
+    <input type = 'text' id="post-code" name="post_code" placeholder="LE4 9EA"  required>
+</div>
 
-        <br>
+<br>
 
-        <div>
-            <label for ='address-line'>Address Line:</label>
-            <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for ='post-code'>Post Code:</label>
-            <input type = 'text' id="post-code" name="post_code" placeholder="LE4 9EA"  required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for=" date-of-birth"> Date of Birth: </label>
-            <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" required>
-        </div>
-
-        <br>
-        
-        <div>
-            <label for=" date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2024-01-02" max="2029-01-01" required>
-        </div>
-
-        <br>
-
-        <div>
-            <label for=" time"> Time of Booking: </label>
-            <input type="time" id="time" name="time" step= "600" min="13:00:00" max="21:00:00" required>
-        </div>
-        
-        <br>
-
-        <div>
-            <label for="payment_method">Select a payment method for £130:</label>
-            <select id="payment_method" name="payment_method" onchange="toggleInput()">
-                <option value="">--Choose an option--</option>
-                <option value="CARD">CARD</option>
-                <option value="CASH">CASH</option>
-            </select>
-            
-            <div id="CardVerificationCode" class="hidden">
-                <br>
-                <label for="CVC">CVC required:</label>
-                <input type="number" id="CVC" name="CVC">
-            </div>
-        </div>
-
-        <br>
-
-        <div>
-            <label for ='VerificationCode'>Verification Code:</label>
-            <input type = 'number' id="verification_code" name="verification_code" required>
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit" formaction="{{ url_for('routes.verification') }}"> Send Verification Email </button>
-        </div>
-
-        <br>
-
-        <div>
-            <button type="reset"> Reset the Form </button>
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit"> Submit the Form </button>
-        </div>            
-
-    </form>
-    <script>
-        // function which makes sure the user type the CVC upon choosing Card
-        function toggleInput() {
-            const CardVerificationCode = document.getElementById('CardVerificationCode');
-            const selectedOption = document.getElementById('payment_method').value;
-            const CVC = document.getElementById('CVC');
+<div>
+    <label for="payment_method">Select a payment method for £130:</label>
+    <select id="payment_method" name="payment_method" onchange="toggleInput()">
+        <option value="">--Choose an option--</option>
+        <option value="CARD">CARD</option>
+        <option value="CASH">CASH</option>
+    </select>
     
-            if (selectedOption === 'CARD') {
-                CardVerificationCode.style.display = 'block';
-                CVC.required = true;
-            } else {
-                CardVerificationCode.style.display = 'none';
-                CVC.required = false;
-                CVC.value = '';
-            }
+    <div id="CardVerificationCode" class="hidden">
+        <br>
+        <label for="CVC">CVC required:</label>
+        <input type="number" id="CVC" name="CVC">
+    </div>
+</div>
+
+<br>
+{%endblock%}
+{%block scripts %} 
+<script>
+    // function which makes sure the user type the CVC upon choosing Card
+    function toggleInput() {
+        const CardVerificationCode = document.getElementById('CardVerificationCode');
+        const selectedOption = document.getElementById('payment_method').value;
+        const CVC = document.getElementById('CVC');
+
+        if (selectedOption === 'CARD') {
+            CardVerificationCode.style.display = 'block';
+            CVC.required = true;
+        } else {
+            CardVerificationCode.style.display = 'none';
+            CVC.required = false;
+            CVC.value = '';
         }
-        // function which makes sure the user chooses card/cash
-        function validateForm() {
-            const selectedOption = document.getElementById('payment_method').value;
-            const CVC = document.getElementById('CVC');
-            
-            if (!selectedOption) {
-                alert('Please select a payment option.');
-                return false; 
-            }
-    
-            if (selectedOption === 'CARD' && !CVC.value) {
-                alert('Please fill in the input field.');
-                return false; 
-            }
-    
-            return true;
+    }
+    // function which makes sure the user chooses card/cash
+    function validateForm() {
+        const selectedOption = document.getElementById('payment_method').value;
+        const CVC = document.getElementById('CVC');
+        
+        if (!selectedOption) {
+            alert('Please select a payment option.');
+            return false; 
         }
-    </script>
-</body>    
-</html>
+
+        if (selectedOption === 'CARD' && !CVC.value) {
+            alert('Please fill in the input field.');
+            return false; 
+        }
+
+        return true;
+    }
+</script>
+{%endblock%}
