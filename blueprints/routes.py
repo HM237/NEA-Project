@@ -50,7 +50,9 @@ def service_page():
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
 def nikah_booking():
-    return render_template("forms/nikah_form.html")
+    form_id = "NikahForm"
+    action_url = url_for('routes.addnikah')
+    return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url)
 
 #Route to the Madrasah Form
 @bp.route("/madrasahbooking")
@@ -98,7 +100,6 @@ def addnikah():
             payment_method = request.form.get('payment_method')            
             cvc = request.form["CVC"]
             price = 130
-            print(f'this is the values: {groom_first_name}, {groom_last_name}, {bride_first_name}, {bride_last_name}')
             #using the class User to store the data for the User Table
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
             new_user.add_User()
