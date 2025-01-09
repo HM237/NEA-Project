@@ -3,7 +3,7 @@
 }
 
 .dropdown button{
-    background-color: rgb(170, 26, 26);
+    background-color: rgb(205, 146, 146);
     color: white;
     padding: 10px 15px;
     border: none;
@@ -33,5 +33,5 @@
     background-color: rgb(0, 0, 0);
 }
 .dropdown a:hover{
-    background-color: bisque;
+    background-color: rgba(255, 228, 196, 0.575);
 }

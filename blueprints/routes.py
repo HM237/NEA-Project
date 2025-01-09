@@ -28,6 +28,11 @@ def faq_page():
     return render_template("pages/faq_page.html")
 
 #Route to the Nikah Page
+@bp.route('/prayer-timetable')
+def prayertime_page():
+    return render_template("pages/prayertime_page.html")
+
+#Route to the Nikah Page
 @bp.route('/nikah')
 def nikah_page():
     return render_template("pages/nikah_page.html")
