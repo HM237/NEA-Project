@@ -6,8 +6,8 @@ bp = Blueprint('routes', __name__)
 
 #Route to the Home Page
 @bp.route('/')
-def home_page():
-    return render_template("pages/home_page.html")
+def index():
+    return render_template("pages/index.html")
 
 #Route to the About Us Page
 @bp.route('/about-us')
