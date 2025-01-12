@@ -1,29 +1,108 @@
 <!DOCTYPE html>
-<html>
-    <head>
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, intial-scale=1"> 
-     
-       <title>BRUH</title>
-       <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    </head>
+<html lang="en">
+<head>
 
-    <body>
+    <title> {%block title%}{%endblock%} </title>
+    {% block style %} {% endblock %}
 
-        <div class="dropdown">
-            <button>Menu</button>
-            <div class="content">
-                <a href="http://127.0.0.1:5000/nikah" > Nikah </a>
-                <a href="http://127.0.0.1:5000/madrasah" >Madrasah </a>
-                <a href="http://127.0.0.1:5000/service" >Services </a>
-                <a href="http://127.0.0.1:5000/tours" > Tour </a>
-            </div>
+</head>
+<script>
+    function validateForm(e) {
+        var VerificationCode = document.getElementById('verification-code');
+        var submitButton = e.target;
+
+        // If the submit button is for sending email, skip the last input validation
+        if (submitButton.name === 'verification-email') {
+            VerificationCode.removeAttribute('required');
+        } else {
+            VerificationCode.setAttribute('required', 'required');
+        }
+    }
+</script>
+
+<body style="background-color: rgb(222, 211, 184);">
+
+    <h1> {%block head%} {%endblock%} </h1>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <h3>{{ message }}</h3>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
+
+        <div>
+            <label for='first-name'>{%block label1 %}{%endblock%}</label>
+            <input type = 'text' id="first-name" name="first_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
-    
-        <p> 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel nunc magna. Donec augue dui, molestie eu finibus id, euismod sed lacus. Nullam quis scelerisque nulla. Curabitur elementum ac mi ac efficitur. Quisque elementum urna diam, consequat semper tortor ullamcorper a. Nulla facilisi. Proin non lacus vel velit blandit porta rutrum vitae purus. Phasellus a nunc at nisi porta volutpat. Quisque tincidunt dui eu dui pharetra posuere. Nunc id libero ultricies, faucibus tellus vitae, efficitur mi. Nunc sit amet metus lacinia, tempus ipsum eget, efficitur libero. Proin accumsan risus vitae gravida sodales. Nullam malesuada, velit sed lacinia semper, erat arcu semper tellus, ac viverra nunc turpis at enim. Fusce vehicula augue metus, nec fermentum metus commodo eget. Sed tortor enim, consequat non tempus quis, pulvinar vitae ligula. Duis hendrerit vulputate felis quis porttitor.
-        </p>
-    
-    </body>
+
+        <br>
+
+        <div>
+            <label for='last-name'>{%block label2%} {%endblock%}</label>
+            <input type = 'text' id= "last-name" name="last_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+        </div>
+
+        <br>
+        
+        <div>
+            <label for ='email'> Email: </label>
+            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for='phone-number'>Phone Number:</label>
+            <input type="tel" id="phone-number" name="phone_number" placeholder="+44784681524" pattern="[0-9]{10}">
+        </div>
+
+        <br>
+
+        {% block content %} {%endblock%}
+        
+        <div>
+            <label for=" date"> Date of Booking: </label>
+            <input type="date" id="date" name="date" min="2024-01-02" max="2030-01-01" required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for=" time"> Time of Booking: </label>
+            <input type="time" id="time" name="time" step= "600" min="16:45:00" max="19:30:00" required>
+        </div>
+        
+        <br>
+        
+        <label for="verification-code">Verification Code:</label>
+        <input type="text" id="verification-code" name="verification-code" required><br><br>
+        
+        <!-- Send Email Button -->
+        <button type="submit" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
+        <br>
+        
+        <!-- Submit Form Button -->
+        <button type="submit" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
+
+    </form> 
+    <div id="responseMessage">
+        <!-- The message from Flask's flash function will appear here -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    {% block scripts %} {% endblock %}       
+</body>    
 </html>

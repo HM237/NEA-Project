@@ -77,13 +77,16 @@ def verification():
     verification_number = checking_email.send_verification_email()
     
     print(f'the verification is : {verification_number}')
-    return 'k'
+    
+    flash('Email sent successfully!', 'success')
+
+    return redirect(url_for('routes.index'))
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
     if request.method == 'POST':        
-        time = request.form["time"]
+        time = request.form["time"] 
         date = request.form["date"]
         #checking for any bookings that could clash using the class Clashed
         if Clashed.clashed(time, date):
