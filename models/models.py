@@ -102,6 +102,7 @@ class Verification:
         self.email = email
     
     def send_verification_email(self):
+        #using os so that personal details aren't shown
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
         receiver_email = f'{self.email}'

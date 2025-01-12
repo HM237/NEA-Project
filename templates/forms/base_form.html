@@ -11,6 +11,8 @@
 <body style="background-color: rgb(222, 211, 184);">
 
     <h1> {%block head%} {%endblock%} </h1>
+    <!-- Below is where a flash message from Flask is displayed should any bookings clash. 
+     [In future will also sebd successful booking message??]-->
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul>
@@ -20,6 +22,9 @@
             </ul>
         {% endif %}
     {% endwith %}
+
+    <!-- Since this is our base form, formId and actionUrl is filled in when the user visits the booking form page.
+     all the blocks are  overrided in the child templates -->
 
     <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
@@ -91,6 +96,7 @@
         </div>            
 
     </form> 
+    <!-- This block of scripts is for the Nikah and Service forms which have the CVC/Cash selection field-->
     {% block scripts %} {% endblock %}       
 </body>    
 </html>

@@ -55,6 +55,7 @@ def service_page():
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
 def nikah_booking():
+    #Filling in the formId and actionURL for the forms
     form_id = "NikahForm"
     action_url = url_for('routes.addnikah')
     return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url)
@@ -88,12 +89,12 @@ def addnikah():
     if request.method == 'POST':        
         time = request.form["time"] 
         date = request.form["date"]
-        #checking for any bookings that could clash using the class Clashed
+        #checking for any bookings that could clash using the class Clashed and then flashing the message
         if Clashed.clashed(time, date):
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
             return redirect(url_for('routes.addnikah'))
         else:
-            #requesting data from the nikah_form             
+            #retrieving data from the nikah_form             
             first_name = request.form["first_name"]
             last_name = request.form["last_name"]
             groom_first_name = request.form["groom_first_name"]               
@@ -148,7 +149,7 @@ def addmadrasah():
             return redirect(url_for('routes.addmadrasah'))
         
         else:
-            #requesting data from the madrasah_form             
+            #retrieving data from the madrasah_form             
             first_name = request.form["first_name"]
             last_name = request.form["last_name"]               
             email = request.form["email"]                
