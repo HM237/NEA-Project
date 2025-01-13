@@ -24,8 +24,26 @@
 </script>
 
 <body style="background-color: rgb(222, 211, 184);">
+    </div>
 
+    <nav>
+        <ul>
+            <li> <a href="index.html"> Home</a> </li>
+            <li>
+                <a href="#"> Menu </a>
+                <ul class="dropdown">
+                    <li> <a href="templates/pages/nikah_page.html" > Nikah </a></li>
+                    <li> <a href="templates/pages/madrasah_page.html" > Madrasah </a></li>
+                    <li> <a href="templates/pages/service_page.html" > Service </a></li>
+                    <li> <a href="templates/pages/tours_page.html" > Tours </a></li>
+                    <li> <a href="templates/pages/aboutus_page.html" > About Us </a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>   
+    
     <h1> {%block head%} {%endblock%} </h1>
+
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul>

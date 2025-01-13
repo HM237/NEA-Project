@@ -1,3 +1,73 @@
+form{
+    text-align: center;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+}
+nav ul{
+    width: 100%;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+nav a{
+    height: 100%;
+    padding: 0 30 px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: black;
+}
+
+nav  li:first-child{
+    margin-right: auto;
+}
+
+ul{
+    list-style: none;
+    background: rgb(205, 146, 146);
+}
+ul li{
+    display: inline-block;
+    position: relative;
+}
+
+ul li a{
+    display: block;
+    padding:  20 px 25px ;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    font-size: 20px;
+}
+
+ul li ul.dropdown li {
+    display: block;
+}
+
+ul li ul.dropdown{
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    background: hsla(0, 0%, 46%, 0.925);
+    box-shadow: -10px 0 10px rgb(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+
+ul li a:hover {
+    background-color: rgb(205, 146, 146);
+
+}
+ul li:hover ul.dropdown{
+    display: block;
+}
+    /* old navbar design
 .dropdown{
     display: inline-block
 }
@@ -40,7 +110,6 @@
 button{
     top: 50%;
     left: 50%;
-}
-form{
-    text-align: center;
-}
+}    
+    
+*/

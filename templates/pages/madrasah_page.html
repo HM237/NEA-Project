@@ -7,10 +7,27 @@
         <meta name="viewport" content="width=device-width, intial-scale=1"> 
      
        <title>Madrasah - Masjid Al-Ansar</title> 
+       <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
     
     </head>
     
     <body style="background-color: rgb(222, 211, 184);">
+        <nav>
+            <ul>
+                <li> <a href="index.html"> Home</a> </li>
+                <li>
+                    <a href="/"> Menu </a>
+                    <ul class="dropdown">
+                        <li> <a href="/nikah" > Nikah </a></li>
+                        <li> <a href="/madrasah" > Madrasah </a></li>
+                        <li> <a href="/service" > Service </a></li>
+                        <li> <a href="/tours" > Tours </a></li>
+                        <li> <a href="/about-us" > About Us </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
         <h1>Madrasah at Masjid Al-Ansar </h1>
         <p>
          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel nunc magna. Donec augue dui, molestie eu finibus id, euismod sed lacus. Nullam quis scelerisque nulla. Curabitur elementum ac mi ac efficitur. Quisque elementum urna diam, consequat semper tortor ullamcorper a. Nulla facilisi. Proin non lacus vel velit blandit porta rutrum vitae purus. Phasellus a nunc at nisi porta volutpat. Quisque tincidunt dui eu dui pharetra posuere. Nunc id libero ultricies, faucibus tellus vitae, efficitur mi. Nunc sit amet metus lacinia, tempus ipsum eget, efficitur libero. Proin accumsan risus vitae gravida sodales. Nullam malesuada, velit sed lacinia semper, erat arcu semper tellus, ac viverra nunc turpis at enim. Fusce vehicula augue metus, nec fermentum metus commodo eget. Sed tortor enim, consequat non tempus quis, pulvinar vitae ligula. Duis hendrerit vulputate felis quis porttitor. 

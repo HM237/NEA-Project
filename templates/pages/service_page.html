@@ -7,10 +7,27 @@
         <meta name="viewport" content="width=device-width, intial-scale=1"> 
      
        <title>Masjid Al-Ansar</title> 
+       <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
     
     </head>
     
     <body style="background-color: rgb(222, 211, 184);">
+        <nav>
+            <ul>
+                <li> <a href="index.html"> Home</a> </li>
+                <li>
+                    <a href="/"> Menu </a>
+                    <ul class="dropdown">
+                        <li> <a href="/nikah" > Nikah </a></li>
+                        <li> <a href="/madrasah" > Madrasah </a></li>
+                        <li> <a href="/service" > Service </a></li>
+                        <li> <a href="/tours" > Tours </a></li>
+                        <li> <a href="/about-us" > About Us </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
         <h1> Service Masjid Al-Ansar </h1>
         
         Services
