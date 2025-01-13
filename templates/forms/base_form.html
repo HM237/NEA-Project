@@ -7,12 +7,24 @@
     {% block style %} {% endblock %}
 
 </head>
+<!-- Below is the script for allowing the user to press the 'send verification email' without having the input box for 'verification code' (it skips the input box)
+ being required. However it will add the required attribute should the user try and submit the entire form-->
+<script>
+    function validateForm(e) {
+        var VerificationCode = document.getElementById('verification-code');
+        var submitButton = e.target;
+
+        if (submitButton.name === 'verification-email') {
+            VerificationCode.removeAttribute('required');
+        } else {
+            VerificationCode.setAttribute('required', 'required');
+        }
+    }
+</script>
 
 <body style="background-color: rgb(222, 211, 184);">
 
     <h1> {%block head%} {%endblock%} </h1>
-    <!-- Below is where a flash message from Flask is displayed should any bookings clash. 
-     [In future will also sebd successful booking message??]-->
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul>
@@ -22,9 +34,6 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    <!-- Since this is our base form, formId and actionUrl is filled in when the user visits the booking form page.
-     all the blocks are  overrided in the child templates -->
 
     <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
@@ -51,7 +60,7 @@
 
         <div>
             <label for='phone-number'>Phone Number:</label>
-            <input type="tel" id="phone-number" name="phone_number" placeholder="+44784681524" pattern="[0-9]{10}">
+            <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926  pattern="[0-9]{10}">
         </div>
 
         <br>
@@ -72,31 +81,26 @@
         
         <br>
         
-        <div>
-            <label for ='VerificationCode'>Verification Code:</label>
-            <input type = 'number' id="verification_code" name="verification_code" required>
-        </div>
-
+        <label for="verification-code">Verification Code:</label>
+        <input type="text" id="verification-code" name="verification-code" required><br><br>
+        
+        <button type="submit" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
         <br>
-
-        <div>
-            <button type="submit" formaction="{{ url_for('routes.verification') }}"> Send Verification Email </button>
-        </div>
-
-        <br>
-
-        <div>
-            <input type="reset">
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit"> Submit </button>
-        </div>            
+        
+        <button type="submit" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
 
     </form> 
-    <!-- This block of scripts is for the Nikah and Service forms which have the CVC/Cash selection field-->
+    <div id="responseMessage">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
     {% block scripts %} {% endblock %}       
 </body>    
 </html>
