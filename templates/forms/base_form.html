@@ -5,6 +5,7 @@
 
     <title> {%block title%}{%endblock%} </title>
     {% block style %} {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 <!-- Below is the script for allowing the user to press the 'send verification email' without having the input box for 'verification code' (it skips the input box)
@@ -60,7 +61,7 @@
 
         <div>
             <label for='phone-number'>Phone Number:</label>
-            <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926  pattern="[0-9]{10}">
+            <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926"  pattern="[0-9]{10}">
         </div>
 
         <br>
@@ -95,7 +96,7 @@
             {% if messages %}
                 <ul>
                     {% for category, message in messages %}
-                        <li>{{ message }}</li>
+                        <h4>{{ message }}</h4>
                     {% endfor %}
                 </ul>
             {% endif %}

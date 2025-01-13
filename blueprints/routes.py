@@ -74,6 +74,12 @@ def verification():
         email = request.form['email']
     print(email)
 
+    referrer = request.referrer  # The URL that made the request (previous page URL)
+    current_url = request.url  # The URL of the current request
+
+
+    print(f'{referrer} and {current_url}')    
+
     checking_email = Verification(email= email)
     verification_number = checking_email.send_verification_email()
     
@@ -81,7 +87,7 @@ def verification():
     
     flash('Email sent successfully!', 'success')
 
-    return redirect(url_for('routes.index'))
+    return redirect(referrer)
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
