@@ -5,98 +5,108 @@
 
     <title> {%block title%}{%endblock%} </title>
     {% block style %} {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
+<!-- Below is the script for allowing the user to press the 'send verification email' without having the input box for 'verification code' (it skips the input box)
+ being required. However it will add the required attribute should the user try and submit the entire form-->
+<script>
+    function validateForm(e) {
+        var VerificationCode = document.getElementById('verification-code');
+        var submitButton = e.target;
+
+        if (submitButton.name === 'verification-email') {
+            VerificationCode.removeAttribute('required');
+        } else {
+            VerificationCode.setAttribute('required', 'required');
+        }
+    }
+</script>
 
 <body style="background-color: rgb(222, 211, 184);">
 
     <h1> {%block head%} {%endblock%} </h1>
-    <!-- Below is where a flash message from Flask is displayed should any bookings clash. 
-     [In future will also sebd successful booking message??]-->
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <h3>{{ message }}</h3>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+    
+    <div>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <ul>
+                {% for category, message in messages %}
+                    <h3>{{ message }}</h3>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}        
+    </div>
 
-    <!-- Since this is our base form, formId and actionUrl is filled in when the user visits the booking form page.
-     all the blocks are  overrided in the child templates -->
+    <div>
+        <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
-    <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
-
-        <div>
+            
             <label for='first-name'>{%block label1 %}{%endblock%}</label>
             <input type = 'text' id="first-name" name="first_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
-        </div>
+            
 
-        <br>
+            <br>
 
-        <div>
+            
             <label for='last-name'>{%block label2%} {%endblock%}</label>
             <input type = 'text' id= "last-name" name="last_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
-        </div>
+            
 
-        <br>
-        
-        <div>
+            <br>
+            
+            
             <label for ='email'> Email: </label>
             <input type="email" id="email" name="email" placeholder="youremail@gmail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
-        </div>
 
-        <br>
+            <br>
 
-        <div>
+
             <label for='phone-number'>Phone Number:</label>
-            <input type="tel" id="phone-number" name="phone_number" placeholder="+44784681524" pattern="[0-9]{10}">
-        </div>
+            <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926"  pattern="[0-9]{10}">
 
-        <br>
 
-        {% block content %} {%endblock%}
-        
-        <div>
+            <br>
+
+            {% block content %} {%endblock%}
+            
+
             <label for=" date"> Date of Booking: </label>
             <input type="date" id="date" name="date" min="2024-01-02" max="2030-01-01" required>
-        </div>
 
-        <br>
 
-        <div>
+            <br>
+
+
             <label for=" time"> Time of Booking: </label>
             <input type="time" id="time" name="time" step= "600" min="16:45:00" max="19:30:00" required>
-        </div>
-        
-        <br>
-        
-        <div>
-            <label for ='VerificationCode'>Verification Code:</label>
-            <input type = 'number' id="verification_code" name="verification_code" required>
-        </div>
+            
+            <br>
+            
+            <label for="verification-code">Verification Code:</label>
+            <input type="text" id="verification-code" name="verification-code" required><br><br>
+            
+            <button type="submit" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
+            <br>
+            
+            <button type="submit" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
 
-        <br>
+        </form> 
+    </div>
 
-        <div>
-            <button type="submit" formaction="{{ url_for('routes.verification') }}"> Send Verification Email </button>
-        </div>
-
-        <br>
-
-        <div>
-            <input type="reset">
-        </div>
-
-        <br>
-
-        <div>
-            <button type="submit"> Submit </button>
-        </div>            
-
-    </form> 
-    <!-- This block of scripts is for the Nikah and Service forms which have the CVC/Cash selection field-->
-    {% block scripts %} {% endblock %}       
+    <div id="responseMessage">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <h4>{{ message }}</h4>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    {% block scripts %} {% endblock %}
+           
 </body>    
 </html>
