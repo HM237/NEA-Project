@@ -72,8 +72,14 @@ def madrasah_booking():
 def verification():
     if request.method == 'POST':
         email = request.form['email']
-    print(email)
-
+        time = request.form["time"] 
+        date = request.form["date"]
+        #checking for any bookings that could clash using the class Clashed and then flashing the message
+        if Clashed.clashed(time, date):
+            print(f'this is the {time, date}')
+            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
+            return redirect(url_for('routes.addnikah'))
+    
     referrer = request.referrer  # The URL that made the request (previous page URL)
     current_url = request.url  # The URL of the current request
 
@@ -85,7 +91,7 @@ def verification():
     
     print(f'the verification is : {verification_number}')
     
-    flash('Email sent successfully!', 'success')
+    flash('Verification email sent successfully, please check your inbox!', 'success')
 
     return redirect(referrer)
 

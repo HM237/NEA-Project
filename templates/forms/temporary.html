@@ -27,7 +27,7 @@
 
     <h1> {%block head%} {%endblock%} </h1>
     
-    <div>
+    <div id="responseMessage">
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
                 <ul>
@@ -95,17 +95,6 @@
         </form> 
     </div>
 
-    <div id="responseMessage">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul>
-                    {% for category, message in messages %}
-                        <h4>{{ message }}</h4>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-    </div>
     {% block scripts %} {% endblock %}
            
 </body>    

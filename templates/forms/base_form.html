@@ -24,7 +24,6 @@
 </script>
 
 <body style="background-color: rgb(222, 211, 184);">
-    </div>
 
     <nav>
         <ul>
@@ -32,47 +31,50 @@
             <li>
                 <a href="#"> Menu </a>
                 <ul class="dropdown">
-                    <li> <a href="templates/pages/nikah_page.html" > Nikah </a></li>
-                    <li> <a href="templates/pages/madrasah_page.html" > Madrasah </a></li>
-                    <li> <a href="templates/pages/service_page.html" > Service </a></li>
-                    <li> <a href="templates/pages/tours_page.html" > Tours </a></li>
-                    <li> <a href="templates/pages/aboutus_page.html" > About Us </a></li>
+                    <li> <a href="/nikah" > Nikah </a></li>
+                    <li> <a href="/madrasah" > Madrasah </a></li>
+                    <li> <a href="/service" > Service </a></li>
+                    <li> <a href="/tours" > Tours </a></li>
+                    <li> <a href="/about-us" > About Us </a></li>
                 </ul>
             </li>
         </ul>
     </nav>   
     
     <h1> {%block head%} {%endblock%} </h1>
+    
+    <div id="responseMessage">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <ul>
+                {% for category, message in messages %}
+                    <h3>{{ message }}</h3>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}        
+    </div>
 
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            <ul>
-            {% for category, message in messages %}
-                <h3>{{ message }}</h3>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-
+    <!--REMOVE ALL TESTING VALUE AFTER COMPLETION-->
     <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
         <div>
             <label for='first-name'>{%block label1 %}{%endblock%}</label>
-            <input type = 'text' id="first-name" name="first_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <input type = 'text' id="first-name" name="first_name" value="Testing Value" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
         <br>
 
         <div>
             <label for='last-name'>{%block label2%} {%endblock%}</label>
-            <input type = 'text' id= "last-name" name="last_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <input type = 'text' id= "last-name" name="last_name" value="Testing Value" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
         </div>
 
         <br>
         
         <div>
             <label for ='email'> Email: </label>
-            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
+            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" value="verificationmasjidalansar@proton.me" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
         </div>
 
         <br>
@@ -101,25 +103,14 @@
         <br>
         
         <label for="verification-code">Verification Code:</label>
-        <input type="text" id="verification-code" name="verification-code" required><br><br>
+        <input type="text" id="verification-code" name="verification-code" ><br><br>
         
         <button type="submit" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
         <br>
         
         <button type="submit" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
 
-    </form> 
-    <div id="responseMessage">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul>
-                    {% for category, message in messages %}
-                        <h4>{{ message }}</h4>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-    </div>
+    </form>
     {% block scripts %} {% endblock %}       
 </body>    
 </html>
