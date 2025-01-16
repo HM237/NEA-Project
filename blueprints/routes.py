@@ -70,6 +70,9 @@ def madrasah_booking():
 #Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
 def verification():
+    referrer = request.referrer  # The URL that made the request (previous page URL)
+    current_url = request.url  # The URL of the current request
+
     if request.method == 'POST':
         email = request.form['email']
         time = request.form["time"] 
@@ -78,12 +81,7 @@ def verification():
         if Clashed.clashed(time, date):
             print(f'this is the {time, date}')
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
-            return redirect(url_for('routes.addnikah'))
-    
-    referrer = request.referrer  # The URL that made the request (previous page URL)
-    current_url = request.url  # The URL of the current request
-
-
+            return redirect(referrer)
 
     checking_email = Verification(email= email)
     verification_number = checking_email.send_verification_email()
@@ -91,8 +89,7 @@ def verification():
     
     flash('Verification email sent successfully, please check your inbox!', 'success')
 
-    return redirect(referrer)
-
+    return render_template("email.html")
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
