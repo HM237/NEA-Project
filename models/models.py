@@ -93,7 +93,7 @@ class Clashed:
                         exists = True
                         break
                 except Exception as e:
-                    print(e)
+                    errors = e
         return exists
 
 #Verification class which will execute the verification processs
@@ -108,7 +108,7 @@ class Verification:
         receiver_email = f'{self.email}'
     
         if sender_email:
-            print(f'Successful retrieved sender email')
+            print(f'Successfully retrieved sender email')
 
         # Create the message object
         msg = MIMEMultipart()
@@ -131,7 +131,7 @@ class Verification:
         <body>
             <h1 style="font-size: 30px;">Masjid Al-Ansar Verification Code!</h1>
             <p style="font-size: 18px;">Hello,<br>
-            Please use the verification code below for your booking at Masjid Al-Ansar. The code will be valid for 15 seconds. Make sure you don't share it with anyone. </p>
+            Please use the verification code below for your booking at Masjid Al-Ansar. The code will be valid for 2 minutes.</p>
             
             <p style="font-size: 20px; font-weight: bold;">Verification Code: {verification_number}</p>
             
@@ -158,7 +158,7 @@ class Verification:
             print("Email sent successfully!")
 
         except Exception as e:
-            print(f"Error: {e}")
+            error = "Error: {e}"
         finally:
             server.quit()
         return verification_number 
