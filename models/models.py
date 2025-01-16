@@ -100,12 +100,14 @@ class Clashed:
 class Verification:
     def __init__(self, email):
         self.email = email
+        print(f'in models the email is: {self.email}')
     
     def send_verification_email(self):
         #using os so that personal details aren't shown
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
         receiver_email = f'{self.email}'
+        print(f'this is the receiver email: {receiver_email}')
     
         if sender_email:
             print(f'Successfully retrieved sender email')

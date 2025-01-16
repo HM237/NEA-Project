@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from models import User, Nikah, Madrasah,Payment, Clashed, Verification
 import sqlite3
 
@@ -72,19 +72,32 @@ def madrasah_booking():
 def verification():
     referrer = request.referrer  # The URL that made the request (previous page URL)
     current_url = request.url  # The URL of the current request
+    verification_number = None
 
     if request.method == 'POST':
-        email = request.form['email']
-        time = request.form["time"] 
-        date = request.form["date"]
+        email = request.form.get('email')
+        time = request.form.get('time')
+        date = request.form.get('date')
+        print(f'this is the time {time} and {date}\nand email: {email}')
+        
+        #email = request.form['email']
+        #time = request.form["time"] 
+        #date = request.form["date"]
+
         #checking for any bookings that could clash using the class Clashed and then flashing the message
         if Clashed.clashed(time, date):
-            print(f'this is the {time, date}')
-            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
-            return redirect(referrer)
+            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
+        else:
+            #sends the user's email to the class Verification
+            user_email = Verification(email= email)
+            #send both the email and is given the verification number that was sent to user
+            verification_number = user_email.send_verification_email()
+            return jsonify({"message": f"Verification email sent successfully, please check your inbox!'"})
 
-    checking_email = Verification(email= email)
-    verification_number = checking_email.send_verification_email()
+
+#    checking_email = Verification(email= email)
+#    verification_number = checking_email.send_verification_email()
+    print(f'this is the verification_number: {verification_number}')
     
     
     flash('Verification email sent successfully, please check your inbox!', 'success')
@@ -149,8 +162,6 @@ def addmadrasah():
         time = request.form["time"]
         date = request.form["date"]
         #checking for any bookings that could clash
-        print(f'the result is : {Clashed.clashed(time,date)}')
-
         if Clashed.clashed(time, date):
             flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'clashed')
             return redirect(url_for('routes.addmadrasah'))
