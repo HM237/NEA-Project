@@ -84,12 +84,10 @@ def verification():
     current_url = request.url  # The URL of the current request
 
 
-    print(f'{referrer} and {current_url}')    
 
     checking_email = Verification(email= email)
     verification_number = checking_email.send_verification_email()
     
-    print(f'the verification is : {verification_number}')
     
     flash('Verification email sent successfully, please check your inbox!', 'success')
 
