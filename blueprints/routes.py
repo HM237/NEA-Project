@@ -198,3 +198,4 @@ def addmadrasah():
             return render_template("success.html")
     else:
         return redirect(url_for('routes.madrasah_booking'))    
+###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens
