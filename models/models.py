@@ -107,7 +107,6 @@ class Verification:
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
         receiver_email = f'{self.email}'
-        print(f'this is the receiver email: {receiver_email}')
     
         if sender_email:
             print(f'Successfully retrieved sender email')
