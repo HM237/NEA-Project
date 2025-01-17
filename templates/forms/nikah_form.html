@@ -101,22 +101,39 @@
             CVC.value = '';
         }
     }
-    // function which makes sure the user chooses card/cash
+
+    // function which makes sure the user chooses card/cash and validates all required fields
     function validateForm() {
+        const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
         const selectedOption = document.getElementById('payment_method').value;
         const CVC = document.getElementById('CVC');
-        
+        let missingFields = [];
+
+        // Validate payment option
         if (!selectedOption) {
             alert('Please select a payment option.');
             return false; 
         }
 
+        // Validate CVC if Card is selected
         if (selectedOption === 'CARD' && !CVC.value) {
-            alert('Please fill in the input field.');
-            return false; 
+            missingFields.push('CVC');
+        }
+
+        // Loop through all required fields and collect missing ones
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                missingFields.push(field.name);
+            }
+        });
+
+        if (missingFields.length > 0) {
+            alert(`Please fill in the following fields: ${missingFields.join(', ')}`);
+            return false;
         }
 
         return true;
     }
 </script>
+
 {%endblock%}
