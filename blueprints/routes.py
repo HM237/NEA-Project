@@ -92,7 +92,7 @@ def verification():
             user_email = Verification(email= email)
             #send both the email and is given the verification number that was sent to user
             verification_number = user_email.send_verification_email()
-            return jsonify({"message": f"Verification email sent successfully, please check your inbox!'"})
+            return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})
 
 
 #    checking_email = Verification(email= email)
@@ -111,8 +111,7 @@ def addnikah():
         date = request.form["date"]
         #checking for any bookings that could clash using the class Clashed and then flashing the message
         if Clashed.clashed(time, date):
-            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'error')
-            return redirect(url_for('routes.addnikah'))
+            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
             #retrieving data from the nikah_form             
             first_name = request.form["first_name"]
@@ -150,7 +149,7 @@ def addnikah():
             new_payment = Payment(user_id= user_id, post_code= post_code, address_line= address_line, CVC= cvc, payment_method= payment_method, price = price)
             new_payment.add_Payment()
                 
-            return render_template("success.html")
+            return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"})
     else:
         return redirect(url_for('routes.nikah_booking'))
 
@@ -163,8 +162,7 @@ def addmadrasah():
         date = request.form["date"]
         #checking for any bookings that could clash
         if Clashed.clashed(time, date):
-            flash(f'Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.', 'clashed')
-            return redirect(url_for('routes.addmadrasah'))
+            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         
         else:
             #retrieving data from the madrasah_form             
@@ -195,7 +193,7 @@ def addmadrasah():
             new_madrasah = Madrasah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add_Madrasah()  
                 
-            return render_template("success.html")
+            return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
     else:
         return redirect(url_for('routes.madrasah_booking'))    
 ###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens

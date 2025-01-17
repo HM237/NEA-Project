@@ -8,31 +8,45 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $(document).ready(function () {
-        $('#sendEmail').click(function (e) {
-          e.preventDefault();  // Prevent the form from submitting traditionally
-  
-          var formData = $('#{{ form_id }}').serialize();  // Collect form data
-  
-          $.ajax({
-            type: 'POST',
-            url: '/verification',  // Flask route that will handle the email
-            data: formData,
-            success: function (response) {
-              alert(response.message);  // Alert response message
-            },
-            error: function () {
-              alert('Error sending email');
-            }
-          });
+        $(document).ready(function () {
+            $('#sendEmail').click(function (e) {
+                e.preventDefault();  // Prevent the form from submitting traditionally
+    
+                var formData = $('#{{ form_id }}').serialize();  // Collect form data
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '/verification',  // Flask route that will handle the email
+                    data: formData,
+                    success: function (response) {
+                        alert(response.message);  // Alert response message
+                    },
+                    error: function () {
+                        alert('Error sending email');
+                    }
+                });
+            });
+    
+            $('#submitForm').click(function (e) {
+                e.preventDefault();  // Prevent the form from submitting traditionally
+    
+                var formData = $('#{{ form_id }}').serialize();  // Collect form data
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ action_url }}',  // Flask route that will handle the form submission
+                    data: formData,
+                    success: function (response) {
+                        alert(response.message);  // Alert response message
+                    },
+                    error: function () {
+                        alert('Error submitting form');
+                    }
+                });
+            });
         });
-  
-        $('#submitForm').click(function () {
-          $('#{{ form_id }}').submit();  // Submit the form normally for the other button
-        });
-      });
     </script>
-
+    
 </head>
 <!-- Below is the script for allowing the user to press the 'send verification email' without having the input box for 'verification code' (it skips the input box)
  being required. However it will add the required attribute should the user try and submit the entire form-->
