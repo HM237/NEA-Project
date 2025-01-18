@@ -98,15 +98,16 @@ class Clashed:
 
 #Verification class which will execute the verification processs
 class Verification:
-    def __init__(self, email):
+    def __init__(self, email, number):
         self.email = email
-        print(f'in models the email is: {self.email}')
+        self.number = number
     
     def send_verification_email(self):
         #using os so that personal details aren't shown
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
         receiver_email = f'{self.email}'
+        code = self.number
     
         if sender_email:
             print(f'Successfully retrieved sender email')
@@ -116,10 +117,7 @@ class Verification:
         msg['From'] = sender_email
         msg['To'] = receiver_email
         msg['Subject'] = "Verification Code"
-
-        #generating a random number
-        verification_number = random.randint(100000,999999)
-
+        
         #email
         html_content = f"""
         <!DOCTYPE html>
@@ -134,7 +132,7 @@ class Verification:
             <p style="font-size: 18px;">Hello,<br>
             Please use the verification code below for your booking at Masjid Al-Ansar. The code will be valid for 2 minutes.</p>
             
-            <p style="font-size: 20px; font-weight: bold;">Verification Code: {verification_number}</p>
+            <p style="font-size: 20px; font-weight: bold;">Verification Code: {code}</p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this code, someone else might be trying to use you email account.</p>
@@ -162,4 +160,4 @@ class Verification:
             error = "Error: {e}"
         finally:
             server.quit()
-        return verification_number 
+        return code ##we should probably change this line idk
