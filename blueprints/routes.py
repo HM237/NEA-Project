@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
-from models import User, Nikah, Madrasah,Payment, Clashed, Verification
+from models import User, Nikah, Madrasah,Payment, Clashed, Verification, Summary
 import sqlite3
 import random
 
@@ -159,6 +159,11 @@ def addnikah():
             #calling the class Payment to store the data for the Payment Table
             new_payment = Payment(user_id= user_id, post_code= post_code, address_line= address_line, CVC= cvc, payment_method= payment_method, price = price)
             new_payment.add_Payment()
+
+            #sending the summary email after inserting all data to database
+            user_email = Summary(email= email)
+            summary_email = user_email.send_summary_email()
+
                 
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #success message 
     else:
@@ -218,7 +223,11 @@ def addmadrasah():
             #calling the class Madrasah and storing the data for the Madrasah Table 
             new_madrasah = Madrasah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add_Madrasah()  
-                
+            
+            #sending the summary email after inserting all data to database    
+            user_email = Summary(email= email)
+            summary_email = user_email.send_summary_email()
+            
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
     else:
         return redirect(url_for('routes.madrasah_booking'))    

@@ -161,3 +161,66 @@ class Verification:
         finally:
             server.quit()
         return code ##we should probably change this line idk
+
+class Summary:
+    def __init__(self, email):
+        self.email = email
+    
+    def send_summary_email(self):
+        #using os so that personal details aren't shown
+        sender_email = os.environ.get('MY_EMAIL')
+        password = os.environ.get('MY_PASSWORD')
+        receiver_email = f'{self.email}'
+    
+        if sender_email:
+            print(f'Successfully retrieved sender email')
+
+        # Create the message object
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = "Summary Link"
+        
+        #email
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title> Summary Email </title>
+        </head>
+        <body>
+            <h1 style="font-size: 30px;">Masjid Al-Ansar Summary Email!</h1>
+            <p style="font-size: 18px;">Hello,<br>
+            Please use the below link to find a summary of your booking at Masjid Al-Ansar</p>
+            
+            <p style="font-size: 20px; font-weight: bold;">Summary: LINK</p>
+            
+            
+            <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>
+            <p style="font-size: 18px;">Thanks,<br> Masjid Al-Ansar Team </p>
+            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/about-us">Masjid Al-Ansar</a> </p>
+        </body>
+        </html>
+        """
+
+        # Attaching the HTML content to the message
+        msg.attach(MIMEText(html_content, 'html'))
+
+        # Connecting to the Gmail SMTP server and sending the email
+        try:
+            # Establishing a secure session with Gmail's SMTP server
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()  
+            server.login(sender_email, password)  
+
+            # Sending the email
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+            print("Email sent successfully!")
+
+        except Exception as e:
+            error = "Error: {e}"
+        finally:
+            server.quit()
+        return f'Success?'
