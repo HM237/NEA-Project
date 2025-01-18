@@ -70,8 +70,6 @@ def madrasah_booking():
 #Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
 def verification():
-    referrer = request.referrer  # The URL that made the request (previous page URL)
-    current_url = request.url  # The URL of the current request
     verification_number = None
 
     if request.method == 'POST':
@@ -79,10 +77,6 @@ def verification():
         time = request.form.get('time')
         date = request.form.get('date')
         print(f'this is the time {time} and {date}\nand email: {email}')
-        
-        #email = request.form['email']
-        #time = request.form["time"] 
-        #date = request.form["date"]
 
         #checking for any bookings that could clash using the class Clashed and then flashing the message
         if Clashed.clashed(time, date):
@@ -92,6 +86,7 @@ def verification():
             user_email = Verification(email= email)
             #send both the email and is given the verification number that was sent to user
             verification_number = user_email.send_verification_email()
+            print(f'verification number is : {verification_number}')
             return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})
 
 
