@@ -220,7 +220,7 @@ class Summary:
             print("Email sent successfully!")
 
         except Exception as e:
-            error = "Error: {e}"
+            error = f"Error: {e}"
         finally:
             server.quit()
         return f'Success?'
