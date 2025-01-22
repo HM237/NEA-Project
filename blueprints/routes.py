@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
-from models import User, Nikah, Madrasah,Payment, Clashed, Verification, Summary
+from models import User, Nikah, Madrasah,Payment, Clashed, Email
 import sqlite3
 import random
 
@@ -85,7 +85,7 @@ def verification():
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
             #sends the user's email and the random number we generate to the class Verification
-            user_email = Verification(email= email, number = random_number)
+            user_email = Email(email= email, number = random_number)
             #sending the email containg the verification code.
             verification_number = user_email.send_verification_email()
             return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})
@@ -161,7 +161,7 @@ def addnikah():
             new_payment.add_Payment()
 
             #sending the summary email after inserting all data to database
-            user_email = Summary(email= email)
+            user_email = Email(email= email)
             summary_email = user_email.send_summary_email()
 
                 

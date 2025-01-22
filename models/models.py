@@ -97,7 +97,7 @@ class Clashed:
         return exists
 
 #Verification class which will execute the verification processs
-class Verification:
+class Email:
     def __init__(self, email, number):
         self.email = email
         self.number = number
@@ -161,10 +161,6 @@ class Verification:
         finally:
             server.quit()
         return code ##we should probably change this line idk
-
-class Summary:
-    def __init__(self, email):
-        self.email = email
     
     def send_summary_email(self):
         #using os so that personal details aren't shown
