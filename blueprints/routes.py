@@ -225,7 +225,7 @@ def addmadrasah():
             new_madrasah.add_Madrasah()  
             
             #sending the summary email after inserting all data to database    
-            user_email = Summary(email= email)
+            user_email = Email(email= email)
             summary_email = user_email.send_summary_email()
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
