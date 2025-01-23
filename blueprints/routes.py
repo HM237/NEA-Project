@@ -144,7 +144,7 @@ def addnikah():
             new_user.add_User()
             
             #retrieving the correct coressponding UserID 
-            connection = sqlite3.connect('test2.db')
+            connection = sqlite3.connect('database.db')
             cursor = connection.cursor()
             cursor.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
             result = cursor.fetchone()
@@ -212,7 +212,7 @@ def addmadrasah():
             new_user.add_User()
             
             #retrieving the correct coressponding UserID 
-            connection = sqlite3.connect('test2.db')
+            connection = sqlite3.connect('database.db')
             cursor = connection.cursor()
             cursor.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
             result = cursor.fetchone()
