@@ -84,10 +84,10 @@ def verification():
         if Clashed.clashed(time, date):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
-            #sends the user's email and the random number we generate to the class Verification
+            #sends the user's email and the random number we generate to the class Email
             user_email = Email(email= email, number = random_number)
             #sending the email containg the verification code.
-            verification_number = user_email.send_verification_email()
+            verification_email = user_email.send_verification_email()
             return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})
 
     

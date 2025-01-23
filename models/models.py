@@ -95,7 +95,7 @@ class Clashed:
                     errors = e
         return exists
 
-#Verification class which will execute the verification processs
+#Email class which will execute the verification processs
 class Email:
     def __init__(self, email, number):
         self.email = email
