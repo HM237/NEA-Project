@@ -189,7 +189,8 @@ def addmadrasah():
         
         else:
             verification_code = request.form["verification-code"]
-            if int(verification_code) != random_number:
+            #checks the verification code is all numbers/ if it even is the right code
+            if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
                 return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"})
             else:
                 session.pop('random_number', None)
@@ -225,7 +226,7 @@ def addmadrasah():
             new_madrasah.add_Madrasah()  
             
             #sending the summary email after inserting all data to database    
-            user_email = Email(email= email)
+            user_email = Email(email= email, number=True)
             summary_email = user_email.send_summary_email()
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
