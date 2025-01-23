@@ -1,7 +1,6 @@
 import sqlite3
 import os
 import smtplib
-import  random
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
