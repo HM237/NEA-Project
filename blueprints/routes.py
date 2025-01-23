@@ -93,7 +93,7 @@ def verification():
 
     
 
-    return render_template("email.html")
+    return render_template("pages/tours_page.html")
 
 
 
