@@ -2,14 +2,6 @@
 
 {% block title %} Nikah Booking {% endblock %}
 
-{% block style %}
-<style>
-    .hidden {
-        display: none;
-    }
-</style>
-{% endblock %}
-
 {% block head %} Nikah Form {% endblock %}
 
 {%block label1 %} First Name of Organiser: {%endblock%}
@@ -74,62 +66,22 @@
         <option value="CARD">CARD</option>
         <option value="CASH">CASH</option>
     </select>
-    
-    <div id="CardVerificationCode" class="hidden">
-        <br>
-        <label for="CVC">CVC required:</label>
-        <input type="number" id="CVC" name="CVC">
-    </div>
 </div>
 
 <br>
 {%endblock%}
 {%block scripts %} 
 <script>
-    // function which makes sure the user type the CVC upon choosing Card
-    function toggleInput() {
-        const CardVerificationCode = document.getElementById('CardVerificationCode');
-        const selectedOption = document.getElementById('payment_method').value;
-        const CVC = document.getElementById('CVC');
-
-        if (selectedOption === 'CARD') {
-            CardVerificationCode.style.display = 'block';
-            CVC.required = true;
-        } else {
-            CardVerificationCode.style.display = 'none';
-            CVC.required = false;
-            CVC.value = '';
-        }
-    }
-
     // function which makes sure the user chooses card/cash and validates all required fields
     function validateForm() {
         const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
         const selectedOption = document.getElementById('payment_method').value;
-        const CVC = document.getElementById('CVC');
         let missingFields = [];
 
         // Validate payment option
         if (!selectedOption) {
             alert('Please select a payment option.');
             return false; 
-        }
-
-        // Validate CVC if Card is selected
-        if (selectedOption === 'CARD' && !CVC.value) {
-            missingFields.push('CVC');
-        }
-
-        // Loop through all required fields and collect missing ones
-        requiredFields.forEach(field => {
-            if (!field.value) {
-                missingFields.push(field.name);
-            }
-        });
-
-        if (missingFields.length > 0) {
-            alert(`Please fill in the following fields: ${missingFields.join(', ')}`);
-            return false;
         }
 
         return true;

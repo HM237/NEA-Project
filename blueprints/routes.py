@@ -3,6 +3,7 @@ from models import User, Nikah, Madrasah,Payment, Clashed, Email
 import sqlite3
 import random
 
+
 bp = Blueprint('routes', __name__)
 
 #Route to the Home Page
@@ -133,7 +134,6 @@ def addnikah():
             post_code = request.form["post_code"]            
             address_line = request.form["address_line"]             
             payment_method = request.form.get('payment_method')            
-            cvc = request.form["CVC"]
             price = 130
 
             ### print statement to print all the form details
@@ -157,11 +157,11 @@ def addnikah():
             new_nikah.add_Nikah()  
             
             #calling the class Payment to store the data for the Payment Table
-            new_payment = Payment(user_id= user_id, post_code= post_code, address_line= address_line, CVC= cvc, payment_method= payment_method, price = price)
+            new_payment = Payment(user_id= user_id, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
             new_payment.add_Payment()
 
             #sending the summary email after inserting all data to database
-            user_email = Email(email= email)
+            user_email = Email(email= email, number= True)
             summary_email = user_email.send_summary_email()
 
                 

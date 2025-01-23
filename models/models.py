@@ -56,19 +56,18 @@ class Madrasah:
 
 #Payment class which inserts into Payment Table
 class Payment:
-    def __init__(self, user_id,post_code, address_line,payment_method, CVC, price):
+    def __init__(self, user_id,post_code, address_line,payment_method, price):
         self.user_id = user_id
         self.post_code = post_code
         self.address_line = address_line
         self.payment_method = payment_method
-        self.CVC = CVC
         self.price = price
 
 
     def add_Payment(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,CVC, Price) VALUES (?,?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.CVC, self.price))
+             cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,Price) VALUES (?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.price))
              conn.commit()
 
 
