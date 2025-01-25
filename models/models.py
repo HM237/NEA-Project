@@ -82,7 +82,7 @@ class Clashed:
         exists = False
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            tables = ['Nikah', 'Madrasah', 'Service']
+            tables = ['Nikah', 'Madrasah', 'Function']
             for table in tables:
                 cursor.execute(f'SELECT * FROM User u JOIN {table} t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"')
                 try:
