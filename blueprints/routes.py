@@ -6,6 +6,21 @@ import random
 
 bp = Blueprint('routes', __name__)
 
+#Route to the Temporary Page
+@bp.route('/temporary')
+def temporary():
+    try:
+        connection = sqlite3.connect("database.db")
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute("SELECT UserID, * FROM User WHERE UserId = 1")
+        rows = cursor.fetchall()
+        connection.close()
+        # Send the results of the SELECT to the list.html page
+        return render_template("tables/list.html",rows=rows)
+    except:
+        print(f'error')
+
 #Route to the Home Page
 @bp.route('/')
 def index():
@@ -16,13 +31,6 @@ def index():
 def aboutus_page():
     return render_template("pages/aboutus_page.html")
 
-
-#Route to the Temporary Page
-@bp.route('/temporary')
-def temporary():
-    form_id = "NikahForm"
-    action_url = url_for('routes.addnikah')
-    return render_template("forms/temporary.html", form_id=form_id, action_url=action_url)
 
 #Route to the FAQ Page
 @bp.route('/faq')
@@ -115,7 +123,7 @@ def addnikah():
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
             #now verifying if the user submiited the right verification code
-            verification_code = request.form["verification-code"]
+            verification_code = request.form["verification_code"]
             if int(verification_code) != random_number:
                 return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
             else:
