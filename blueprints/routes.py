@@ -123,7 +123,7 @@ def addnikah():
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
             #now verifying if the user submiited the right verification code
-            verification_code = request.form["verification_code"]
+            verification_code = request.form["verification-code"]
             if int(verification_code) != random_number:
                 return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
             else:
