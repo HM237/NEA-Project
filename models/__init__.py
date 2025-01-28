@@ -1,1 +1,1 @@
-from .models import User, Nikah, Payment, Clashed, Madrasah, Email
+from .models import User, Nikah, Payment, Clashed, Madrasah, Email, Hash

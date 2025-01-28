@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -79,7 +80,7 @@ class Clashed:
     
     @classmethod
     def clashed(cls, time, date):
-        exists = False
+        exists = False #assumes that the time and date has not already been booked
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             tables = ['Nikah', 'Madrasah', 'Function']
@@ -88,11 +89,31 @@ class Clashed:
                 try:
                     result = cursor.fetchone()[0] > 0
                     if result:
-                        exists = True
+                        exists = True #if it does exist we return True
                         break
                 except Exception as e:
                     errors = e
         return exists
+
+class Hash:    
+    def __init__(self, time,date):
+        self.time = time 
+        self.date = date
+
+    @classmethod
+    def hash_algorithm(self, time,date):
+        string = f'{date}{time}'
+        string = re.sub(r'[-:]', '', string)
+        arr = [0] * 20
+        hashed = ''
+        for index, character in enumerate(string):
+            ascii_value = ord(character)
+            for i in range (20):
+                value = ((arr[i] + ascii_value * (index + 1) + i ) * 17) % 256 
+                arr[i] = value
+        for byte in arr:
+            hashed += format(byte, '02x')
+        return hashed
 
 #Email class which will execute the verification processs
 class Email:
@@ -165,7 +186,8 @@ class Email:
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
         receiver_email = f'{self.email}'
-    
+        link  = self.number
+
         if sender_email:
             print(f'Successfully retrieved sender email')
 
@@ -189,7 +211,7 @@ class Email:
             <p style="font-size: 18px;">Hello,<br>
             Please use the below link to find a summary of your booking at Masjid Al-Ansar</p>
             
-            <p style="font-size: 20px; font-weight: bold;">Summary: LINK</p>
+            <p style="font-size: 20px; font-weight: bold;">Summary: {link}</p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>

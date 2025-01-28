@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
-from models import User, Nikah, Madrasah,Payment, Clashed, Email
+from models import User, Nikah, Madrasah,Payment, Clashed, Email, Hash
 import sqlite3
 import random
 
@@ -234,7 +234,7 @@ def addmadrasah():
             new_madrasah.add_Madrasah()  
             
             #sending the summary email after inserting all data to database    
-            user_email = Email(email= email, number=True)
+            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date)))
             summary_email = user_email.send_summary_email()
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
