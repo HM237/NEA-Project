@@ -102,22 +102,27 @@ class Hash:
 
     @classmethod
     def hash_algorithm(self, time,date,id):
+        #joining the time and date and removing : -
         string = f'{date}{time}'
         string = re.sub(r'[-:]', '', string)
         print(f'this is the id {id}')
-        arr = [0] * 20
+        arr = [0] * 20 #creating a 160 bit array
         digest = ''
         for index, character in enumerate(string):
             ascii_value = ord(character)
             for i in range (20):
-                value = ((arr[i] + ascii_value * (index + 1) + i ) * 17) % 256 
+                value = ((arr[i] + ascii_value * (index + 1) + i ) * 17) % 256  #multiplying by 17 makes the pattern more random
                 arr[i] = value
         for byte in arr:
-            digest += format(byte, '02x')
+            digest += format(byte, '02x') #converting it into hexadecimal
+
+        #storing the digest in the Hash Table along with UserID,Time and Date
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (id, digest, time, date))
             conn.commit()
+            
+        #returning the digest to the route
         return digest
 
 #Email class which will execute the verification processs
