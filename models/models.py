@@ -101,19 +101,24 @@ class Hash:
         self.date = date
 
     @classmethod
-    def hash_algorithm(self, time,date):
+    def hash_algorithm(self, time,date,id):
         string = f'{date}{time}'
         string = re.sub(r'[-:]', '', string)
+        print(f'this is the id {id}')
         arr = [0] * 20
-        hashed = ''
+        digest = ''
         for index, character in enumerate(string):
             ascii_value = ord(character)
             for i in range (20):
                 value = ((arr[i] + ascii_value * (index + 1) + i ) * 17) % 256 
                 arr[i] = value
         for byte in arr:
-            hashed += format(byte, '02x')
-        return hashed
+            digest += format(byte, '02x')
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (id, digest, time, date))
+            conn.commit()
+        return digest
 
 #Email class which will execute the verification processs
 class Email:
