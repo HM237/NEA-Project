@@ -131,13 +131,13 @@ class Email:
         if sender_email:
             print(f'Successfully retrieved sender email')
 
-        # Create the message object
+        # Creating the message object
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
         msg['Subject'] = "Verification Code"
         
-        #email
+        #email content itself
         html_content = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -161,7 +161,7 @@ class Email:
         </html>
         """
 
-        # Attaching the HTML content to the message
+        # Attaching the content to the email itself
         msg.attach(MIMEText(html_content, 'html'))
 
         # Connecting to the Gmail SMTP server and sending the email
@@ -191,13 +191,13 @@ class Email:
         if sender_email:
             print(f'Successfully retrieved sender email')
 
-        # Create the message object
+        # Creating the message object
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
         msg['Subject'] = "Summary Link"
         
-        #email
+        #the email itself
         html_content = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -209,9 +209,9 @@ class Email:
         <body>
             <h1 style="font-size: 30px;">Masjid Al-Ansar Summary Email!</h1>
             <p style="font-size: 18px;">Hello,<br>
-            Please use the below link to find a summary of your booking at Masjid Al-Ansar</p>
+            Please click the below link to find a summary of your booking at Masjid Al-Ansar</p>
             
-            <p style="font-size: 20px; font-weight: bold;">Summary: {link}</p>
+            <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/{link}">Click This</a> </p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>
@@ -221,7 +221,7 @@ class Email:
         </html>
         """
 
-        # Attaching the HTML content to the message
+        # Attaching the content to the email itself
         msg.attach(MIMEText(html_content, 'html'))
 
         # Connecting to the Gmail SMTP server and sending the email

@@ -240,4 +240,20 @@ def addmadrasah():
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
     else:
         return redirect(url_for('routes.madrasah_booking'))    
+
+@bp.route('/booking/<digest>')
+def booking(digest):
+    try:
+        connection = sqlite3.connect("database.db")
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute("SELECT UserID, * FROM User WHERE UserId = 1")
+        rows = cursor.fetchall()
+        connection.close()
+        # Send the results of the SELECT to the list.html page
+        return render_template("tables/list.html",digest = digest,rows=rows)
+    except:
+        print(f'error')
+    return f"Booking details for: {digest}"
+
 ###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens
