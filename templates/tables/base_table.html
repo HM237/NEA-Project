@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, intial-scale=1"> 
      
-       <title>Booking</title> 
+       <title>{%block title%}{%endblock%}</title> 
        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
 
@@ -29,7 +29,7 @@
                 </li>
             </ul>
         </nav>
-        <h1>Your booking "{{ digest }}" </h1>
+        <h1>{%block head%} {%endblock%} </h1>
 
         </div>
 
@@ -37,11 +37,12 @@
         <table class="center"    border="1px">
             <thead>
                 <td><strong>User ID</strong></td>
-                <td><strong>First Name</strong></td>
-                <td><strong>Last Name</strong></td>
+                <td><strong>{%block label1 %} {%endblock%}</strong></td>
+                <td><strong>{%block label2 %} {%endblock%}</strong></td>
                 <td><strong>Email</strong></td>
                 <td><strong>PhoneNumber</strong></td>
                 <td><strong>DoB</strong></td>
+                {%block content %} {%endblock%}    
                 <td></td>
                 <td></td>
             </thead>
@@ -54,6 +55,15 @@
                 <td>{{ row["Email"] }}</td>
                 <td>{{ row["PhoneNumber"] }}</td>
                 <td>{{ row["DoB"] }}</td>
+                <td>{{ row["GroomFirstName"] }}</td>
+                <td>{{ row["GroomLastName"] }}</td>
+                <td>{{ row["BrideFirstName"] }}</td>
+                <td>{{ row["BrideLastName"] }}</td>
+                <td>{{ row["AddressLine"] }}</td>
+                <td>{{ row["Postcode"] }}</td>
+                <td>{{ row["PaymentMethod"] }}</td>
+
+
                 <td><form action="{{url_for('routes.addnikah')}}" method="POST"><input type="hidden" name="id" value="{{ row['rowid'] }}"><input type="submit" value="Edit"></form> </td>
             </tr>
             {% endfor %}

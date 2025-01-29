@@ -13,13 +13,13 @@ def temporary():
         connection = sqlite3.connect("database.db")
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
-        cursor.execute("SELECT UserID, * FROM User WHERE UserId = 1")
+        cursor.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID = 93")
         rows = cursor.fetchall()
         connection.close()
         # Send the results of the SELECT to the list.html page
-        return render_template("tables/list.html",rows=rows)
+        return render_template("tables/nikah_table.html",rows=rows)
     except:
-        print(f'error')
+        print(f'error')          
 
 #Route to the Home Page
 @bp.route('/')
