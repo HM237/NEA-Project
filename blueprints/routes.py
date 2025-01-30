@@ -9,17 +9,7 @@ bp = Blueprint('routes', __name__)
 #Route to the Temporary Page
 @bp.route('/temporary')
 def temporary():
-    try:
-        connection = sqlite3.connect("database.db")
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID = 93")
-        rows = cursor.fetchall()
-        connection.close()
-        # Send the results of the SELECT to the list.html page
-        return render_template("tables/nikah_table.html",rows=rows)
-    except:
-        print(f'error')          
+    return render_template("tables/base_table.html")
 
 #Route to the Home Page
 @bp.route('/')
@@ -243,17 +233,6 @@ def addmadrasah():
 
 @bp.route('/booking/<digest>')
 def booking(digest):
-    try:
-        connection = sqlite3.connect("database.db")
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        cursor.execute("SELECT UserID, * FROM User WHERE UserId = 1")
-        rows = cursor.fetchall()
-        connection.close()
-        # Send the results of the SELECT to the list.html page
-        return render_template("tables/list.html",digest = digest,rows=rows)
-    except:
-        print(f'error')
     return f"Booking details for: {digest}"
 
 ###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens
