@@ -41,32 +41,12 @@
                 <td><strong>{%block label2 %} {%endblock%}</strong></td>
                 <td><strong>Email</strong></td>
                 <td><strong>PhoneNumber</strong></td>
-                <td><strong>DoB</strong></td>
-                {%block content %} {%endblock%}    
+                <td><strong>DoB</strong></td>  
+                {%block content%}{%endblock%}
                 <td></td>
                 <td></td>
             </thead>
-
-            {% for row in rows %}
-            <tr>
-                <td>{{ row["UserID"] }}</td>
-                <td>{{ row["FirstName"] }}</td>
-                <td> {{ row["LastName"]}}</td>
-                <td>{{ row["Email"] }}</td>
-                <td>{{ row["PhoneNumber"] }}</td>
-                <td>{{ row["DoB"] }}</td>
-                <td>{{ row["GroomFirstName"] }}</td>
-                <td>{{ row["GroomLastName"] }}</td>
-                <td>{{ row["BrideFirstName"] }}</td>
-                <td>{{ row["BrideLastName"] }}</td>
-                <td>{{ row["AddressLine"] }}</td>
-                <td>{{ row["PostCode"] }}</td>
-                <td>{{ row["PaymentMethod"] }}</td>
-
-
-                <td><form action="{{url_for('routes.addnikah')}}" method="POST"><input type="hidden" name="id" value="{{ row['rowid'] }}"><input type="submit" value="Edit"></form> </td>
-            </tr>
-            {% endfor %}
+            {%block content2 %}{%endblock%}
         </table>
 
     

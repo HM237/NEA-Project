@@ -4,6 +4,8 @@
 {%block label1%} First Name of Organsier {%endblock%}
 {%block label2%} Last Name of Organsier {%endblock%}
 {%block content%}
+<td><strong>Time</strong></td>
+<td><strong>Date</strong></td>
 <td><strong>Groom First Name</strong></td>
 <td><strong>Groom Last Name</strong></td>
 <td><strong>Bride First Name</strong></td>
@@ -11,4 +13,30 @@
 <td><strong>Address Line</strong></td>
 <td><strong>Post Code</strong></td>
 <td><strong>Payment Method</strong></td>
+{%endblock%}
+{%block content2 %}
+
+{% for row in rows %}
+<tr>
+    <td>{{ row["UserID"] }}</td>
+    <td>{{ row["FirstName"] }}</td>
+    <td>{{ row["LastName"]}}</td>
+    <td>{{ row["Email"] }}</td>
+    <td>{{ row["PhoneNumber"] }}</td>
+    <td>{{ row["DoB"] }}</td>
+    <td>{{ row["Time"] }}</td>
+    <td>{{ row["Date"] }}</td>
+    <td>{{ row["GroomFirstName"] }}</td>
+    <td>{{ row["GroomLastName"] }}</td>
+    <td>{{ row["BrideFirstName"] }}</td>
+    <td>{{ row["BrideLastName"] }}</td>
+    <td>{{ row["AddressLine"] }}</td>
+    <td>{{ row["PostCode"] }}</td>
+    <td>{{ row["PaymentMethod"] }}</td>
+
+    <td><form action="{{url_for('routes.addnikah')}}" method="POST"><input type="hidden" name="id" value="{{ row['rowid'] }}"><input type="submit" value="Edit"></form> </td>
+</tr>
+{% endfor %}
+
+
 {%endblock%}
