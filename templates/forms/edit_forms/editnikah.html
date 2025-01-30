@@ -2,35 +2,61 @@
 {% block title %}
 Edit Your Nikah
 {% endblock %}
+{%block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div id="message"> </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#submitForm').click(function (e) {
+                e.preventDefault();  
+
+                var formData = $('#idk').serialize();  
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/editrec',  // Sending it to the appropriate route 
+                    data: formData,
+                    success: function (response) {
+                        alert(response.message); // Display message in the div
+                    },
+                    error: function () {
+                        alert('Error submitting form');
+                    }
+                });
+            });
+        });
+    </script>
+{%endblock%}
 {% block content %}
         <h1>Editing Your Nikah </h1>
         {% for row in rows %}
-        <form action="{{ url_for('routes.edit') }}" method="POST">
-            <br>UserID: <input disabled type="text" name="add" value="{{ row['UserID']}}"/><br>
+        <form id="idk" action="{{ url_for('routes.editnikahbooking') }}" method="POST">
+            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/><br>
 
-            <br>NikahID: <input disabled type="text" name="nm" value="{{ row['NikahID'] }}"/><br>
+            <input type="hidden" name="NikahID" value="{{ row['NikahID'] }}"/><br>
 
-            <br>First Name: <input type="text" name="add" value="{{row['FirstName']}}"/><br>
+            <br>First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
 
-            <br>Last Name: <input type="text" name="city" value="{{ row['LastName'] }}"/><br>
+            <br>Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
 
-            <br>Groom First Name: <input type="text" name="zip" value="{{ row['GroomFirstName'] }}"/><br>
+            <br>Groom First Name: <input type="text" name="groom_first_name" value="{{ row['GroomFirstName'] }}"/><br>
             
-            <br>Groom Last Name: <input type="text" name="zip" value="{{ row['GroomFirstName'] }}"/><br>
+            <br>Groom Last Name: <input type="text" name="groom_last_name" value="{{ row['GroomLastName'] }}"/><br>
 
-            <br>Bride First Name: <input type="text" name="zip" value="{{ row['BrideFirstName'] }}"/><br>
+            <br>Bride First Name: <input type="text" name="bride_first_name" value="{{ row['BrideFirstName'] }}"/><br>
 
-            <br>Bride Last Name: <input type="text" name="zip" value="{{ row['BrideLastName'] }}"/><br>
+            <br>Bride Last Name: <input type="text" name="bride_last_name" value="{{ row['BrideLastName'] }}"/><br>
 
-            <br>Address Line: <input type="text" name="zip" value="{{ row['AddressLine'] }}"/><br>
+            <br>Address Line: <input type="text" name="address_line" value="{{ row['AddressLine'] }}"/><br>
 
-            <br>Post Code: <input type="text" name="zip" value="{{ row['PostCode'] }}"/><br>
+            <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>
 
-            <br>Time: <input type="time" name="zip" value="{{ row['Time'] }}"/><br>
+            <br>Time: <input type="time" name="time" value="{{ row['Time'] }}"/><br>
 
-            <br>Date: <input type="date" name="zip" value="{{ row['Date'] }}"/><br>
+            <br>Date: <input type="date" name="date" value="{{ row['Date'] }}"/><br>
 
-            <br><input type="submit" value="Submit" /><br>
+            <br><input id="submitForm" type="submit" value="Submit" /><br>
         </form>
         {% endfor %}
 {% endblock %}

@@ -32,13 +32,26 @@ class Nikah:
         self.date = date
         self.post_code = post_code
         self.address_line = address_line
-
+    #this adds the data to the Nikah Table
     def add_Nikah(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
              cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,Time, Date, PostCode,AddressLine) VALUES (?,?,?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name, self.time, self.date, self.post_code, self.address_line))
 
              conn.commit()  
+    #this updates  a specific row in the Nikah Table
+    def update(self):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE Nikah
+            SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?, Time = ?, Date = ?, PostCode = ?, AddressLine = ?
+            WHERE UserID = ?
+            '''
+            parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name, self.time, self.date, self.post_code, self.address_line, self.user_id)
+            cursor.execute(query, parameters)
+            conn.commit()
+
 
 #Madrasah class which inserts into Madrasah Table
 class Madrasah:

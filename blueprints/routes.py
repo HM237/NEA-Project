@@ -13,7 +13,7 @@ def temporary():
     con.row_factory = sqlite3.Row
 
     cur = con.cursor()
-    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=93")
+    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=46")
 
     rows = cur.fetchall()
     con.close()
@@ -247,34 +247,61 @@ def booking(digest):
 def edit():
     if request.method == 'POST':
         try:
-            # Use the hidden input value of id from the form to get the rowid
-            id = request.form['id']
-            print(f'this was the id: {id}')
-            # Connect to the database and SELECT a specific rowid
-            con = sqlite3.connect("database.db")
-            con.row_factory = sqlite3.Row
-
-            cur = con.cursor()
-            cur.execute(f"SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID={id}")
-
-            rows = cur.fetchall()
+            userid = request.form['userid']
+            print(f'this was the id: {userid}')
+            connection = sqlite3.connect("database.db")
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            rows = cursor.fetchall()
         except:
-            id=None
+            userid=None
         finally:
-            con.close()
-            # Send the specific record of data to edit.html
+            connection.close()
             return render_template("forms/edit_forms/editnikah.html",rows=rows)
+
+@bp.route("/editrec", methods=['POST','GET'])
+def editnikahbooking():
+    print(f'hello')
+    # Data will be available from POST submitted by the form
+    if request.method == 'POST':
+        time = request.form["time"] 
+        date = request.form["date"]
+
+        #checking for any bookings that could clash using the class Clashed and then flashing the message
+        if Clashed.clashed(time, date):
+            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
+        else:            
+            #retrieving data from the edit nikah_form
+            userid = request.form["UserID"]
+            nikahid = request.form["NikahID"]
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]
+            groom_first_name = request.form["groom_first_name"]               
+            groom_last_name = request.form["groom_last_name"]               
+            bride_first_name = request.form["bride_first_name"]               
+            bride_last_name = request.form["bride_last_name"]               
+            post_code = request.form["post_code"]            
+            address_line = request.form["address_line"]   
+
+            #where we send the editing data i=to the update in the class Nikah
+            new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+            new_nikah.update()  
+
+            return jsonify({"message": f"CHANGE WAS SUCCESSFUL!!'"}) #success message 
+    else:
+        return redirect(url_for('routes.nikah_booking'))
 
 @bp.route("/delete", methods=['POST','GET'])
 def delete():
     if request.method == 'POST':
         try:
              # Use the hidden input value of id from the form to get the rowid
-            rowid = request.form['id']
+            userid = request.form['userid']
             # Connect to the database and DELETE a specific record based on rowid
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
-                    cur.execute("DELETE FROM students WHERE rowid="+rowid)
+                    cur.execute(F"DELETE FROM Nikah WHERE UserID={userid}")
 
                     con.commit()
                     msg = "Record successfully deleted from the database"
@@ -285,7 +312,7 @@ def delete():
         finally:
             con.close()
             # Send the transaction message to result.html
-            return render_template('result.html',msg=msg)
+            return jsonify({"message": f"DELETION WAS SUCCESSFUL!!'"}) #success message 
 
 
 
