@@ -9,7 +9,15 @@ bp = Blueprint('routes', __name__)
 #Route to the Temporary Page
 @bp.route('/temporary')
 def temporary():
-    return render_template("tables/base_table.html")
+    con = sqlite3.connect("database.db")
+    con.row_factory = sqlite3.Row
+
+    cur = con.cursor()
+    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=93")
+
+    rows = cur.fetchall()
+    con.close()
+    return render_template("tables/nikah_table.html", rows = rows)
 
 #Route to the Home Page
 @bp.route('/')
@@ -234,5 +242,51 @@ def addmadrasah():
 @bp.route('/booking/<digest>')
 def booking(digest):
     return f"Booking details for: {digest}"
+
+@bp.route("/edit", methods=['POST','GET'])
+def edit():
+    if request.method == 'POST':
+        try:
+            # Use the hidden input value of id from the form to get the rowid
+            id = request.form['id']
+            print(f'this was the id: {id}')
+            # Connect to the database and SELECT a specific rowid
+            con = sqlite3.connect("database.db")
+            con.row_factory = sqlite3.Row
+
+            cur = con.cursor()
+            cur.execute(f"SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID={id}")
+
+            rows = cur.fetchall()
+        except:
+            id=None
+        finally:
+            con.close()
+            # Send the specific record of data to edit.html
+            return render_template("forms/edit_forms/editnikah.html",rows=rows)
+
+@bp.route("/delete", methods=['POST','GET'])
+def delete():
+    if request.method == 'POST':
+        try:
+             # Use the hidden input value of id from the form to get the rowid
+            rowid = request.form['id']
+            # Connect to the database and DELETE a specific record based on rowid
+            with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute("DELETE FROM students WHERE rowid="+rowid)
+
+                    con.commit()
+                    msg = "Record successfully deleted from the database"
+        except:
+            con.rollback()
+            msg = "Error in the DELETE"
+
+        finally:
+            con.close()
+            # Send the transaction message to result.html
+            return render_template('result.html',msg=msg)
+
+
 
 ###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens

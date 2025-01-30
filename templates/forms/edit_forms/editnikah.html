@@ -1,0 +1,36 @@
+{% extends "pages/base_page.html" %}
+{% block title %}
+Edit Your Nikah
+{% endblock %}
+{% block content %}
+        <h1>Editing Your Nikah </h1>
+        {% for row in rows %}
+        <form action="{{ url_for('routes.edit') }}" method="POST">
+            <br>UserID: <input disabled type="text" name="add" value="{{ row['UserID']}}"/><br>
+
+            <br>NikahID: <input disabled type="text" name="nm" value="{{ row['NikahID'] }}"/><br>
+
+            <br>First Name: <input type="text" name="add" value="{{row['FirstName']}}"/><br>
+
+            <br>Last Name: <input type="text" name="city" value="{{ row['LastName'] }}"/><br>
+
+            <br>Groom First Name: <input type="text" name="zip" value="{{ row['GroomFirstName'] }}"/><br>
+            
+            <br>Groom Last Name: <input type="text" name="zip" value="{{ row['GroomFirstName'] }}"/><br>
+
+            <br>Bride First Name: <input type="text" name="zip" value="{{ row['BrideFirstName'] }}"/><br>
+
+            <br>Bride Last Name: <input type="text" name="zip" value="{{ row['BrideLastName'] }}"/><br>
+
+            <br>Address Line: <input type="text" name="zip" value="{{ row['AddressLine'] }}"/><br>
+
+            <br>Post Code: <input type="text" name="zip" value="{{ row['PostCode'] }}"/><br>
+
+            <br>Time: <input type="time" name="zip" value="{{ row['Time'] }}"/><br>
+
+            <br>Date: <input type="date" name="zip" value="{{ row['Date'] }}"/><br>
+
+            <br><input type="submit" value="Submit" /><br>
+        </form>
+        {% endfor %}
+{% endblock %}
