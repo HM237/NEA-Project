@@ -13,7 +13,7 @@ def temporary():
     con.row_factory = sqlite3.Row
 
     cur = con.cursor()
-    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=46")
+    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=64")
 
     rows = cur.fetchall()
     con.close()
@@ -149,25 +149,25 @@ def addnikah():
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
             new_user.add_User()
             
-            #retrieving the correct coressponding UserID 
-            connection = sqlite3.connect('database.db')
-            cursor = connection.cursor()
-            cursor.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
-            result = cursor.fetchone()
-            user_id = result[0]
-            connection.commit()
-            cursor.close()
+
+            with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
+                    result = cur.fetchone()
+                    userid = result[0]
+                    con.commit()
+                    cur.close()
             
             #calling the class Nikah to store the data for the Nikah Table
-            new_nikah = Nikah(user_id= user_id,groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line)
+            new_nikah = Nikah(user_id= userid,groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line)
             new_nikah.add_Nikah()  
             
             #calling the class Payment to store the data for the Payment Table
-            new_payment = Payment(user_id= user_id, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
+            new_payment = Payment(user_id= userid, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
             new_payment.add_Payment()
 
             #sending the summary email after inserting all data to database
-            user_email = Email(email= email, number= True)
+            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date, userid)))
             summary_email = user_email.send_summary_email()
 
                 
@@ -218,21 +218,20 @@ def addmadrasah():
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth)
             new_user.add_User()
             
-            #retrieving the correct coressponding UserID 
-            connection = sqlite3.connect('database.db')
-            cursor = connection.cursor()
-            cursor.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
-            result = cursor.fetchone()
-            user_id = result[0]
-            connection.commit()
-            cursor.close()
+            with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
+                    result = cur.fetchone()
+                    userid = result[0]
+                    con.commit()
+                    cur.close()
             
             #calling the class Madrasah and storing the data for the Madrasah Table 
-            new_madrasah = Madrasah(user_id= user_id, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
+            new_madrasah = Madrasah(user_id= userid, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add_Madrasah()  
             
             #sending the summary email after inserting all data to database    
-            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date, user_id)))
+            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date, userid)))
             summary_email = user_email.send_summary_email()
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
@@ -302,9 +301,8 @@ def delete():
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
                     cur.execute(F"DELETE FROM Nikah WHERE UserID={userid}")
-
+                    cur.execute(F"PRAGMA foreign_keys = OFF DELETE FROM Nikah WHERE UserID = {userid}")
                     con.commit()
-                    msg = "Record successfully deleted from the database"
         except:
             con.rollback()
             msg = "Error in the DELETE"
@@ -312,7 +310,7 @@ def delete():
         finally:
             con.close()
             # Send the transaction message to result.html
-            return jsonify({"message": f"DELETION WAS SUCCESSFUL!!'"}) #success message 
+            return render_template("pages/nikah_page")
 
 
 
