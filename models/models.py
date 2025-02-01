@@ -204,7 +204,7 @@ class Email:
             server.quit()
         return code ##we should probably change this line idk
     
-    def send_summary_email(self):
+    def send_summary_email(self, service):
         #using os so that personal details aren't shown
         sender_email = os.environ.get('MY_EMAIL')
         password = os.environ.get('MY_PASSWORD')
@@ -234,7 +234,7 @@ class Email:
             <p style="font-size: 18px;">Hello,<br>
             Please click the below link to find a summary of your booking at Masjid Al-Ansar</p>
             
-            <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/nikah/{link}">Click This</a> </p>
+            <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/{service}/{link}">Click This</a> </p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>

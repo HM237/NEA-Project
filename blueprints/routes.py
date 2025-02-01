@@ -239,7 +239,7 @@ def addmadrasah():
 
             #sending the summary email after inserting all data to database    
             user_email = Email(email= email, number=(digest))
-            summary_email = user_email.send_summary_email()
+            summary_email = user_email.send_summary_email(service='madrasah')
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
     else:
@@ -326,11 +326,26 @@ def editnikahbooking():
                     
                     #sending them a new booking link
                     user_email = Email(email= email, number= newdigest)
-                    summary_email = user_email.send_summary_email()
+                    summary_email = user_email.send_summary_email(service = 'nikah')
 
-            #updating the booking by sending it to the class Nikah
-            new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
-            new_nikah.update()  
+                    #updating the booking by sending it to the class Nikah
+                    new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                    new_nikah.update()  
+                    return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))        
+            else:
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah.update()  
+
+                with sqlite3.connect('database.db') as con:
+                        cur = con.cursor()
+                        cur.execute(f'SELECT Digest FROM Hash WHERE UserID={userid}')
+                        result = cur.fetchone()
+                        digest = result[0]
+                        con.commit()
+                        cur.close()  
+
+                return redirect(url_for('routes.booking', service='nikah', digest=f'{digest}'))  
+
 
             #we are now redirecting them to their new booking table page
             return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
@@ -350,8 +365,7 @@ def delete(service):
                     con.commit()
                     con.close()
         except:
-            con.rollback()
-            con.close()
+            msg = 'error in smth with deletion'
             return render_template("pages/nikah_page.html")
 
 
