@@ -148,7 +148,6 @@ def addnikah():
             new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
             new_user.add_User()
             
-
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
                     cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
@@ -165,8 +164,12 @@ def addnikah():
             new_payment = Payment(user_id= userid, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
             new_payment.add_Payment()
 
+            #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.
+            hashvalue = Hash(time = time, date = date, userid = userid)
+            digest = hashvalue.hash_algorithm()
+            digest = hashvalue.add_digest(digest)
             #sending the summary email after inserting all data to database
-            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date, userid)))
+            user_email = Email(email= email, number=(digest))
             summary_email = user_email.send_summary_email()
 
                 
@@ -229,28 +232,36 @@ def addmadrasah():
             new_madrasah = Madrasah(user_id= userid, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add_Madrasah()  
             
+            #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.            
+            hashvalue = Hash(time = time, date = date, userid = userid)
+            digest = hashvalue.hash_algorithm()
+            digest = hashvalue.add_digest(digest)
+
             #sending the summary email after inserting all data to database    
-            user_email = Email(email= email, number=(Hash.hash_algorithm(time, date, userid)))
+            user_email = Email(email= email, number=(digest))
             summary_email = user_email.send_summary_email()
             
-            return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!'"})
+            return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
     else:
         return redirect(url_for('routes.madrasah_booking'))    
 
-@bp.route('/booking/<digest>')
-def booking(digest):
-    con = sqlite3.connect("database.db")
-    con.row_factory = sqlite3.Row
+@bp.route('/booking/<service>/<digest>')
+def booking(service, digest):
+    if service == 'nikah':
+        #isnerting the data into the table for the user to see. we find the user's data through the digest
+        con = sqlite3.connect("database.db")
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute(f"SELECT * FROM User JOIN Nikah ON User.UserID = Nikah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
+        rows = cur.fetchall()
+        con.close()
+        if len(rows) == 0:
+            return'OH NO YOU DONT HAVE A BOOKING L'
+        return render_template("tables/nikah_table.html", rows = rows)    
 
-    cur = con.cursor()
-    cur.execute(f"SELECT * FROM User JOIN Nikah ON User.UserID = Nikah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
-    rows = cur.fetchall()
-    con.close()
-    return render_template("tables/nikah_table.html", rows = rows)    
-
-@bp.route("/edit", methods=['POST','GET'])
-def edit():
-    if request.method == 'POST':
+@bp.route("/edit/<service>", methods=['POST','GET'])
+def edit(service):
+    if (request.method == 'POST' and service=='nikah'):
         try:
             userid = request.form['userid']
             connection = sqlite3.connect("database.db")
@@ -270,16 +281,24 @@ def editnikahbooking():
     if request.method == 'POST':
         time = request.form["time"] 
         date = request.form["date"]
+        nikahid = request.form["NikahID"]
+
+        with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f'SELECT Time,Date FROM Nikah WHERE NikahID={nikahid}')
+                result = cur.fetchone()
+                con.commit()
+                cur.close()  
 
         #checking for any bookings that could clash using the class Clashed and then flashing the message
-        if Clashed.clashed(time, date):
+        if ((time != result[0] and date != result[1]) and (Clashed.clashed(time, date))):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:            
             #retrieving data from the edit nikah_form
             userid = request.form["UserID"]
-            nikahid = request.form["NikahID"]
             first_name = request.form["first_name"]
             last_name = request.form["last_name"]
+            email = request.form["email"]                
             groom_first_name = request.form["groom_first_name"]               
             groom_last_name = request.form["groom_last_name"]               
             bride_first_name = request.form["bride_first_name"]               
@@ -287,17 +306,34 @@ def editnikahbooking():
             post_code = request.form["post_code"]            
             address_line = request.form["address_line"]   
 
+            if (time != result[0]) or (date != result[1]):
+                hashvalue = Hash(time = time, date = date, userid = userid)
+                newdigest = hashvalue.hash_algorithm()            
+                with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    query = '''
+                    UPDATE Hash
+                    SET Digest = ?, Time = ?, Date = ?
+                    WHERE UserID = ? 
+                    '''
+                    parameters = (newdigest, time, date, userid)
+                    cursor.execute(query, parameters)
+                    conn.commit()
+                    
+                    user_email = Email(email= email, number= newdigest)
+                    summary_email = user_email.send_summary_email()
+
             #where we send the editing data i=to the update in the class Nikah
             new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
             new_nikah.update()  
 
-            return jsonify({"message": f"CHANGE WAS SUCCESSFUL!!'"}) #success message 
+            return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
     else:
         return redirect(url_for('routes.nikah_booking'))
 
-@bp.route("/delete", methods=['POST','GET'])
-def delete():
-    if request.method == 'POST':
+@bp.route("/delete/<service>", methods=['POST','GET'])
+def delete(service):
+    if (request.method == 'POST' and service =='nikah'):
         try:
              # Use the hidden input value of id from the form to get the rowid
             userid = request.form['userid']
@@ -306,6 +342,7 @@ def delete():
                     cur = con.cursor()
                     cur.execute(F"DELETE FROM User WHERE UserID = {userid}")
                     cur.execute(F"DELETE FROM Nikah WHERE UserID = {userid}")
+                    cur.execute(F"DELETE FROM Hash WHERE UserID = {userid}")
                     con.commit()
                     con.close()
         except:

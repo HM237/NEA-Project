@@ -109,14 +109,15 @@ class Clashed:
         return exists
 
 class Hash:    
-    def __init__(self, time,date):
+    def __init__(self, time,date, userid):
         self.time = time 
         self.date = date
+        self.userid = userid
 
-    @classmethod
-    def hash_algorithm(self, time,date,id):
+
+    def hash_algorithm(self):
         #joining the time and date and removing : -
-        string = f'{date}{time}{id}'
+        string = f'{self.date}{self.time}{self.userid}'
         string = re.sub(r'[-:]', '', string)
         arr = [0] * 20 #creating a 160 bit array
         digest = ''
@@ -127,15 +128,16 @@ class Hash:
                 arr[i] = value
         for byte in arr:
             digest += format(byte, '02x') #converting it into hexadecimal
+        return digest
 
+    def add_digest(self, digest):
         #storing the digest in the Hash Table along with UserID,Time and Date
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (id, digest, time, date))
+            cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
             conn.commit()
-            
-        #returning the digest to the route
         return digest
+
 
 #Email class which will execute the verification processs
 class Email:
@@ -233,7 +235,7 @@ class Email:
             <p style="font-size: 18px;">Hello,<br>
             Please click the below link to find a summary of your booking at Masjid Al-Ansar</p>
             
-            <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/{link}">Click This</a> </p>
+            <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/nikah/{link}">Click This</a> </p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>

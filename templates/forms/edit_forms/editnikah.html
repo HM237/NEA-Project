@@ -2,39 +2,15 @@
 {% block title %}
 Edit Your Nikah
 {% endblock %}
-{%block scripts %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<div id="message"> </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#submitForm').click(function (e) {
-                e.preventDefault();  
-
-                var formData = $('#idk').serialize();  
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/editrec',  // Sending it to the appropriate route 
-                    data: formData,
-                    success: function (response) {
-                        alert(response.message); // Display message in the div
-                    },
-                    error: function () {
-                        alert('Error submitting form');
-                    }
-                });
-            });
-        });
-    </script>
-{%endblock%}
 {% block content %}
         <h1>Editing Your Nikah </h1>
         {% for row in rows %}
         <form id="idk" action="{{ url_for('routes.editnikahbooking') }}" method="POST">
-            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/><br>
+            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
 
-            <input type="hidden" name="NikahID" value="{{ row['NikahID'] }}"/><br>
+            <input type="hidden" name="NikahID" value="{{ row['NikahID'] }}"/>
+
+            <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
 
             <br>First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
 

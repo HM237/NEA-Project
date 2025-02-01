@@ -8,16 +8,7 @@
         <td><strong>NikahID</strong></td>
         <td><strong>FirstNameofOrganiser</strong></td>
         <td><strong>LastNameofOrganiser</strong></td>
-        <td><strong>GroomFirstName</strong></td>
-        <td><strong>GroomLastName</strong></td>
-        <td><strong>BrideFirstName</strong></td>
-        <td><strong>BrideLastName</strong></td>
-        <td><strong>AddressLine</strong></td>
-        <td><strong>PostCode</strong></td>
-        <td><strong>Time</strong></td>
-        <td><strong>Date</strong></td>
-        <td></td>
-        <td></td>
+        <td><strong>Email</strong></td>
     </thead>
 
     {% for row in rows %}
@@ -26,6 +17,27 @@
         <td>{{ row["NikahID"] }}</td>
         <td>{{ row["FirstName"]}}</td>
         <td>{{ row["LastName"] }}</td>
+        <td>{{ row["Email"] }}</td>
+    </tr>
+    {% endfor %}
+</table> <br>
+
+<table border="1px">
+    <thead>
+        <td><strong>GroomFirstName</strong></td>
+        <td><strong>GroomLastName</strong></td>
+        <td><strong>BrideFirstName</strong></td>
+        <td><strong>BrideLastName</strong></td>
+        <td><strong>AddressLine</strong></td>
+        <td><strong>PostCode</strong></td>
+        <td><strong>Time</strong></td>
+        <td><strong>Date</strong></td><br>
+        <td></td>
+        <td></td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
         <td>{{ row["GroomFirstName"] }}</td>
         <td>{{ row["GroomLastName"] }}</td>
         <td>{{ row["BrideFirstName"] }}</td>
@@ -34,9 +46,9 @@
         <td>{{ row["PostCode"] }}</td>
         <td>{{ row["Time"] }}</td>
         <td>{{ row["Date"] }}</td>
+        <td><form action="/edit/nikah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>
+        <td><form onsubmit="return confirm('Are you sure you want to DELETE this Student from the Database?');" action="/delete/nikah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
 
-        <td><form action="{{url_for('routes.edit')}}" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>
-        <td><form onsubmit="return confirm('Are you sure you want to DELETE this Student from the Database?');" action="{{url_for('routes.delete')}}" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
     </tr>
     {% endfor %}
 </table>
