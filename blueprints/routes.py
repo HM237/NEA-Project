@@ -248,13 +248,14 @@ def addmadrasah():
 @bp.route('/booking/<service>/<digest>')
 def booking(service, digest):
     if service == 'nikah':
-        #isnerting the data into the table for the user to see. we find the user's data through the digest
+        #inserting the data into the table for the user to see. We find the user's data through the digest
         con = sqlite3.connect("database.db")
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute(f"SELECT * FROM User JOIN Nikah ON User.UserID = Nikah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
         rows = cur.fetchall()
         con.close()
+        #if the digest never existed we return the error page
         if len(rows) == 0:
             return'OH NO YOU DONT HAVE A BOOKING L'
         return render_template("tables/nikah_table.html", rows = rows)    
@@ -262,6 +263,7 @@ def booking(service, digest):
 @bp.route("/edit/<service>", methods=['POST','GET'])
 def edit(service):
     if (request.method == 'POST' and service=='nikah'):
+        #this is the edit form. We are inserting the current data into the form and will now allow the user to edit it.
         try:
             userid = request.form['userid']
             connection = sqlite3.connect("database.db")
@@ -277,12 +279,11 @@ def edit(service):
 
 @bp.route("/editrec", methods=['POST','GET'])
 def editnikahbooking():
-    # Data will be available from POST submitted by the form
     if request.method == 'POST':
         time = request.form["time"] 
         date = request.form["date"]
         nikahid = request.form["NikahID"]
-
+    
         with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f'SELECT Time,Date FROM Nikah WHERE NikahID={nikahid}')
@@ -290,7 +291,9 @@ def editnikahbooking():
                 con.commit()
                 cur.close()  
 
-        #checking for any bookings that could clash using the class Clashed and then flashing the message
+        #we are now checking whether or not they have changed their booking date because if they have we need to:
+        # a) Check for any existing bookings that can clash whilst excluding the current booking they have
+        # b) Change the digest and update it
         if ((time != result[0] and date != result[1]) and (Clashed.clashed(time, date))):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:            
@@ -306,6 +309,7 @@ def editnikahbooking():
             post_code = request.form["post_code"]            
             address_line = request.form["address_line"]   
 
+            #updating the digest since their time/date has changed
             if (time != result[0]) or (date != result[1]):
                 hashvalue = Hash(time = time, date = date, userid = userid)
                 newdigest = hashvalue.hash_algorithm()            
@@ -320,13 +324,15 @@ def editnikahbooking():
                     cursor.execute(query, parameters)
                     conn.commit()
                     
+                    #sending them a new booking link
                     user_email = Email(email= email, number= newdigest)
                     summary_email = user_email.send_summary_email()
 
-            #where we send the editing data i=to the update in the class Nikah
+            #updating the booking by sending it to the class Nikah
             new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
             new_nikah.update()  
 
+            #we are now redirecting them to their new booking table page
             return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
     else:
         return redirect(url_for('routes.nikah_booking'))
@@ -335,9 +341,7 @@ def editnikahbooking():
 def delete(service):
     if (request.method == 'POST' and service =='nikah'):
         try:
-             # Use the hidden input value of id from the form to get the rowid
             userid = request.form['userid']
-            # Connect to the database and DELETE a specific record based on rowid
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
                     cur.execute(F"DELETE FROM User WHERE UserID = {userid}")
@@ -348,8 +352,6 @@ def delete(service):
         except:
             con.rollback()
             con.close()
-            msg = "Error in the DELETE"
-            # Send the transaction message to result.html
             return render_template("pages/nikah_page.html")
 
 

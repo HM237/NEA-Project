@@ -116,7 +116,7 @@ class Hash:
 
 
     def hash_algorithm(self):
-        #joining the time and date and removing : -
+        #joining the time,date and userid to make the hash value. Imporant to use the id to make the digest more specific
         string = f'{self.date}{self.time}{self.userid}'
         string = re.sub(r'[-:]', '', string)
         arr = [0] * 20 #creating a 160 bit array
@@ -137,7 +137,6 @@ class Hash:
             cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
             conn.commit()
         return digest
-
 
 #Email class which will execute the verification processs
 class Email:
