@@ -116,9 +116,8 @@ class Hash:
     @classmethod
     def hash_algorithm(self, time,date,id):
         #joining the time and date and removing : -
-        string = f'{date}{time}'
+        string = f'{date}{time}{id}'
         string = re.sub(r'[-:]', '', string)
-        print(f'this is the id {id}')
         arr = [0] * 20 #creating a 160 bit array
         digest = ''
         for index, character in enumerate(string):

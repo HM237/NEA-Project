@@ -112,7 +112,6 @@ def addnikah():
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})
     
-    
     if request.method == 'POST':        
         time = request.form["time"] 
         date = request.form["date"]
@@ -240,14 +239,20 @@ def addmadrasah():
 
 @bp.route('/booking/<digest>')
 def booking(digest):
-    return f"Booking details for: {digest}"
+    con = sqlite3.connect("database.db")
+    con.row_factory = sqlite3.Row
+
+    cur = con.cursor()
+    cur.execute(f"SELECT * FROM User JOIN Nikah ON User.UserID = Nikah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
+    rows = cur.fetchall()
+    con.close()
+    return render_template("tables/nikah_table.html", rows = rows)    
 
 @bp.route("/edit", methods=['POST','GET'])
 def edit():
     if request.method == 'POST':
         try:
             userid = request.form['userid']
-            print(f'this was the id: {userid}')
             connection = sqlite3.connect("database.db")
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
@@ -261,7 +266,6 @@ def edit():
 
 @bp.route("/editrec", methods=['POST','GET'])
 def editnikahbooking():
-    print(f'hello')
     # Data will be available from POST submitted by the form
     if request.method == 'POST':
         time = request.form["time"] 
@@ -300,18 +304,20 @@ def delete():
             # Connect to the database and DELETE a specific record based on rowid
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
-                    cur.execute(F"DELETE FROM Nikah WHERE UserID={userid}")
-                    cur.execute(F"PRAGMA foreign_keys = OFF DELETE FROM Nikah WHERE UserID = {userid}")
+                    cur.execute(F"DELETE FROM User WHERE UserID = {userid}")
+                    cur.execute(F"DELETE FROM Nikah WHERE UserID = {userid}")
                     con.commit()
+                    con.close()
         except:
             con.rollback()
-            msg = "Error in the DELETE"
-
-        finally:
             con.close()
+            msg = "Error in the DELETE"
             # Send the transaction message to result.html
-            return render_template("pages/nikah_page")
+            return render_template("pages/nikah_page.html")
 
 
 
 ###basically after adding the json what now happens is that in the Nikah form all the required fields do not work HOWEVER the madrasah fields still work. Weird thing fr. we will need to debug this dumb thing and see why it happens
+
+
+##IDEA TO REDIRECT THE USER BACK TO THE TABLE PAEG AFTER THEY  EDIT 
