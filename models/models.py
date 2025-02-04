@@ -73,6 +73,7 @@ class Nikah:
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                    
                     conn.commit()
                     conn.close()
                     success = True 
@@ -106,7 +107,23 @@ class Madrasah:
             '''
             parameters = (self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth, self.user_id)
             cursor.execute(query, parameters)
-            conn.commit()             
+            conn.commit()
+
+    def delete(userid):
+        success = False
+        try:    
+            with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Madrasah WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
+                    conn.commit()
+                    conn.close()
+                    success = True 
+            return success
+        except:
+            error = 'Error'       
+            return success                   
 
 #Tours class which deals with Tours Table
 class Tours:
@@ -131,7 +148,24 @@ class Tours:
             '''
             parameters = (self.time,self.date,self.number_of_people, self.user_id)
             cursor.execute(query, parameters)
-            conn.commit()             
+            conn.commit()       
+
+    def delete(userid):
+        success = False
+        try:    
+            with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Tours WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                                        
+                    conn.commit()
+                    conn.close()
+                    success = True 
+            return success
+        except:
+            error = 'Error'       
+            return success                 
 
 #Functions class which deals with Tours Table
 class Funtions:
@@ -159,6 +193,21 @@ class Funtions:
             cursor.execute(query, parameters)
             conn.commit()                     
 
+    def delete(userid):
+        success = False
+        try:    
+            with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Functions WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
+                    conn.commit()
+                    conn.close()
+                    success = True 
+            return success
+        except:
+            error = 'Error'       
+            return success
 #Payment class which inserts into Payment Table
 class Payment:
     def __init__(self, user_id,post_code, address_line,payment_method, price):
@@ -228,6 +277,18 @@ class Hash:
             cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
             conn.commit()
         return digest
+    
+    def update(self,newdigest):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE Hash
+            SET Digest = ?, Time = ?, Date = ?
+            WHERE UserID = ? 
+            '''
+            parameters = (newdigest, self.time, self.date, self.userid)
+            cursor.execute(query, parameters)
+            conn.commit()        
 
 #Email class which will execute the verification/summary processs
 class Email:

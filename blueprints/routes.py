@@ -26,38 +26,38 @@ def index():
 
 #Route to the About Us Page
 @bp.route('/about-us')
-def aboutus_page():
+def aboutus():
     return render_template("pages/aboutus.html")
 
 
 #Route to the FAQ Page
 @bp.route('/faq')
-def faq_page():
+def faq():
     return render_template("pages/faq.html")
 
 #Route to the Nikah Page
 @bp.route('/prayer-timetable')
-def prayertime_page():
+def prayertime():
     return render_template("pages/prayertime.html")
 
 #Route to the Nikah Page
 @bp.route('/nikah')
-def nikah_page():
+def nikah():
     return render_template("pages/nikah.html")
 
 #Route to the Madrasah Page
 @bp.route('/madrasah')
-def madrasah_page():
+def madrasah():
     return render_template("pages/madrasah.html")
 
 #Route to the Tours Page
 @bp.route('/tours')
-def tours_page():
+def tours():
     return render_template("pages/tours.html")
 
 #Route to the Service Page
 @bp.route('/service')
-def service_page():
+def service():
     return render_template("pages/service.html")
 
 # Route to the Nikah Form 
@@ -99,9 +99,7 @@ def verification():
 
     
 
-    return render_template("pages/tours_page.html")
-
-
+    return render_template("pages/tours.html")
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
@@ -170,7 +168,7 @@ def addnikah():
             digest = hashvalue.add_digest(digest)
             #sending the summary email after inserting all data to database
             user_email = Email(email= email, number=(digest))
-            summary_email = user_email.send_summary_email()
+            summary_email = user_email.send_summary_email(service='nikah')
 
                 
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #success message 
@@ -277,7 +275,7 @@ def edit(service):
             connection.close()
             return render_template("forms/edit_forms/editnikah.html",rows=rows)
 
-@bp.route("/editrec", methods=['POST','GET'])
+@bp.route("/editnikahbooking", methods=['POST','GET'])
 def editnikahbooking():
     if request.method == 'POST':
         time = request.form["time"] 
@@ -312,26 +310,19 @@ def editnikahbooking():
             #updating the digest since their time/date has changed
             if (time != result[0]) or (date != result[1]):
                 hashvalue = Hash(time = time, date = date, userid = userid)
-                newdigest = hashvalue.hash_algorithm()            
-                with sqlite3.connect('database.db') as conn:
-                    cursor = conn.cursor()
-                    query = '''
-                    UPDATE Hash
-                    SET Digest = ?, Time = ?, Date = ?
-                    WHERE UserID = ? 
-                    '''
-                    parameters = (newdigest, time, date, userid)
-                    cursor.execute(query, parameters)
-                    conn.commit()
-                    
-                    #sending them a new booking link
-                    user_email = Email(email= email, number= newdigest)
-                    summary_email = user_email.send_summary_email(service = 'nikah')
+                newdigest = hashvalue.hash_algorithm()     
+                updatehash = Hash(time = time, date=date, userid = userid)
+                updatehash.update(newdigest= newdigest)       
+                                    
+                #sending them a new booking link
+                user_email = Email(email= email, number= newdigest)
+                summary_email = user_email.send_summary_email(service = 'nikah')
 
-                    #updating the booking by sending it to the class Nikah
-                    new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
-                    new_nikah.update()  
-                    return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))        
+                #updating the booking by sending it to the class Nikah
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah.update()  
+
+                return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))        
             else:
                 new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
                 new_nikah.update()  
@@ -357,16 +348,11 @@ def delete(service):
     if (request.method == 'POST' and service =='nikah'):
         try:
             userid = request.form['userid']
-            with sqlite3.connect('database.db') as con:
-                    cur = con.cursor()
-                    cur.execute(f"DELETE FROM User WHERE UserID = {userid}")
-                    cur.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
-                    cur.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    con.commit()
-                    con.close()
+            deletebooking = Nikah.delete(userid=userid)
+            return(f'{deletebooking}')
         except:
             msg = 'error in smth with deletion'
-            return render_template("pages/nikah_page.html")
+            return render_template("pages/nikah.html")
 
 
 
