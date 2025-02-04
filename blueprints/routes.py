@@ -27,38 +27,38 @@ def index():
 #Route to the About Us Page
 @bp.route('/about-us')
 def aboutus_page():
-    return render_template("pages/aboutus_page.html")
+    return render_template("pages/aboutus.html")
 
 
 #Route to the FAQ Page
 @bp.route('/faq')
 def faq_page():
-    return render_template("pages/faq_page.html")
+    return render_template("pages/faq.html")
 
 #Route to the Nikah Page
 @bp.route('/prayer-timetable')
 def prayertime_page():
-    return render_template("pages/prayertime_page.html")
+    return render_template("pages/prayertime.html")
 
 #Route to the Nikah Page
 @bp.route('/nikah')
 def nikah_page():
-    return render_template("pages/nikah_page.html")
+    return render_template("pages/nikah.html")
 
 #Route to the Madrasah Page
 @bp.route('/madrasah')
 def madrasah_page():
-    return render_template("pages/madrasah_page.html")
+    return render_template("pages/madrasah.html")
 
 #Route to the Tours Page
 @bp.route('/tours')
 def tours_page():
-    return render_template("pages/tours_page.html")
+    return render_template("pages/tours.html")
 
 #Route to the Service Page
 @bp.route('/service')
 def service_page():
-    return render_template("pages/service_page.html")
+    return render_template("pages/service.html")
 
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
