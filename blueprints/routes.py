@@ -359,9 +359,9 @@ def delete(service):
             userid = request.form['userid']
             with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
-                    cur.execute(F"DELETE FROM User WHERE UserID = {userid}")
-                    cur.execute(F"DELETE FROM Nikah WHERE UserID = {userid}")
-                    cur.execute(F"DELETE FROM Hash WHERE UserID = {userid}")
+                    cur.execute(f"DELETE FROM User WHERE UserID = {userid}")
+                    cur.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
+                    cur.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     con.commit()
                     con.close()
         except:
