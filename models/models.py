@@ -5,7 +5,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-#User class which inserts into User Table
+#User class which deals with  User Table
 class User:
     def __init__(self, first_name, last_name, email, phone_number, date_of_birth):
         self.first_name = first_name
@@ -20,7 +20,19 @@ class User:
             cursor.execute('INSERT INTO  User (FirstName, LastName, Email, PhoneNumber, DoB) VALUES (?,?,?,?,?)', (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth))
             conn.commit()
 
-#Nikah class which inserts into Nikah Table
+    def update(self,userid):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE User
+            SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DoB = ?
+            WHERE UserID = ?
+            '''
+            parameters = (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth, userid)
+            cursor.execute(query, parameters)
+            conn.commit()              
+
+#Nikah class which deals with Nikah Table
 class Nikah:
     def __init__(self, user_id,groom_first_name, groom_last_name, bride_first_name, bride_last_name, time, date, post_code, address_line):
         self.user_id = user_id
@@ -69,7 +81,7 @@ class Nikah:
             error = 'Error'       
             return success
 
-#Madrasah class which inserts into Madrasah Table
+#Madrasah class which deals with Madrasah Table
 class Madrasah:
     def __init__(self, user_id, time, date, child_fname, child_lname, child_date_of_birth ):
         self.user_id = user_id
@@ -96,6 +108,7 @@ class Madrasah:
             cursor.execute(query, parameters)
             conn.commit()             
 
+#Tours class which deals with Tours Table
 class Tours:
     def __init__(self, user_id, time, date, number_of_people):
         self.user_id = user_id
@@ -120,6 +133,7 @@ class Tours:
             cursor.execute(query, parameters)
             conn.commit()             
 
+#Functions class which deals with Tours Table
 class Funtions:
     def __init__(self, user_id, time, date, post_code, address_line):
         self.user_id = user_id
@@ -161,7 +175,6 @@ class Payment:
              cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,Price) VALUES (?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.price))
              conn.commit()
 
-
 #Clashed class which checks for unavailable bookings
 class Clashed:
     def __init__(self,time, date):
@@ -185,6 +198,7 @@ class Clashed:
                     errors = e
         return exists
 
+#Hash class which performs the hash algorithm
 class Hash:    
     def __init__(self, time,date, userid):
         self.time = time 
@@ -215,7 +229,7 @@ class Hash:
             conn.commit()
         return digest
 
-#Email class which will execute the verification processs
+#Email class which will execute the verification/summary processs
 class Email:
     def __init__(self, email, number):
         self.email = email
