@@ -32,13 +32,14 @@ class Nikah:
         self.date = date
         self.post_code = post_code
         self.address_line = address_line
+
     #this adds the data to the Nikah Table
     def add_Nikah(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
              cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,Time, Date, PostCode,AddressLine) VALUES (?,?,?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name, self.time, self.date, self.post_code, self.address_line))
-
              conn.commit()  
+
     #this updates  a specific row in the Nikah Table
     def update(self):
         with sqlite3.connect('database.db') as conn:
@@ -52,6 +53,21 @@ class Nikah:
             cursor.execute(query, parameters)
             conn.commit()
 
+    def delete(userid):
+        success = False
+        try:    
+            with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
+                    conn.commit()
+                    conn.close()
+                    success = True 
+            return success
+        except:
+            error = 'Error'       
+            return success
 
 #Madrasah class which inserts into Madrasah Table
 class Madrasah:
@@ -67,6 +83,67 @@ class Madrasah:
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
              cursor.execute('INSERT INTO  Madrasah (UserID,Time, Date, ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?,?,?)', (self.user_id,self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth ))
+
+    def update(self):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE Madrasah
+            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?, BrideLastName = ?, Time = ?, Date = ?, PostCode = ?, AddressLine = ?
+            WHERE UserID = ?
+            '''
+            parameters = (self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth, self.user_id)
+            cursor.execute(query, parameters)
+            conn.commit()             
+
+class Tours:
+    def __init__(self, user_id, time, date, number_of_people):
+        self.user_id = user_id
+        self.time = time
+        self.date = date
+        self.number_of_people= number_of_people
+
+    def add_Tour(self):
+        with sqlite3.connect('database.db') as conn:
+             cursor = conn.cursor()
+             cursor.execute('INSERT INTO  Tours (UserID,Time, Date, NumberOfPeople) VALUES (?,?,?,?)', (self.user_id,self.time,self.date,self.number_of_people))
+
+    def update(self):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE Tours
+            SET Time = ?, Date= ?, NumberOfPeople= ?
+            WHERE UserID = ?
+            '''
+            parameters = (self.time,self.date,self.number_of_people, self.user_id)
+            cursor.execute(query, parameters)
+            conn.commit()             
+
+class Funtions:
+    def __init__(self, user_id, time, date, post_code, address_line):
+        self.user_id = user_id
+        self.time = time
+        self.date = date
+        self.post_code = post_code
+        self.address_line = address_line
+
+    def add_Function(self):
+        with sqlite3.connect('database.db') as conn:
+             cursor = conn.cursor()
+             cursor.execute('INSERT INTO  Functions (UserID,Time, Date, PostCode, AddressLine) VALUES (?,?,?,?.?)', (self.user_id,self.time,self.date,self.post_code, self.address_line))    
+
+    def update(self):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            query = '''
+            UPDATE Functions
+            SET Time = ?, Date= ?, PostCode = ?, AddressLine - ?
+            WHERE UserID = ?
+            '''
+            parameters = (self.time,self.date,self.post_code, self.address_line, self.user_id)
+            cursor.execute(query, parameters)
+            conn.commit()                     
 
 #Payment class which inserts into Payment Table
 class Payment:
