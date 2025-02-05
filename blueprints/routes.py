@@ -60,6 +60,16 @@ def tours():
 def functions():
     return render_template("pages/functions.html")
 
+
+
+
+
+#####ACTUAL BOOKING PROCESSES #####
+
+
+
+
+
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")
 def nikah_booking():
@@ -74,6 +84,11 @@ def madrasah_booking():
     form_id = "MadrasahForm"
     action_url = url_for('routes.addmadrasah')
     return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url)
+
+
+
+##### verification processes #####
+
 
 #Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
@@ -100,6 +115,14 @@ def verification():
     
 
     return render_template("pages/tours.html")
+
+
+
+
+
+##### INSERTING THE DATA INTO TABLES ######
+
+
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
@@ -175,8 +198,6 @@ def addnikah():
     else:
         return redirect(url_for('routes.nikah_booking'))
 
-
-
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
 @bp.route("/process-madrasah", methods=['GET','POST'])
 def addmadrasah():
@@ -242,6 +263,16 @@ def addmadrasah():
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
     else:
         return redirect(url_for('routes.madrasah_booking'))    
+
+
+
+
+
+###### USER VIEWING/EDITING THEIR BOOKING #####
+
+
+
+
 
 @bp.route('/booking/<service>/<digest>')
 def booking(service, digest):
@@ -340,6 +371,16 @@ def editnikahbooking():
 
     else:
         return redirect(url_for('routes.nikah_booking'))
+
+
+
+
+
+###### DELETING THE BOOKING #####
+
+
+
+
 
 @bp.route("/delete/<service>", methods=['POST','GET'])
 def delete(service):
