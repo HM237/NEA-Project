@@ -6,19 +6,6 @@ import random
 
 bp = Blueprint('routes', __name__)
 
-#Route to the Temporary Page
-@bp.route('/temporary')
-def temporary():
-    con = sqlite3.connect("database.db")
-    con.row_factory = sqlite3.Row
-
-    cur = con.cursor()
-    cur.execute("SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID=64")
-
-    rows = cur.fetchall()
-    con.close()
-    return render_template("tables/nikah_table.html", rows = rows)
-
 #Route to the Home Page
 @bp.route('/')
 def index():
@@ -64,7 +51,7 @@ def functions():
 
 
 
-#####ACTUAL BOOKING PROCESSES #####
+##### SENDING THE USER TO THE FORM PAGES AND FILLING IN THE FORM ID'S #####
 
 
 
