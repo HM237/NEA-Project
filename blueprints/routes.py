@@ -56,9 +56,9 @@ def tours():
     return render_template("pages/tours.html")
 
 #Route to the Service Page
-@bp.route('/service')
-def service():
-    return render_template("pages/service.html")
+@bp.route('/functions')
+def functions():
+    return render_template("pages/functions.html")
 
 # Route to the Nikah Form 
 @bp.route("/nikahbooking")

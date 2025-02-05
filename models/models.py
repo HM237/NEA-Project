@@ -167,7 +167,7 @@ class Tours:
             error = 'Error'       
             return success                 
 
-#Functions class which deals with Tours Table
+#Functions class which deals with Functions Table
 class Funtions:
     def __init__(self, user_id, time, date, post_code, address_line):
         self.user_id = user_id
