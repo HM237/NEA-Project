@@ -322,7 +322,7 @@ def editnikahbooking():
                 new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
                 new_nikah.update()  
 
-                return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))        
+                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
             else:
                 new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
                 new_nikah.update()  
@@ -335,11 +335,9 @@ def editnikahbooking():
                         con.commit()
                         cur.close()  
 
-                return redirect(url_for('routes.booking', service='nikah', digest=f'{digest}'))  
+                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{digest}'))
 
 
-            #we are now redirecting them to their new booking table page
-            return redirect(url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
     else:
         return redirect(url_for('routes.nikah_booking'))
 

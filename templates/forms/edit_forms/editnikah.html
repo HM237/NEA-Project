@@ -2,6 +2,34 @@
 {% block title %}
 Edit Your Nikah
 {% endblock %}
+{%block scripts%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#submitForm').click(function (e) {
+            e.preventDefault();
+
+            var formData = $('#idk').serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '/editnikahbooking',  // Sending it to the appropriate route 
+                data: formData,
+                success: function (response) {
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error submitting form');
+                }
+            });
+        });
+    });
+</script>
+{%endblock%}
 {% block content %}
         <h1>Editing Your Nikah </h1>
         {% for row in rows %}
