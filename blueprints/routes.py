@@ -86,6 +86,10 @@ def verification():
 
     if request.method == 'POST':
         email = request.form.get('email')
+        if (email == '') or (email.isspace()):
+            session.pop('random_number', None) # we will remove the number from session as it is now void
+            return jsonify({"message": f"PLease fill in the email box before trying to send a verification code."})
+
         time = request.form.get('time')
         date = request.form.get('date')
         #print(f'Verification\ntime,date:{time, date}\nemail:{email}')
@@ -114,9 +118,9 @@ def verification():
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
-    random_number = session.get('random_number') # Retrieve the stored random number in our session    
+    random_number = session.get('random_number') # Retrieve the stored random number in our session and if not prompt user to create one    
     if random_number:
-        print(f'The verification code generated: {random_number}')
+        print(f'The verification code was generated: {random_number}')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})
     
