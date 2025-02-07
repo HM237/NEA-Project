@@ -56,9 +56,9 @@ Edit Your Nikah
 
             <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>
 
-            <br>Time: <input type="time" name="time" value="{{ row['Time'] }}"/><br>
+            <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
 
-            <br>Date: <input type="date" name="date" value="{{ row['Date'] }}"/><br>
+            <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
 
             <br><input id="submitForm" type="submit" value="Submit" /><br>
         </form>
