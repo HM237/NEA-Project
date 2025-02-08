@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
 from models import User, Nikah, Madrasah,Payment, Clashed, Email, Hash
+from datetime import datetime, timedelta
 import sqlite3
 import random
+import re
 
 
 bp = Blueprint('routes', __name__)
@@ -86,9 +88,10 @@ def verification():
 
     if request.method == 'POST':
         email = request.form.get('email')
-        if (email == '') or (email.isspace()):
-            session.pop('random_number', None) # we will remove the number from session as it is now void
-            return jsonify({"message": f"PLease fill in the email box before trying to send a verification code."})
+        match = re.match("""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", email)
+        if not match:
+            session.pop('random_number', None)
+            return jsonify({"message": f"PLease enter a valid email before trying to send a verification code."})
 
         time = request.form.get('time')
         date = request.form.get('date')
@@ -133,7 +136,13 @@ def addnikah():
         else:
             #now verifying if the user submiited the right verification code
             verification_code = request.form["verification-code"]
-            if int(verification_code) != random_number:
+
+            if not verification_code.isalnum():
+                session.pop('random_number', None) # we will remove the number from session as it is now void
+                return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
+
+            elif (int(verification_code) != random_number):
+                session.pop('random_number', None) # we will remove the number from session as it is now void
                 return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
             else:
                 session.pop('random_number', None) # we will remove the number from session as it is now void
@@ -152,6 +161,39 @@ def addnikah():
             address_line = request.form["address_line"]             
             payment_method = request.form.get('payment_method')            
             price = 130
+
+            errors = []
+            names = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time}
+
+            for key, value in names.items():
+                if key =='Time':
+                     # Parse booking time
+
+                    bookingtime = datetime.strptime(value, '%H:%M')
+
+                    # Define allowed time range
+                    start_time = datetime.strptime('16:30', '%H:%M')
+                    end_time = datetime.strptime('20:00', '%H:%M')
+
+                    # Check if booking time is within range
+                    if not (start_time <= bookingtime <= end_time):
+                        errors.append(f"Booking time must be between 16:30 and 20:00.")
+                    # Check if booking time is at 15-minute intervals
+                    if bookingtime.minute % 15 != 0:
+                        errors.append(f"Booking time must be at 15-minute intervals (e.g., 16:45, 17:00).")
+
+
+                elif key == 'Post Code':
+                    if not value.isalnum():
+                        errors.append(f"{key} must be a valid post code.")
+                else:
+                    match = re.match("""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
+                    if not match:
+                        errors.append(f"{key} must be alphabetical characters.")
+            if errors:
+                errors = '\n'.join(errors)
+                return jsonify({"message": f"{errors}"}) #error message if they did not
+
 
             ### print statement to print all the form details
             # print(f'nikah\nverificationcode: {verification_code}\nfirst: {first_name}\nsecond:{ last_name}\nemail: {email}\nphone: {phone_number}\ndob: {date_of_birth}\ngroom:   {groom_first_name}\ngroonl: {groom_last_name}\ncvc: {cvc}')
@@ -314,7 +356,7 @@ def editnikahbooking():
         #we are now checking whether or not they have changed their booking date because if they have we need to:
         # a) Check for any existing bookings that can clash whilst excluding the current booking they have
         # b) Change the digest and update it
-        if ((time != result[0] and date != result[1]) and (Clashed.clashed(time, date))):
+        if ((time != result[0] or date != result[1]) and (Clashed.clashed(time, date))):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:            
             #retrieving data from the edit nikah_form

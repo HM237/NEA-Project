@@ -232,20 +232,18 @@ class Clashed:
     
     @classmethod
     def clashed(cls, time, date):
-        exists = False #assumes that the time and date has not already been booked
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            tables = ['Nikah', 'Madrasah', 'Function']
-            for table in tables:
-                cursor.execute(f'SELECT * FROM User u JOIN {table} t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"')
-                try:
-                    result = cursor.fetchone()[0] > 0
-                    if result:
-                        exists = True #if it does exist we return True
-                        break
-                except Exception as e:
-                    errors = e
-        return exists
+        exists = False #assumes that the time and date has not already been booked 
+        try:
+            with sqlite3.connect('database.db') as conn:
+                cursor = conn.cursor()
+                cursor.execute(f'SELECT * FROM User u JOIN Hash t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"')
+                result = cursor.fetchone()
+                if result is not None:
+                    return True
+                else:
+                    return False
+        except:
+            return True
 
 #Hash class which performs the hash algorithm
 class Hash:    
