@@ -4,6 +4,7 @@ import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from datetime import datetime
 
 #User class which deals with  User Table
 class User:
@@ -413,3 +414,50 @@ class Email:
         finally:
             server.quit()
         return f'Success?'
+
+
+class Validation:
+    def __init__(self, data):
+        self.data = data
+
+    @classmethod
+    def nikah(cls, data):
+        errors = []
+        for key, value in data.items():
+            if key =='Time':
+                    # Parse booking time
+
+                bookingtime = datetime.strptime(value, '%H:%M')
+
+                # Define allowed time range
+                start_time = datetime.strptime('16:30', '%H:%M')
+                end_time = datetime.strptime('20:00', '%H:%M')
+
+                # Check if booking time is within range
+                if not (start_time <= bookingtime <= end_time):
+                    errors.append(f"Booking time must be between 16:30 and 20:00.")
+                # Check if booking time is at 15-minute intervals
+                if bookingtime.minute % 15 != 0:
+                    errors.append(f"Booking time must be at 15-minute intervals (e.g., 16:45, 17:00).")
+
+            elif key == 'Date':
+                bookingdate = datetime.strptime(value, '%Y-%m-%d') 
+
+                start_date = datetime.strptime('2025-01-01', '%Y-%m-%d')
+                end_date = datetime.strptime('2030-12-31', '%Y-%m-%d')
+
+                if not (start_date <= bookingdate <= end_date):
+                    errors.append(f"Booking date must be between 01/01/2025 and 31/12/2030.")
+                    
+
+            elif key == 'Post Code' or key == 'Address Line':
+                match = re.match("""^[a-zA-Z0-9 ]*$""", value)
+                if not match:
+                    errors.append(f"{key} must be a valid post code.")
+            else:
+                match = re.match("""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
+                if not match:
+                    errors.append(f"{key} must be alphabetical characters.")
+        if errors:
+            errors = '\n'.join(errors)
+            return errors 

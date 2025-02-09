@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
-from models import User, Nikah, Madrasah,Payment, Clashed, Email, Hash
+from models import User, Nikah, Madrasah,Payment, Clashed, Email, Hash, Validation
 from datetime import datetime, timedelta
 import sqlite3
 import random
@@ -53,31 +53,12 @@ def functions():
 
 
 
-##### SENDING THE USER TO THE FORM PAGES AND FILLING IN THE FORM ID'S #####
 
 
 
 
 
-# Route to the Nikah Form 
-@bp.route("/nikahbooking")
-def nikah_booking():
-    #Filling in the formId and actionURL for the forms
-    form_id = "NikahForm"
-    action_url = url_for('routes.addnikah')
-    return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url)
-
-#Route to the Madrasah Form
-@bp.route("/madrasahbooking")
-def madrasah_booking():
-    form_id = "MadrasahForm"
-    action_url = url_for('routes.addmadrasah')
-    return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url)
-
-
-
-##### verification processes #####
-
+####################  Entire Verification Process ####################
 
 #Development needed REVERIFICATION?
 @bp.route("/verification", methods = ['GET','POST'])
@@ -97,13 +78,13 @@ def verification():
         date = request.form.get('date')
         #print(f'Verification\ntime,date:{time, date}\nemail:{email}')
         #checking for any bookings that could clash using the class Clashed and then flashing the message
-        if Clashed.clashed(time, date):
+        if Clashed.clashed(time, date) or (time == '') or (date==''):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
         else:
             #sends the user's email and the random number we generate to the class Email
             user_email = Email(email= email, number = random_number)
             #sending the email containg the verification code.
-            verification_email = user_email.send_verification_email()
+            user_email.send_verification_email()
             return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})
 
     
@@ -114,8 +95,20 @@ def verification():
 
 
 
-##### INSERTING THE DATA INTO TABLES ######
 
+
+
+
+
+####################  Entire Nikah Process ####################
+
+# Route to the Nikah Form 
+@bp.route("/nikahbooking")
+def nikah_booking():
+    #Filling in the formId and actionURL for the forms
+    form_id = "NikahForm"
+    action_url = url_for('routes.addnikah')
+    return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url)
 
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
@@ -162,38 +155,10 @@ def addnikah():
             payment_method = request.form.get('payment_method')            
             price = 130
 
-            errors = []
-            names = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time}
-
-            for key, value in names.items():
-                if key =='Time':
-                     # Parse booking time
-
-                    bookingtime = datetime.strptime(value, '%H:%M')
-
-                    # Define allowed time range
-                    start_time = datetime.strptime('16:30', '%H:%M')
-                    end_time = datetime.strptime('20:00', '%H:%M')
-
-                    # Check if booking time is within range
-                    if not (start_time <= bookingtime <= end_time):
-                        errors.append(f"Booking time must be between 16:30 and 20:00.")
-                    # Check if booking time is at 15-minute intervals
-                    if bookingtime.minute % 15 != 0:
-                        errors.append(f"Booking time must be at 15-minute intervals (e.g., 16:45, 17:00).")
-
-
-                elif key == 'Post Code':
-                    if not value.isalnum():
-                        errors.append(f"{key} must be a valid post code.")
-                else:
-                    match = re.match("""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
-                    if not match:
-                        errors.append(f"{key} must be alphabetical characters.")
-            if errors:
-                errors = '\n'.join(errors)
-                return jsonify({"message": f"{errors}"}) #error message if they did not
-
+            names = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
+            invalid = Validation.nikah(data= names)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
 
             ### print statement to print all the form details
             # print(f'nikah\nverificationcode: {verification_code}\nfirst: {first_name}\nsecond:{ last_name}\nemail: {email}\nphone: {phone_number}\ndob: {date_of_birth}\ngroom:   {groom_first_name}\ngroonl: {groom_last_name}\ncvc: {cvc}')
@@ -224,12 +189,113 @@ def addnikah():
             digest = hashvalue.add_digest(digest)
             #sending the summary email after inserting all data to database
             user_email = Email(email= email, number=(digest))
-            summary_email = user_email.send_summary_email(service='nikah')
+            user_email.send_summary_email(service='nikah')
 
                 
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #success message 
     else:
         return redirect(url_for('routes.nikah_booking'))
+
+
+@bp.route("/editnikahbooking", methods=['POST','GET'])
+def editnikahbooking():
+    if request.method == 'POST':
+        time = request.form["time"] 
+        date = request.form["date"]
+        nikahid = request.form["NikahID"]
+    
+        with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f'SELECT Time,Date FROM Nikah WHERE NikahID={nikahid}')
+                result = cur.fetchone()
+                con.commit()
+                cur.close()  
+
+        #we are now checking whether or not they have changed their booking date because if they have we need to:
+        # a) Check for any existing bookings that can clash whilst excluding the current booking they have
+        # b) Change the digest and update it
+        if ((time != result[0] or date != result[1]) and (Clashed.clashed(time, date) or time =='' or date =='')):
+            return jsonify({"message": f"Unfortunately this booking is unavailable. Please re-book for another time/date.'"})
+        else:            
+            #retrieving data from the edit nikah_form
+            userid = request.form["UserID"]
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]
+            email = request.form["email"]        
+            phone_number = request.form["phone_number"]               
+            date_of_birth = request.form["date_of_birth"]   
+            groom_first_name = request.form["groom_first_name"]               
+            groom_last_name = request.form["groom_last_name"]               
+            bride_first_name = request.form["bride_first_name"]               
+            bride_last_name = request.form["bride_last_name"]               
+            post_code = request.form["post_code"]            
+            address_line = request.form["address_line"]   
+
+  
+            names = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
+
+
+            invalid = Validation.nikah(data= names)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
+
+            #updating the digest since their time/date has changed
+            if (time != result[0]) or (date != result[1]):
+                hashvalue = Hash(time = time, date = date, userid = userid)
+                newdigest = hashvalue.hash_algorithm()     
+                updatehash = Hash(time = time, date=date, userid = userid)
+                updatehash.update(newdigest= newdigest)       
+                                    
+                #sending them a new booking link
+                user_email = Email(email= email, number= newdigest)
+                user_email.send_summary_email(service = 'nikah')
+
+                new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
+                new_user.update(userid= userid)
+
+                #updating the booking by sending it to the class Nikah
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah.update()  
+
+                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
+            else:
+                new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
+                new_user.update(userid= userid) 
+
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah.update()  
+
+                with sqlite3.connect('database.db') as con:
+                        cur = con.cursor()
+                        cur.execute(f'SELECT Digest FROM Hash WHERE UserID={userid}')
+                        result = cur.fetchone()
+                        digest = result[0]
+                        con.commit()
+                        cur.close()  
+
+                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{digest}'))
+
+
+    else:
+        return redirect(url_for('routes.nikah_booking'))
+
+
+
+
+
+
+
+
+
+
+####################  Entire Madrasah Process ####################
+
+#Route to the Madrasah Form
+@bp.route("/madrasahbooking")
+def madrasah_booking():
+    form_id = "MadrasahForm"
+    action_url = url_for('routes.addmadrasah')
+    return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url)
 
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
 @bp.route("/process-madrasah", methods=['GET','POST'])
@@ -291,7 +357,7 @@ def addmadrasah():
 
             #sending the summary email after inserting all data to database    
             user_email = Email(email= email, number=(digest))
-            summary_email = user_email.send_summary_email(service='madrasah')
+            user_email.send_summary_email(service='madrasah')
             
             return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
     else:
@@ -301,12 +367,12 @@ def addmadrasah():
 
 
 
+
+
+
+
+
 ###### USER VIEWING/EDITING THEIR BOOKING #####
-
-
-
-
-
 @bp.route('/booking/<service>/<digest>')
 def booking(service, digest):
     if service == 'nikah':
@@ -338,72 +404,11 @@ def edit(service):
         finally:
             connection.close()
             return render_template("forms/edit_forms/editnikah.html",rows=rows)
-
-@bp.route("/editnikahbooking", methods=['POST','GET'])
-def editnikahbooking():
-    if request.method == 'POST':
-        time = request.form["time"] 
-        date = request.form["date"]
-        nikahid = request.form["NikahID"]
-    
-        with sqlite3.connect('database.db') as con:
-                cur = con.cursor()
-                cur.execute(f'SELECT Time,Date FROM Nikah WHERE NikahID={nikahid}')
-                result = cur.fetchone()
-                con.commit()
-                cur.close()  
-
-        #we are now checking whether or not they have changed their booking date because if they have we need to:
-        # a) Check for any existing bookings that can clash whilst excluding the current booking they have
-        # b) Change the digest and update it
-        if ((time != result[0] or date != result[1]) and (Clashed.clashed(time, date))):
-            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
-        else:            
-            #retrieving data from the edit nikah_form
-            userid = request.form["UserID"]
-            first_name = request.form["first_name"]
-            last_name = request.form["last_name"]
-            email = request.form["email"]                
-            groom_first_name = request.form["groom_first_name"]               
-            groom_last_name = request.form["groom_last_name"]               
-            bride_first_name = request.form["bride_first_name"]               
-            bride_last_name = request.form["bride_last_name"]               
-            post_code = request.form["post_code"]            
-            address_line = request.form["address_line"]   
-
-            #updating the digest since their time/date has changed
-            if (time != result[0]) or (date != result[1]):
-                hashvalue = Hash(time = time, date = date, userid = userid)
-                newdigest = hashvalue.hash_algorithm()     
-                updatehash = Hash(time = time, date=date, userid = userid)
-                updatehash.update(newdigest= newdigest)       
-                                    
-                #sending them a new booking link
-                user_email = Email(email= email, number= newdigest)
-                summary_email = user_email.send_summary_email(service = 'nikah')
-
-                #updating the booking by sending it to the class Nikah
-                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
-                new_nikah.update()  
-
-                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
-            else:
-                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
-                new_nikah.update()  
-
-                with sqlite3.connect('database.db') as con:
-                        cur = con.cursor()
-                        cur.execute(f'SELECT Digest FROM Hash WHERE UserID={userid}')
-                        result = cur.fetchone()
-                        digest = result[0]
-                        con.commit()
-                        cur.close()  
-
-                return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{digest}'))
+        
 
 
-    else:
-        return redirect(url_for('routes.nikah_booking'))
+
+
 
 
 
@@ -432,3 +437,7 @@ def delete(service):
 
 
 ##IDEA TO REDIRECT THE USER BACK TO THE TABLE PAEG AFTER THEY  EDIT 
+
+
+
+
