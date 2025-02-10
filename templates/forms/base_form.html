@@ -16,7 +16,7 @@
     
                 $.ajax({
                     type: 'POST',
-                    url: '/verification',  // Vreifcaition route will send verifcaition email
+                    url: '/verification/{{ service }}',  // Vreifcaition route will send verifcaition email
                     data: formData,
                     success: function (response) {
                         alert(response.message);  //Response message if successful or not

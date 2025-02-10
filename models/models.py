@@ -446,6 +446,10 @@ class Validation:
                 if not (start_date <= bookingdate <= end_date):
                     errors.append(f"Booking date must be between 01/01/2025 and 31/12/2030.")
 
+            elif key == 'Number Of People':
+                if not value.isnumeric():
+                    errors.append('Value has to be a number')
+
             elif key == 'Child Date of Birth':
                 match = re.match("""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)
                 if not match:
@@ -458,6 +462,11 @@ class Validation:
 
                     if not (start_date <= childdob <= end_date):
                         errors.append(f"Child is too old to attend this madrasash.")
+
+            elif key == 'Email':
+                match = re.match("""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", value)
+                if not match:
+                    errors.append(f"{key} must be a valid email")
 
 
             elif key == 'Post Code' or key == 'Address Line':

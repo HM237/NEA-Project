@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
-from models import User, Nikah, Madrasah,Payment, Clashed, Email, Hash, Validation
+from models import User, Nikah, Madrasah,Tours,Payment, Clashed, Email, Hash, Validation
 from datetime import datetime, timedelta
 import sqlite3
 import random
@@ -61,8 +61,8 @@ def functions():
 ####################  Entire Verification Process ####################
 
 #Development needed REVERIFICATION?
-@bp.route("/verification", methods = ['GET','POST'])
-def verification():
+@bp.route("/verification/<service>", methods = ['GET','POST'])
+def verification(service):
     #here we are generating a random 6 digit number which will act as our verification code. We then use Flask session to store this number for this session. This will allow me to compare the verification-code the user submits and see whether or not it is the correct one.
     random_number = random.randint(111111,999999)
     session['random_number'] = random_number
@@ -80,6 +80,69 @@ def verification():
         #checking for any bookings that could clash using the class Clashed and then flashing the message
         if Clashed.clashed(time, date) or (time == '') or (date==''):
             return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
+        
+        if service == 'nikah':
+            #retrieving data from the nikah_form
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]
+            groom_first_name = request.form["groom_first_name"]               
+            groom_last_name = request.form["groom_last_name"]               
+            bride_first_name = request.form["bride_first_name"]               
+            bride_last_name = request.form["bride_last_name"]               
+            email = request.form["email"]                            
+            post_code = request.form["post_code"]            
+            address_line = request.form["address_line"]              
+                  
+            data = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name,'Email':email ,"Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
+            invalid = Validation.validate(data= data)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
+            else:
+                #sends the user's email and the random number we generate to the class Email
+                user_email = Email(email= email, number = random_number)
+                #sending the email containg the verification code.
+                user_email.send_verification_email()
+                return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})       
+
+        elif service =='madrasah':
+            #retrieving data from the madrasah_form             
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]               
+            email = request.form["email"]                
+            child_fname = request.form["child_fname"]
+            child_lname = request.form["child_lname"]
+            child_date_of_birth = request.form["child_date_of_birth"]
+
+            data = {'First Name':first_name, 'Last Name': last_name, 'Child First Name':child_fname, 'Child Last Name': child_lname, 'Child Date of Birth': child_date_of_birth, 'Email':email,'Time': time, 'Date':date}
+
+            invalid = Validation.validate(data = data)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
+            else:
+                #sends the user's email and the random number we generate to the class Email
+                user_email = Email(email= email, number = random_number)
+                #sending the email containg the verification code.
+                user_email.send_verification_email()
+                return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})       
+
+
+        elif service == 'tour':
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]               
+            email = request.form["email"]                               
+            number_of_people = request.form["number_of_people"]
+
+            data = {'First Name':first_name, 'Last Name': last_name, 'Number Of People':number_of_people, 'Email':email,'Time': time, 'Date':date}
+
+            invalid = Validation.validate(data = data)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not  
+            else:
+                #sends the user's email and the random number we generate to the class Email
+                user_email = Email(email= email, number = random_number)
+                #sending the email containg the verification code.
+                user_email.send_verification_email()
+                return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})                  
         else:
             #sends the user's email and the random number we generate to the class Email
             user_email = Email(email= email, number = random_number)
@@ -108,7 +171,8 @@ def nikah_booking():
     #Filling in the formId and actionURL for the forms
     form_id = "NikahForm"
     action_url = url_for('routes.addnikah')
-    return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url)
+    service = "nikah"
+    return render_template("forms/nikah_form.html", form_id=form_id, action_url=action_url, service = service )
 
 
 #Process for Nikah Table which retrieves the input from the nikah_form.
@@ -155,7 +219,7 @@ def addnikah():
             payment_method = request.form.get('payment_method')            
             price = 130
 
-            data = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
+            data = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name,'Email':email ,"Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
             invalid = Validation.validate(data= data)
             if invalid:
                 return jsonify({"message": f"{invalid}"}) #error message if they did not
@@ -231,7 +295,7 @@ def editnikahbooking():
             address_line = request.form["address_line"]   
 
   
-            data = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, "Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
+            data = {'First Name': first_name, 'Last Name': last_name, 'Groom First Name':groom_first_name, 'Groom Last Name': groom_last_name, 'Bride First Name': bride_first_name, 'Bride Last Name': bride_last_name, 'Email':email,"Address Line":address_line, 'Post Code':post_code, 'Time':time, 'Date': date}
 
 
             invalid = Validation.update(data= data)
@@ -294,7 +358,8 @@ def editnikahbooking():
 def madrasah_booking():
     form_id = "MadrasahForm"
     action_url = url_for('routes.addmadrasah')
-    return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url)
+    service = "madrasah"
+    return render_template("forms/madrasah_form.html", form_id=form_id, action_url=action_url, service = service)
 
 #Process for Madrasah Table which retrieves the user input from the madrasah_form
 @bp.route("/process-madrasah", methods=['GET','POST'])
@@ -336,7 +401,7 @@ def addmadrasah():
 
             #calling the class User and storing the data for the User Table
 
-            data = {'First Name':first_name, 'Last Name': last_name, 'Child First Name':child_fname, 'Child Last Name': child_lname, 'Child Date of Birth': child_date_of_birth, 'Time': time, 'Date':date}
+            data = {'First Name':first_name, 'Last Name': last_name, 'Child First Name':child_fname, 'Child Last Name': child_lname, 'Child Date of Birth': child_date_of_birth, 'Email':email,'Time': time, 'Date':date}
 
             invalid = Validation.validate(data = data)
             if invalid:
@@ -402,7 +467,7 @@ def editmadrasahbooking():
             child_date_of_birth = request.form["child_date_of_birth"]
 
   
-            data = {'First Name':first_name, 'Last Name': last_name, 'Child First Name':child_fname, 'Child Last Name': child_lname, 'Child Date of Birth': child_date_of_birth, 'Time': time, 'Date':date}
+            data = {'First Name':first_name, 'Last Name': last_name, 'Child First Name':child_fname, 'Child Last Name': child_lname, 'Child Date of Birth': child_date_of_birth,'Email':email, 'Time': time, 'Date':date}
 
             invalid = Validation.validate(data= data)
             if invalid:
@@ -448,9 +513,166 @@ def editmadrasahbooking():
     else:
         return redirect(url_for('routes.madrasah_booking'))
 
+####################  Entire Tours Process ####################
 
 
 
+#Route to the Tours Form
+@bp.route("/tourbooking")
+def tours_booking():
+    form_id = "TourForm"
+    action_url = url_for('routes.addtour')
+    service = "tour"
+    return render_template("forms/tours_form.html", form_id=form_id, action_url=action_url, service = service)
+
+#Process for Tours Table which retrieves the user input from the madrasah_form
+@bp.route("/process-tour", methods=['GET','POST'])
+def addtour():
+    #same comments as line 102
+    random_number = session.get('random_number') # Retrieve and remove the stored random number
+    if random_number:
+        print(f'The verification code generated: {random_number}')
+    else:
+        return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})    
+    if request.method == 'POST':        
+        time = request.form["time"]
+        date = request.form["date"]
+        #checking for any bookings that could clash
+        if Clashed.clashed(time, date):
+            return jsonify({"message": f"Unfortunately this booking on {date} at {time} is unavailable. Please re-book for another time/date.'"})
+        
+        else:
+            verification_code = request.form["verification-code"]
+            #checks the verification code is all numbers/ if it even is the right code
+            if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
+                session.pop('random_number', None)
+                return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"})
+            else:
+                session.pop('random_number', None)
+            
+            #retrieving data from the madrasah_form             
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]               
+            email = request.form["email"]                
+            phone_number = request.form["phone_number"]
+            date_of_birth = request.form["date_of_birth"]               
+            number_of_people = request.form["number_of_people"]
+
+
+            # print statement for the entire form
+            # print(f'Madrasahn\nverificationcode: {verification_code}\nfirst: {first_name}\nsecond: {last_name}\nemail: {email}\nphone: {phone_number}\ndob: {date_of_birth}\nchild:{child_fname}\nchildl: {child_lname}\nchilddob: {child_date_of_birth}')
+
+            #calling the class User and storing the data for the User Table
+
+            data = {'First Name':first_name, 'Last Name': last_name, 'Number Of People':number_of_people, 'Email':email,'Time': time, 'Date':date}
+
+            invalid = Validation.validate(data = data)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
+
+            new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth)
+            new_user.add_User()
+            
+            with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
+                    result = cur.fetchone()
+                    userid = result[0]
+                    con.commit()
+                    cur.close()
+            
+            #calling the class Madrasah and storing the data for the Madrasah Table 
+            new_tour = Tours(user_id= userid, time= time, date= date,number_of_people=number_of_people)
+            new_tour.add_Tour()  
+            
+            #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.            
+            hashvalue = Hash(time = time, date = date, userid = userid)
+            digest = hashvalue.hash_algorithm()
+            digest = hashvalue.add_digest(digest)
+
+            #sending the summary email after inserting all data to database    
+            user_email = Email(email= email, number=(digest))
+            user_email.send_summary_email(service='tour')
+            
+            return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
+    else:
+        return redirect(url_for('routes.tours_booking'))    
+
+
+@bp.route("/edittourbooking", methods=['POST','GET'])
+def edittourbooking():
+    if request.method == 'POST':
+        time = request.form["time"] 
+        date = request.form["date"]
+        userid = request.form["UserID"]
+    
+        with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f'SELECT Time,Date FROM Hash WHERE UserID={userid}')
+                result = cur.fetchone()
+                con.commit()
+                cur.close()  
+
+        #we are now checking whether or not they have changed their booking date because if they have we need to:
+        # a) Check for any existing bookings that can clash whilst excluding the current booking they have
+        # b) Change the digest and update it
+        if ((time != result[0] or date != result[1]) and (Clashed.clashed(time, date) or time =='' or date =='')):
+            return jsonify({"message": f"Unfortunately this booking is unavailable. Please re-book for another time/date.'"})
+        else:            
+            #retrieving data from the edit nikah_form
+            first_name = request.form["first_name"]
+            last_name = request.form["last_name"]               
+            email = request.form["email"]                
+            phone_number = request.form["phone_number"]
+            date_of_birth = request.form["date_of_birth"]               
+            number_of_people = request.form["number_of_people"]
+
+  
+            data = {'First Name':first_name, 'Last Name': last_name, 'Number Of People':number_of_people, 'Email':email,'Time': time, 'Date':date}
+
+            invalid = Validation.validate(data= data)
+            if invalid:
+                return jsonify({"message": f"{invalid}"}) #error message if they did not
+
+            #updating the digest since their time/date has changed
+            if (time != result[0]) or (date != result[1]):
+                hashvalue = Hash(time = time, date = date, userid = userid)
+                newdigest = hashvalue.hash_algorithm()     
+                updatehash = Hash(time = time, date=date, userid = userid)
+                updatehash.update(newdigest= newdigest)       
+                                    
+                #sending them a new booking link
+                user_email = Email(email= email, number= newdigest)
+                user_email.send_summary_email(service = 'tour')
+
+                new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
+                new_user.update(userid= userid)
+
+                #updating the booking by sending it to the class Madrasah
+                new_tour = Tours(user_id= userid, time= time, date= date, number_of_people=number_of_people )
+                new_tour.update()  
+
+                return jsonify(redirect_url=url_for('routes.booking', service='tour', digest=f'{newdigest}'))
+            else:
+                new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
+                new_user.update(userid= userid) 
+
+                new_tour = Tours(user_id= userid, time= time, date= date, number_of_people=number_of_people )
+                new_tour.update()  
+
+                with sqlite3.connect('database.db') as con:
+                        cur = con.cursor()
+                        cur.execute(f'SELECT Digest FROM Hash WHERE UserID={userid}')
+                        result = cur.fetchone()
+                        digest = result[0]
+                        con.commit()
+                        cur.close()  
+
+                return jsonify(redirect_url=url_for('routes.booking', service='tour', digest=f'{digest}'))
+
+
+    else:
+        return redirect(url_for('routes.tours_booking'))
 
 
 
@@ -483,7 +705,21 @@ def booking(service, digest):
         #if the digest never existed we return the error page
         if len(rows) == 0:
             return'OH NO YOU DONT HAVE A BOOKING L'
-        return render_template("tables/madrasah_table.html", rows = rows)         
+        return render_template("tables/madrasah_table.html", rows = rows)       
+
+
+    elif service == 'tour':
+        #inserting the data into the table for the user to see. We find the user's data through the digest
+        con = sqlite3.connect("database.db")
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute(f"SELECT * FROM User JOIN Tours ON User.UserID = Tours.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
+        rows = cur.fetchall()
+        con.close()
+        #if the digest never existed we return the error page
+        if len(rows) == 0:
+            return'OH NO YOU DONT HAVE A BOOKING L'
+        return render_template("tables/tour_table.html", rows = rows)          
 
 
 @bp.route("/edit/<service>", methods=['POST','GET'])
@@ -515,8 +751,22 @@ def edit(service):
             userid=None
         finally:
             connection.close()
-            return render_template("forms/edit_forms/editmadrasah.html",rows=rows)        
-        
+            return render_template("forms/edit_forms/editmadrasah.html",rows=rows)
+
+    elif (request.method == 'POST' and service=='tour'):
+        try:
+            userid = request.form['userid']
+            connection = sqlite3.connect("database.db")
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT * FROM User u JOIN Tours t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            rows = cursor.fetchall()
+        except:
+            userid=None
+        finally:
+            connection.close()
+            return render_template("forms/edit_forms/edittour.html",rows=rows)          
+
 
 
 

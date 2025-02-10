@@ -51,7 +51,7 @@
         <td>{{ row["Time"] }}</td>
         <td>{{ row["Date"] }}</td>
         <td><form action="/edit/nikah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>
-        <td><form onsubmit="return confirm('Are you sure you want to DELETE this Student from the Database?');" action="/delete/nikah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
+        <td><form onsubmit="return confirm('There is no gurantee that you can make this same booking again.\n Are you sure you want to DELETE this nikah booking?');" action="/delete/nikah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
 
     </tr>
     {% endfor %}

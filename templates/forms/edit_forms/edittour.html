@@ -1,0 +1,60 @@
+{% extends "pages/base_page.html" %}
+{% block title %}
+Edit Your Tour
+{% endblock %}
+{%block scripts%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#submitForm').click(function (e) {
+            e.preventDefault();
+
+            var formData = $('#editTour').serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '/edittourbooking',  
+                data: formData,
+                success: function (response) {
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error submitting form');
+                }
+            });
+        });
+    });
+</script>
+{%endblock%}
+{% block content %}
+        <h1>Editing Your Tour Form </h1>
+        {% for row in rows %}
+        <form id="editTour" action="{{ url_for('routes.edittourbooking') }}" method="POST">
+            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
+
+            <input type="hidden" name="TourID" value="{{ row['TourID'] }}"/>
+
+            <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
+
+            <br>Organiser's First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
+
+            <br>Organiser's Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
+
+            <br>Phone Number: <input type="text" name="phone_number" value="{{ row['PhoneNumber'] }}"/><br>
+
+            <br>Organiser's Date of Birth: <input type="date" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}"/><br>
+
+            <br>Number Of People: <input type="text" name="number_of_people" value="{{ row['NumberOfPeople'] }}"/><br>
+
+            <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
+
+            <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
+
+            <br><input id="submitForm" type="submit" value="Submit" /><br>
+        </form>
+        {% endfor %}
+{% endblock %}
