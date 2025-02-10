@@ -96,17 +96,17 @@ class Madrasah:
     def add_Madrasah(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Madrasah (UserID,Time, Date, ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?,?,?)', (self.user_id,self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth ))
+             cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB,Time,Date) VALUES (?,?,?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth, self.time, self.date ))
 
     def update(self):
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             query = '''
             UPDATE Madrasah
-            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?, BrideLastName = ?, Time = ?, Date = ?, PostCode = ?, AddressLine = ?
+            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?,  Time = ?, Date = ?
             WHERE UserID = ?
             '''
-            parameters = (self.time,self.date,self.child_fname,self.child_lname,self.child_date_of_birth, self.user_id)
+            parameters = (self.child_fname,self.child_lname,self.child_date_of_birth, self.time,self.date,self.user_id)
             cursor.execute(query, parameters)
             conn.commit()
 
@@ -417,11 +417,8 @@ class Email:
 
 
 class Validation:
-    def __init__(self, data):
-        self.data = data
-
     @classmethod
-    def nikah(cls, data):
+    def validate(cls, data):
         errors = []
         for key, value in data.items():
             if key =='Time':
@@ -448,16 +445,31 @@ class Validation:
 
                 if not (start_date <= bookingdate <= end_date):
                     errors.append(f"Booking date must be between 01/01/2025 and 31/12/2030.")
-                    
+
+            elif key == 'Child Date of Birth':
+                match = re.match("""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)
+                if not match:
+                    errors.append(f'{key} must be filled in.')
+                else:
+                    childdob = datetime.strptime(value, '%Y-%m-%d') 
+
+                    start_date = datetime.strptime('2000-01-01', '%Y-%m-%d')
+                    end_date = datetime.strptime('2020-12-31', '%Y-%m-%d')
+
+                    if not (start_date <= childdob <= end_date):
+                        errors.append(f"Child is too old to attend this madrasash.")
+
 
             elif key == 'Post Code' or key == 'Address Line':
                 match = re.match("""^[a-zA-Z0-9 ]*$""", value)
                 if not match:
                     errors.append(f"{key} must be a valid post code.")
+
             else:
                 match = re.match("""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
                 if not match:
                     errors.append(f"{key} must be alphabetical characters.")
+                    
         if errors:
             errors = '\n'.join(errors)
             return errors 

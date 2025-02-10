@@ -1,0 +1,53 @@
+{% extends "pages/base_page.html" %}
+{% block title %} Your Madrasah Booking {% endblock %}
+{% block head %} Editing Your Madrasah Booking {% endblock %}
+{% block content %}
+<table border="1px">
+    <thead>
+        <td><strong>UserID</strong></td>
+        <td><strong>MadrasahID</strong></td>
+        <td><strong>Parent's First Namw</strong></td>
+        <td><strong>Parent's Last Name</strong></td>
+        <td><strong>Email</strong></td>
+        <td><strong>Phone Number</strong></td>
+        <td><strong>Parent's Date of Birth</strong></td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{ row["UserID"] }}</td>
+        <td>{{ row["MadrasahID"] }}</td>
+        <td>{{ row["FirstName"]}}</td>
+        <td>{{ row["LastName"] }}</td>
+        <td>{{ row["Email"] }}</td>
+        <td>{{ row["PhoneNumber"] }}</td>
+        <td>{{ row["DoB"] }}</td>
+    </tr>
+    {% endfor %}
+</table> <br>
+
+<table border="1px">
+    <thead>
+        <td><strong>Child First Name</strong></td>
+        <td><strong>Child Last Name</strong></td>
+        <td><strong>Child Date of Birth</strong></td>
+        <td><strong>Time</strong></td>
+        <td><strong>Date</strong></td><br>
+        <td></td>
+        <td></td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{ row["ChildFirstName"] }}</td>
+        <td>{{ row["ChildLastName"] }}</td>
+        <td>{{ row["ChildDoB"] }}</td>
+        <td>{{ row["Time"] }}</td>
+        <td>{{ row["Date"] }}</td>
+        <td><form action="/edit/madrasah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>
+        <td><form onsubmit="return confirm('Are you sure you want to DELETE this Student from the Database?');" action="/delete/madrasah" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
+
+    </tr>
+    {% endfor %}
+</table>
+{%endblock%}
