@@ -1,0 +1,62 @@
+{% extends "forms/base_form.html" %}
+
+{% block title %} Function Booking {% endblock %}
+
+{% block head %} Function Form {% endblock %}
+
+{%block label1 %} First Name: {%endblock%}
+
+{%block label2 %} Last Name: {%endblock%}
+
+{% block content %}
+
+<div>
+    <label for="date-of-birth">Date of Birth: </label>
+    <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" placeholder="NOT REQUIRED">
+</div>
+
+<br>
+
+<div>
+    <label for ='address-line'>Address Line:</label>
+    <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd" required>
+</div>
+
+<br>
+
+<div>
+    <label for ='post-code'>Post Code:</label>
+    <input type = 'text' id="post-code" name="post_code" placeholder="LE4 9EA"  required>
+</div>
+
+<br>
+
+<div>
+    <label for="payment_method">Select a payment method for £130:</label>
+    <select id="payment_method" name="payment_method" onchange="toggleInput()">
+        <option value="">--Choose an option--</option>
+        <option value="CARD">CARD</option>
+        <option value="CASH">CASH</option>
+    </select>
+</div>
+
+<br>
+{%endblock%}
+{%block scripts %} 
+<script>
+    // function which makes sure the user chooses card/cash and validates all required fields
+    function validateForm() {
+        const selectedOption = document.getElementById('payment_method').value;
+        let missingFields = [];
+
+        // Validate payment option
+        if (!selectedOption) {
+            alert('Please select a payment option.');
+            return false; 
+        }
+
+        return true;
+    }
+</script>
+
+{%endblock%}

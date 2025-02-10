@@ -1,6 +1,6 @@
 {% extends "pages/base_page.html" %}
 {% block title %}
-Edit Your Madrasah
+Edit Your Function
 {% endblock %}
 {%block scripts%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -9,11 +9,11 @@ Edit Your Madrasah
         $('#submitForm').click(function (e) {
             e.preventDefault();
 
-            var formData = $('#editMadrasah').serialize();
+            var formData = $('#editFunction').serialize();
 
             $.ajax({
                 type: 'POST',
-                url: '/editmadrasahbooking',  
+                url: '/editfunctionbooking',  
                 data: formData,
                 success: function (response) {
                     if (response.redirect_url) {
@@ -31,28 +31,26 @@ Edit Your Madrasah
 </script>
 {%endblock%}
 {% block content %}
-        <h1>Editing Your Madrasah Form </h1>
+        <h1>Editing Your Function Form </h1>
         {% for row in rows %}
-        <form id="editMadrasah" action="{{ url_for('routes.editmadrasahbooking') }}" method="POST">
+        <form id="editFunction" action="{{ url_for('routes.editfunctionbooking') }}" method="POST">
             <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
 
-            <input type="hidden" name="MadrasahID" value="{{ row['MadrasahID'] }}"/>
+            <input type="hidden" name="FunctionID" value="{{ row['FunctionID'] }}"/>
 
             <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
 
-            <br>Parent's First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
+            <br>First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
 
-            <br>Parent's Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
+            <br>Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
 
             <br>Phone Number: <input type="text" name="phone_number" value="{{ row['PhoneNumber'] }}"/><br>
 
-            <br>Parent's Date of Birth: <input type="date" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}"/><br>
-
-            <br>Child First Name: <input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}"/><br>
+            <br>Date of Birth: <input type="date" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}"/><br>
             
-            <br>Child Last Name: <input type="text" name="child_lname" value="{{ row['ChildLastName'] }}"/><br>
+            <br>Address Line: <input type="text" name="address_line" value="{{ row['AddressLine'] }}"/><br>
 
-            <br>Child's Date of Birth: <input type="date" name="child_date_of_birth" min="2000-01-01" max="2020-12-31" value="{{ row['ChildDoB'] }}"/><br>
+            <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>            
 
             <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
 

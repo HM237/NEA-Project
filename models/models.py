@@ -169,7 +169,7 @@ class Tours:
             return success                 
 
 #Functions class which deals with Functions Table
-class Funtions:
+class Functions:
     def __init__(self, user_id, time, date, post_code, address_line):
         self.user_id = user_id
         self.time = time
@@ -180,17 +180,17 @@ class Funtions:
     def add_Function(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Functions (UserID,Time, Date, PostCode, AddressLine) VALUES (?,?,?,?.?)', (self.user_id,self.time,self.date,self.post_code, self.address_line))    
+             cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine, Time, Date) VALUES (?,?,?,?,?)', (self.user_id,self.post_code, self.address_line, self.time, self.date))    
 
     def update(self):
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             query = '''
-            UPDATE Functions
-            SET Time = ?, Date= ?, PostCode = ?, AddressLine - ?
+            UPDATE Function
+            SET PostCode = ?, AddressLine = ?, Time = ?, Date= ?
             WHERE UserID = ?
             '''
-            parameters = (self.time,self.date,self.post_code, self.address_line, self.user_id)
+            parameters = (self.post_code, self.address_line, self.time,self.date,self.user_id)
             cursor.execute(query, parameters)
             conn.commit()                     
 
@@ -200,7 +200,7 @@ class Funtions:
             with sqlite3.connect('database.db') as conn:
                     cursor = conn.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
-                    cursor.execute(f"DELETE FROM Functions WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Function WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     conn.commit()
                     conn.close()

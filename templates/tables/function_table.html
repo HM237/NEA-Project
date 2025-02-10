@@ -1,0 +1,51 @@
+{% extends "pages/base_page.html" %}
+{% block title %} Your Function Booking {% endblock %}
+{% block head %} Editing Your Function Booking {% endblock %}
+{% block content %}
+<table border="1px">
+    <thead>
+        <td><strong>UserID</strong></td>
+        <td><strong>FunctionID</strong></td>
+        <td><strong>First Name</strong></td>
+        <td><strong>Last Name</strong></td>
+        <td><strong>Email</strong></td>
+        <td><strong>Phone Number</strong></td>
+        <td><strong>Date of Birth</strong></td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{ row["UserID"] }}</td>
+        <td>{{ row["FunctionID"] }}</td>
+        <td>{{ row["FirstName"]}}</td>
+        <td>{{ row["LastName"] }}</td>
+        <td>{{ row["Email"] }}</td>
+        <td>{{ row["PhoneNumber"] }}</td>
+        <td>{{ row["DoB"] }}</td>
+    </tr>
+    {% endfor %}
+</table> <br>
+
+<table border="1px">
+    <thead>
+        <td><strong>Post Code</strong></td>
+        <td><strong>Address Line</strong></td>
+        <td><strong>Time</strong></td>
+        <td><strong>Date</strong></td><br>
+        <td></td>
+        <td></td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{ row["PostCode"] }}</td>
+        <td>{{ row["AddressLine"] }}</td>
+        <td>{{ row["Time"] }}</td>
+        <td>{{ row["Date"] }}</td>
+        <td><form action="/edit/function" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>
+        <td><form onsubmit="return confirm('There is no gurantee that you can make this same booking again.\n Are you sure you want to DELETE this function booking?');" action="/delete/function" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Delete"></form> </td>
+
+    </tr>
+    {% endfor %}
+</table>
+{%endblock%}
