@@ -69,7 +69,7 @@ def verification(service):
 
     if request.method == 'POST':
         email = request.form.get('email')
-        match = re.match("""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", email)
+        match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", email)
         if not match:
             session.pop('random_number', None)
             return jsonify({"message": f"PLease enter a valid email before trying to send a verification code."})

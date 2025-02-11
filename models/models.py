@@ -451,7 +451,7 @@ class Validation:
                     errors.append('Value has to be a number')
 
             elif key == 'Child Date of Birth':
-                match = re.match("""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)
+                match = re.match(r"""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)
                 if not match:
                     errors.append(f'{key} must be filled in.')
                 else:
@@ -464,18 +464,18 @@ class Validation:
                         errors.append(f"Child is too old to attend this madrasash.")
 
             elif key == 'Email':
-                match = re.match("""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", value)
+                match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", value)
                 if not match:
                     errors.append(f"{key} must be a valid email")
 
 
             elif key == 'Post Code' or key == 'Address Line':
-                match = re.match("""^[a-zA-Z0-9 ]*$""", value)
+                match = re.match(r"""^[a-zA-Z0-9 ]*$""", value)
                 if not match:
                     errors.append(f"{key} must be a valid post code.")
 
             else:
-                match = re.match("""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
+                match = re.match(r"""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)
                 if not match:
                     errors.append(f"{key} must be alphabetical characters.")
                     
