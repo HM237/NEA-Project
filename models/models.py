@@ -420,7 +420,7 @@ class Validation:
 
                 # Define allowed time range
                 start_time = datetime.strptime('16:30', '%H:%M')
-                end_time = datetime.strptime('20:00', '%H:%M')
+                end_time = datetime.strptime('21:00', '%H:%M')
 
                 # Check if booking time is within range
                 if not (start_time <= bookingtime <= end_time):
@@ -462,7 +462,7 @@ class Validation:
 
 
             elif key == 'Post Code' or key == 'Address Line':
-                match = re.match(r"""^[a-zA-Z0-9 ]*$""", value)
+                match = re.match(r"""(\w+\s\w+)""", value)
                 if not match:
                     errors.append(f"{key} must be a valid post code.")
 
