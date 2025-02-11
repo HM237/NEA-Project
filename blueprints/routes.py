@@ -240,7 +240,7 @@ def addnikah():
                     cur.close()
             
             #calling the class Nikah to store the data for the Nikah Table
-            new_nikah = Nikah(user_id= userid,groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line)
+            new_nikah = Nikah(user_id= userid,groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name , post_code= post_code, address_line= address_line)
             new_nikah.add_Nikah()  
             
             #calling the class Payment to store the data for the Payment Table
@@ -317,7 +317,7 @@ def editnikahbooking():
                 new_user.update(userid= userid)
 
                 #updating the booking by sending it to the class Nikah
-                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,post_code= post_code, address_line= address_line, user_id=userid)
                 new_nikah.update()  
 
                 return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
@@ -325,7 +325,7 @@ def editnikahbooking():
                 new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
                 new_user.update(userid= userid) 
 
-                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name ,time= time, date= date, post_code= post_code, address_line= address_line, user_id=userid)
+                new_nikah = Nikah(groom_first_name= groom_first_name , groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name , post_code= post_code, address_line= address_line, user_id=userid)
                 new_nikah.update()  
 
                 with sqlite3.connect('database.db') as con:
@@ -419,7 +419,7 @@ def addmadrasah():
                     cur.close()
             
             #calling the class Madrasah and storing the data for the Madrasah Table 
-            new_madrasah = Madrasah(user_id= userid, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
+            new_madrasah = Madrasah(user_id= userid, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
             new_madrasah.add_Madrasah()  
             
             #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.            
@@ -488,7 +488,7 @@ def editmadrasahbooking():
                 new_user.update(userid= userid)
 
                 #updating the booking by sending it to the class Madrasah
-                new_madrasah = Madrasah(user_id= userid, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
+                new_madrasah = Madrasah(user_id= userid, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
                 new_madrasah.update()  
 
                 return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
@@ -496,7 +496,7 @@ def editmadrasahbooking():
                 new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
                 new_user.update(userid= userid) 
 
-                new_madrasah = Madrasah(user_id= userid, time= time, date= date, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
+                new_madrasah = Madrasah(user_id= userid, child_fname = child_fname , child_lname = child_lname ,child_date_of_birth= child_date_of_birth )
                 new_madrasah.update()  
 
                 with sqlite3.connect('database.db') as con:
@@ -582,7 +582,7 @@ def addtour():
                     cur.close()
             
             #calling the class Madrasah and storing the data for the Madrasah Table 
-            new_tour = Tours(user_id= userid, time= time, date= date,number_of_people=number_of_people)
+            new_tour = Tours(user_id= userid, number_of_people=number_of_people)
             new_tour.add_Tour()  
             
             #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.            
@@ -649,7 +649,7 @@ def edittourbooking():
                 new_user.update(userid= userid)
 
                 #updating the booking by sending it to the class Madrasah
-                new_tour = Tours(user_id= userid, time= time, date= date, number_of_people=number_of_people )
+                new_tour = Tours(user_id= userid, number_of_people=number_of_people )
                 new_tour.update()  
 
                 return jsonify(redirect_url=url_for('routes.booking', service='tour', digest=f'{newdigest}'))
@@ -657,7 +657,7 @@ def edittourbooking():
                 new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
                 new_user.update(userid= userid) 
 
-                new_tour = Tours(user_id= userid, time= time, date= date, number_of_people=number_of_people )
+                new_tour = Tours(user_id= userid, number_of_people=number_of_people )
                 new_tour.update()  
 
                 with sqlite3.connect('database.db') as con:
@@ -749,7 +749,7 @@ def addfunction():
                     cur.close()
             
             #calling the class Nikah to store the data for the Function Table
-            new_function = Functions(user_id= userid,time= time, date= date, post_code= post_code, address_line= address_line)
+            new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
             new_function.add_Function()  
             
             #calling the class Payment to store the data for the Payment Table
@@ -823,14 +823,14 @@ def editfunctionbooking():
                 new_user.update(userid= userid)
 
                 #updating the booking by sending it to the class Nikah
-                new_function = Functions(user_id= userid,time= time, date= date, post_code= post_code, address_line= address_line)
+                new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
                 new_function.update()
                 return jsonify(redirect_url=url_for('routes.booking', service='function', digest=f'{newdigest}'))
             else:
                 new_user = User(first_name = first_name, last_name= last_name, email = email, phone_number= phone_number, date_of_birth= date_of_birth )
                 new_user.update(userid= userid) 
 
-                new_function = Functions(user_id= userid,time= time, date= date, post_code= post_code, address_line= address_line)
+                new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
                 new_function.update()   
 
                 with sqlite3.connect('database.db') as con:
@@ -918,7 +918,7 @@ def edit(service):
             connection = sqlite3.connect("database.db")
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM User u JOIN Nikah t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            cursor.execute(f"SELECT * FROM User JOIN Nikah ON User.UserID = Nikah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
             rows = cursor.fetchall()
         except:
             userid=None
@@ -932,7 +932,7 @@ def edit(service):
             connection = sqlite3.connect("database.db")
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM User u JOIN Madrasah t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            cursor.execute(f"SELECT * FROM User JOIN Madrasah ON User.UserID = Madrasah.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
             rows = cursor.fetchall()
         except:
             userid=None
@@ -946,7 +946,7 @@ def edit(service):
             connection = sqlite3.connect("database.db")
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM User u JOIN Tours t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            cursor.execute(f"SELECT * FROM User JOIN Tours ON User.UserID = Tours.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
             rows = cursor.fetchall()
         except:
             userid=None
@@ -961,7 +961,7 @@ def edit(service):
             connection = sqlite3.connect("database.db")
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM User u JOIN Function t ON u.UserID = t.UserID WHERE u.UserID={userid}")
+            cursor.execute(f"SELECT * FROM User JOIN Function ON User.UserID = Function.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
             rows = cursor.fetchall()
         except:
             userid=None

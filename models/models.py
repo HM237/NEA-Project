@@ -35,14 +35,12 @@ class User:
 
 #Nikah class which deals with Nikah Table
 class Nikah:
-    def __init__(self, user_id,groom_first_name, groom_last_name, bride_first_name, bride_last_name, time, date, post_code, address_line):
+    def __init__(self, user_id,groom_first_name, groom_last_name, bride_first_name, bride_last_name, post_code, address_line):
         self.user_id = user_id
         self.groom_first_name = groom_first_name
         self.groom_last_name = groom_last_name        
         self.bride_first_name = bride_first_name
         self.bride_last_name = bride_last_name
-        self.time = time
-        self.date = date
         self.post_code = post_code
         self.address_line = address_line
 
@@ -50,7 +48,7 @@ class Nikah:
     def add_Nikah(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,Time, Date, PostCode,AddressLine) VALUES (?,?,?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name, self.time, self.date, self.post_code, self.address_line))
+             cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,PostCode,AddressLine) VALUES (?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line))
              conn.commit()  
 
     #this updates  a specific row in the Nikah Table
@@ -59,10 +57,10 @@ class Nikah:
             cursor = conn.cursor()
             query = '''
             UPDATE Nikah
-            SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?, Time = ?, Date = ?, PostCode = ?, AddressLine = ?
+            SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?,PostCode = ?, AddressLine = ?
             WHERE UserID = ?
             '''
-            parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name, self.time, self.date, self.post_code, self.address_line, self.user_id)
+            parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line, self.user_id)
             cursor.execute(query, parameters)
             conn.commit()
 
@@ -85,10 +83,8 @@ class Nikah:
 
 #Madrasah class which deals with Madrasah Table
 class Madrasah:
-    def __init__(self, user_id, time, date, child_fname, child_lname, child_date_of_birth ):
+    def __init__(self, user_id,child_fname, child_lname, child_date_of_birth ):
         self.user_id = user_id
-        self.time = time
-        self.date = date
         self.child_fname = child_fname
         self.child_lname = child_lname
         self.child_date_of_birth = child_date_of_birth
@@ -96,17 +92,17 @@ class Madrasah:
     def add_Madrasah(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB,Time,Date) VALUES (?,?,?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth, self.time, self.date ))
+             cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth ))
 
     def update(self):
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             query = '''
             UPDATE Madrasah
-            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?,  Time = ?, Date = ?
+            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?
             WHERE UserID = ?
             '''
-            parameters = (self.child_fname,self.child_lname,self.child_date_of_birth, self.time,self.date,self.user_id)
+            parameters = (self.child_fname,self.child_lname,self.child_date_of_birth,self.user_id)
             cursor.execute(query, parameters)
             conn.commit()
 
@@ -128,26 +124,24 @@ class Madrasah:
 
 #Tours class which deals with Tours Table
 class Tours:
-    def __init__(self, user_id, time, date, number_of_people):
+    def __init__(self, user_id, number_of_people):
         self.user_id = user_id
-        self.time = time
-        self.date = date
         self.number_of_people= number_of_people
 
     def add_Tour(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Tours (UserID,Time, Date, NumberOfPeople) VALUES (?,?,?,?)', (self.user_id,self.time,self.date,self.number_of_people))
+             cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople) VALUES (?,?)', (self.user_id,self.number_of_people))
 
     def update(self):
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             query = '''
             UPDATE Tours
-            SET Time = ?, Date= ?, NumberOfPeople= ?
+            SET NumberOfPeople= ?
             WHERE UserID = ?
             '''
-            parameters = (self.time,self.date,self.number_of_people, self.user_id)
+            parameters = (self.number_of_people, self.user_id)
             cursor.execute(query, parameters)
             conn.commit()       
 
@@ -170,27 +164,25 @@ class Tours:
 
 #Functions class which deals with Functions Table
 class Functions:
-    def __init__(self, user_id, time, date, post_code, address_line):
+    def __init__(self, user_id,post_code, address_line):
         self.user_id = user_id
-        self.time = time
-        self.date = date
         self.post_code = post_code
         self.address_line = address_line
 
     def add_Function(self):
         with sqlite3.connect('database.db') as conn:
              cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine, Time, Date) VALUES (?,?,?,?,?)', (self.user_id,self.post_code, self.address_line, self.time, self.date))    
+             cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine) VALUES (?,?,?)', (self.user_id,self.post_code, self.address_line))    
 
     def update(self):
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             query = '''
             UPDATE Function
-            SET PostCode = ?, AddressLine = ?, Time = ?, Date= ?
+            SET PostCode = ?, AddressLine = ?
             WHERE UserID = ?
             '''
-            parameters = (self.post_code, self.address_line, self.time,self.date,self.user_id)
+            parameters = (self.post_code, self.address_line,self.user_id)
             cursor.execute(query, parameters)
             conn.commit()                     
 
