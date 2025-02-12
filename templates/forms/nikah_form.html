@@ -72,12 +72,10 @@
 {%endblock%}
 {%block scripts %} 
 <script>
-    // function which makes sure the user chooses card/cash and validates all required fields
     function validateForm() {
         const selectedOption = document.getElementById('payment_method').value;
         let missingFields = [];
 
-        // Validate payment option
         if (!selectedOption) {
             alert('Please select a payment option.');
             return false; 

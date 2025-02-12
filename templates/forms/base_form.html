@@ -7,21 +7,22 @@
 
     <title> {%block title%}{%endblock%} </title>
     {% block style %} {% endblock %}
+    <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='icon.jpg') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#sendEmail').click(function (e) {
-                e.preventDefault();  // Prevent the form from submitting therefore stopping the page from reloading
+                e.preventDefault();  
     
-                var formData = $('#{{ form_id }}').serialize();  // Collectign the form data so that we can still send to the Flask back end
+                var formData = $('#{{ form_id }}').serialize(); 
     
                 $.ajax({
                     type: 'POST',
-                    url: '/verification/{{ service }}',  // Vreifcaition route will send verifcaition email
+                    url: '/verification/{{ service }}',  
                     data: formData,
                     success: function (response) {
-                        alert(response.message);  //Response message if successful or not
+                        alert(response.message);  
                     },
                     error: function () {
                         alert('Error sending email');
@@ -36,7 +37,7 @@
     
                 $.ajax({
                     type: 'POST',
-                    url: '{{ action_url }}',  // Sedning it to the appropriate route 
+                    url: '{{ action_url }}',  
                     data: formData,
                     success: function (response) {
                         alert(response.message); 
