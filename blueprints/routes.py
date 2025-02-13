@@ -370,7 +370,7 @@ def addnikah():
                     return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
                 
                 except Exception as e:
-                    return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                     
+                    return jsonify({"message": f"This error: {e} has occured. Please try again later to submit this booking or inform the masjid."})                     
 
                 try:
                     #sending the summary email after inserting all data to database. 
@@ -645,7 +645,7 @@ def addmadrasah():
                     return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
                 
                 except Exception as e:
-                    return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                     
+                    return jsonify({"message": f"This error: {e} has occured. Please try again later to submit this booking or inform the masjid."})                     
 
                 try:
                     #sending the summary email after inserting all data to database    
@@ -912,7 +912,7 @@ def addtour():
                     return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
                 
                 except Exception as e:
-                    return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})     
+                    return jsonify({"message": f"This error: {e} has occured. Please try again later to submit this booking or inform the masjid."})     
 
 
                 try:
