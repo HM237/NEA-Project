@@ -2,9 +2,22 @@ import sqlite3
 import os
 import re
 import smtplib
+import socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
+
+class DatabaseError(Exception):
+    pass
+
+class ServerError(Exception):
+    pass
+
+class UnboundLocalErrors(Exception):
+    pass
+
+class SocketError(Exception):
+    pass
 
 #User class which deals with  User Table
 class User:
@@ -16,22 +29,50 @@ class User:
         self.date_of_birth= date_of_birth
     
     def add_User(self):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute('INSERT INTO  User (FirstName, LastName, Email, PhoneNumber, DoB) VALUES (?,?,?,?,?)', (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth))
-            conn.commit()
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  User (FirstName, LastName, Email, PhoneNumber, DoB) VALUES (?,?,?,?,?)', (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth))
+                connection.commit()
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()
 
     def update(self,userid):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            query = '''
-            UPDATE User
-            SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DoB = ?
-            WHERE UserID = ?
-            '''
-            parameters = (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth, userid)
-            cursor.execute(query, parameters)
-            conn.commit()              
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE User
+                SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DoB = ?
+                WHERE UserID = ?
+                '''
+                parameters = (self.first_name,self.last_name,self.email,self.phone_number, self.date_of_birth, userid)
+                cursor.execute(query, parameters)
+                connection.commit()
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()            
 
 #Nikah class which deals with Nikah Table
 class Nikah:
@@ -46,40 +87,78 @@ class Nikah:
 
     #this adds the data to the Nikah Table
     def add_Nikah(self):
-        with sqlite3.connect('database.db') as conn:
-             cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,PostCode,AddressLine) VALUES (?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line))
-             conn.commit()  
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,PostCode,AddressLine) VALUES (?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line))
+                connection.commit()  
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     #this updates  a specific row in the Nikah Table
     def update(self):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            query = '''
-            UPDATE Nikah
-            SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?,PostCode = ?, AddressLine = ?
-            WHERE UserID = ?
-            '''
-            parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line, self.user_id)
-            cursor.execute(query, parameters)
-            conn.commit()
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE Nikah
+                SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?,PostCode = ?, AddressLine = ?
+                WHERE UserID = ?
+                '''
+                parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line, self.user_id)
+                cursor.execute(query, parameters)
+                connection.commit()
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     def delete(userid):
         success = False
         try:    
-            with sqlite3.connect('database.db') as conn:
-                    cursor = conn.cursor()
+            with sqlite3.connect('database.db') as connection:
+                    cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                    
-                    conn.commit()
-                    conn.close()
+                    connection.commit()
+                    connection.close()
                     success = True 
             return success
-        except:
-            error = 'Error'       
-            return success
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()      
 
 #Madrasah class which deals with Madrasah Table
 class Madrasah:
@@ -90,37 +169,75 @@ class Madrasah:
         self.child_date_of_birth = child_date_of_birth
 
     def add_Madrasah(self):
-        with sqlite3.connect('database.db') as conn:
-             cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth ))
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth ))
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     def update(self):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            query = '''
-            UPDATE Madrasah
-            SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?
-            WHERE UserID = ?
-            '''
-            parameters = (self.child_fname,self.child_lname,self.child_date_of_birth,self.user_id)
-            cursor.execute(query, parameters)
-            conn.commit()
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE Madrasah
+                SET ChildFirstName = ?, ChildLastName = ?, ChildDoB = ?
+                WHERE UserID = ?
+                '''
+                parameters = (self.child_fname,self.child_lname,self.child_date_of_birth,self.user_id)
+                cursor.execute(query, parameters)
+                connection.commit()
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     def delete(userid):
         success = False
         try:    
-            with sqlite3.connect('database.db') as conn:
-                    cursor = conn.cursor()
+            with sqlite3.connect('database.db') as connection:
+                    cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Madrasah WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    conn.commit()
-                    conn.close()
+                    connection.commit()
+                    connection.close()
                     success = True 
             return success
-        except:
-            error = 'Error'       
-            return success                   
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
 #Tours class which deals with Tours Table
 class Tours:
@@ -129,13 +246,26 @@ class Tours:
         self.number_of_people= number_of_people
 
     def add_Tour(self):
-        with sqlite3.connect('database.db') as conn:
-             cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople) VALUES (?,?)', (self.user_id,self.number_of_people))
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople) VALUES (?,?)', (self.user_id,self.number_of_people))
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     def update(self):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
+        with sqlite3.connect('database.db') as connection:
+            cursor = connection.cursor()
             query = '''
             UPDATE Tours
             SET NumberOfPeople= ?
@@ -143,24 +273,34 @@ class Tours:
             '''
             parameters = (self.number_of_people, self.user_id)
             cursor.execute(query, parameters)
-            conn.commit()       
+            connection.commit()       
 
     def delete(userid):
         success = False
         try:    
-            with sqlite3.connect('database.db') as conn:
-                    cursor = conn.cursor()
+            with sqlite3.connect('database.db') as connection:
+                    cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Tours WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                                        
-                    conn.commit()
-                    conn.close()
+                    connection.commit()
+                    connection.close()
                     success = True 
             return success
-        except:
-            error = 'Error'       
-            return success                 
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                  
 
 #Functions class which deals with Functions Table
 class Functions:
@@ -170,37 +310,76 @@ class Functions:
         self.address_line = address_line
 
     def add_Function(self):
-        with sqlite3.connect('database.db') as conn:
-             cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine) VALUES (?,?,?)', (self.user_id,self.post_code, self.address_line))    
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine) VALUES (?,?,?)', (self.user_id,self.post_code, self.address_line))    
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
     def update(self):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            query = '''
-            UPDATE Function
-            SET PostCode = ?, AddressLine = ?
-            WHERE UserID = ?
-            '''
-            parameters = (self.post_code, self.address_line,self.user_id)
-            cursor.execute(query, parameters)
-            conn.commit()                     
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE Function
+                SET PostCode = ?, AddressLine = ?
+                WHERE UserID = ?
+                '''
+                parameters = (self.post_code, self.address_line,self.user_id)
+                cursor.execute(query, parameters)
+                connection.commit()     
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                              
 
     def delete(userid):
         success = False
         try:    
-            with sqlite3.connect('database.db') as conn:
-                    cursor = conn.cursor()
+            with sqlite3.connect('database.db') as connection:
+                    cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Function WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    conn.commit()
-                    conn.close()
+                    connection.commit()
+                    connection.close()
                     success = True 
             return success
-        except:
-            error = 'Error'       
-            return success
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()     
+
 #Payment class which inserts into Payment Table
 class Payment:
     def __init__(self, user_id,post_code, address_line,payment_method, price):
@@ -212,10 +391,24 @@ class Payment:
 
 
     def add_Payment(self):
-        with sqlite3.connect('database.db') as conn:
-             cursor = conn.cursor()
-             cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,Price) VALUES (?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.price))
-             conn.commit()
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Payment (UserID,PaymentMethod,AddressLine,PostCode,Price) VALUES (?,?,?,?,?)', (self.user_id, self.payment_method, self.address_line, self.post_code, self.price))
+                connection.commit()
+
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                      
 
 #Clashed class which checks for unavailable bookings
 class Clashed:
@@ -225,18 +418,28 @@ class Clashed:
     
     @classmethod
     def clashed(cls, time, date):
-        exists = False #assumes that the time and date has not already been booked 
         try:
-            with sqlite3.connect('database.db') as conn:
-                cursor = conn.cursor()
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
                 cursor.execute(f'SELECT * FROM User u JOIN Hash t ON u.UserID = t.UserID WHERE time = "{time}" AND date = "{date}"')
                 result = cursor.fetchone()
                 if result is not None:
                     return True
                 else:
                     return False
-        except:
-            return True
+                
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()      
 
 #Hash class which performs the hash algorithm
 class Hash:    
@@ -262,30 +465,59 @@ class Hash:
         return digest
 
     def add_digest(self, digest):
-        #storing the digest in the Hash Table along with UserID,Time and Date
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
-            conn.commit()
-        return digest
+        try:
+            #storing the digest in the Hash Table along with UserID,Time and Date
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
+                connection.commit()
+            return digest
+        
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()              
     
     def update(self,newdigest):
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            query = '''
-            UPDATE Hash
-            SET Digest = ?, Time = ?, Date = ?
-            WHERE UserID = ? 
-            '''
-            parameters = (newdigest, self.time, self.date, self.userid)
-            cursor.execute(query, parameters)
-            conn.commit()        
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE Hash
+                SET Digest = ?, Time = ?, Date = ?
+                WHERE UserID = ? 
+                '''
+                parameters = (newdigest, self.time, self.date, self.userid)
+                cursor.execute(query, parameters)
+                connection.commit()        
 
+        except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    raise DatabaseError("The database is locked.")
+                else:
+                    raise
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()      
+            
 #Email class which will execute the verification/summary processs
 class Email:
     def __init__(self, email, number):
         self.email = email
         self.number = number
+        print(f'the :{self.number} and {self.email}')
     
     def send_verification_email(self):
         #using os so that personal details aren't shown
@@ -340,12 +572,15 @@ class Email:
             # Sending the email
             server.sendmail(sender_email, receiver_email, msg.as_string())
             print("Email sent successfully!")
-
+        except UnboundLocalError as e:
+            raise UnboundLocalErrors(f"Unbound local error: {e}")
+        
+        except (socket.gaierror, socket.herror, socket.timeout, smtplib.SMTPException) as e:
+                print(f'error was caught here: {e}')
+                raise SocketError("The email server could not connect.")
         except Exception as e:
-            error = "Error: {e}"
-        finally:
-            server.quit()
-        return code ##we should probably change this line idk
+            print(f'The Error was is this even updating: {e}')
+            raise ServerError("Unexpected error")
     
     def send_summary_email(self, service):
         #using os so that personal details aren't shown
@@ -401,12 +636,15 @@ class Email:
             server.sendmail(sender_email, receiver_email, msg.as_string())
             print("Email sent successfully!")
 
+        except UnboundLocalError as e:
+            raise UnboundLocalErrors(f"Unbound local error: {e}")
+        
+        except (socket.gaierror, socket.herror, socket.timeout, smtplib.SMTPException) as e:
+                print(f'error was caught here: {e}')
+                raise SocketError("The email server could not connect.")
         except Exception as e:
-            error = f"Error: {e}"
-        finally:
-            server.quit()
-        return f'Success?'
-
+            print(f'Unexpected error: {e}')
+            raise ServerError("Unexpected error")
 
 class Validation:
     @classmethod
@@ -441,6 +679,9 @@ class Validation:
             elif key == 'Number Of People':
                 if not value.isnumeric():
                     errors.append('Value has to be a number')
+
+            elif key == 'Number of People':
+                print(value)
 
             elif key == 'Child Date of Birth':
                 match = re.match(r"""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)
