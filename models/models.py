@@ -142,8 +142,6 @@ class Nikah:
                     cursor.execute(f"DELETE FROM Nikah WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                    
-                    connection.commit()
-                    connection.close()
                     success = True 
             return success
         
@@ -221,8 +219,6 @@ class Madrasah:
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Madrasah WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    connection.commit()
-                    connection.close()
                     success = True 
             return success
         
@@ -304,16 +300,17 @@ class Tours:
 
 #Functions class which deals with Functions Table
 class Functions:
-    def __init__(self, user_id,post_code, address_line):
+    def __init__(self, user_id,post_code, address_line, eventid):
         self.user_id = user_id
         self.post_code = post_code
         self.address_line = address_line
+        self.eventid = eventid
 
     def add_Function(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine) VALUES (?,?,?)', (self.user_id,self.post_code, self.address_line))    
+                cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine, EventTypeID) VALUES (?,?,?,?)', (self.user_id,self.post_code, self.address_line, self.eventid))    
 
         except sqlite3.OperationalError as e:
                 if 'database is locked' in str(e):
@@ -334,10 +331,10 @@ class Functions:
                 cursor = connection.cursor()
                 query = '''
                 UPDATE Function
-                SET PostCode = ?, AddressLine = ?
+                SET PostCode = ?, AddressLine = ?, EventTypeID= ?
                 WHERE UserID = ?
                 '''
-                parameters = (self.post_code, self.address_line,self.user_id)
+                parameters = (self.post_code, self.address_line, self.eventid, self.user_id)
                 cursor.execute(query, parameters)
                 connection.commit()     
 
@@ -362,8 +359,6 @@ class Functions:
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Function WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    connection.commit()
-                    connection.close()
                     success = True 
             return success
         
@@ -517,7 +512,6 @@ class Email:
     def __init__(self, email, number):
         self.email = email
         self.number = number
-        print(f'the :{self.number} and {self.email}')
     
     def send_verification_email(self):
         #using os so that personal details aren't shown
@@ -678,10 +672,7 @@ class Validation:
 
             elif key == 'Number Of People':
                 if not value.isnumeric():
-                    errors.append('Value has to be a number')
-
-            elif key == 'Number of People':
-                print(value)
+                    errors.append(f'{value} has to be a number')
 
             elif key == 'Child Date of Birth':
                 match = re.match(r"""^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$""", value)

@@ -30,6 +30,7 @@
     <thead>
         <td><strong>Post Code</strong></td>
         <td><strong>Address Line</strong></td>
+        <td><strong>Event Type</strong></td>
         <td><strong>Time</strong></td>
         <td><strong>Date</strong></td><br>
         <td></td>
@@ -40,6 +41,7 @@
     <tr>
         <td>{{ row["PostCode"] }}</td>
         <td>{{ row["AddressLine"] }}</td>
+        <td>{{ row["EventType"] }}</td>
         <td>{{ row["Time"] }}</td>
         <td>{{ row["Date"] }}</td>
         <td><form action="/edit/function" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>

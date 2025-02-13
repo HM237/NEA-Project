@@ -190,7 +190,7 @@ def verification(service):
                         'Email':email,
                         'Address Line':address_line, 
                         'Post Code':post_code, 
-                        'Number of People':number_of_people,
+                        'Number Of People':number_of_people,
                         'Time':time, 
                         'Date': date}
                 
@@ -1092,7 +1092,7 @@ def function_booking():
 def addfunction():
     random_number = session.get('random_number') # Retrieve the stored random number in our session and if not prompt user to create one    
     if random_number:
-        print(f'The verification code was generated: {random_number}')
+        print(f'Retrieved verification code.')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})
     
@@ -1120,7 +1120,9 @@ def addfunction():
                 date_of_birth = request.form["date_of_birth"]               
                 post_code = request.form["post_code"]            
                 address_line = request.form["address_line"]             
-                payment_method = request.form.get('payment_method')            
+                payment_method = request.form.get('payment_method')     
+                event_type = request.form.get('event_type')            
+                print(event_type)
                 price = 130
 
                 data = {'First Name': first_name, 
@@ -1146,16 +1148,22 @@ def addfunction():
                     
                     new_user.add_User()
 
+                    print(f'this was the event: {event_type}')
+
                     with sqlite3.connect('database.db') as con:
                             cur = con.cursor()
                             cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
                             result = cur.fetchone()
                             userid = result[0]
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]
                             con.commit()
                             cur.close()
 
+                    print(eventid)
                     #calling the Function Class to store the data for the Function Table
-                    new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
+                    new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid= eventid)
                     new_function.add_Function()  
                     
                     #calling the class Payment to store the data for the Payment Table
@@ -1232,7 +1240,8 @@ def editfunctionbooking():
                 phone_number = request.form["phone_number"]    
                 date_of_birth = request.form["date_of_birth"]   
                 post_code = request.form["post_code"]          
-                address_line = request.form["address_line"]   
+                address_line = request.form["address_line"]
+                event_type = request.form.get('event_type')            
 
                 data = {'First Name': first_name,
                         'Last Name': last_name, 
@@ -1280,8 +1289,19 @@ def editfunctionbooking():
                         
                         new_user.update(userid= userid)
 
+
+                        with sqlite3.connect('database.db') as con:
+                            cur = con.cursor()
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]
+                            con.commit()
+                            cur.close()
+
+                        print(f'the {eventid}')                        
+
                         #updating the booking by sending it to the Function Class.
-                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
+                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid=eventid)
                         new_function.update()
                         return jsonify(redirect_url=url_for('routes.booking', service='function', digest=f'{newdigest}'))
                     
@@ -1304,7 +1324,17 @@ def editfunctionbooking():
                         
                         new_user.update(userid= userid) 
 
-                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line)
+                        with sqlite3.connect('database.db') as con:
+                            cur = con.cursor()
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]
+                            con.commit()
+                            cur.close()
+
+                        print(f'the {eventid}')                        
+
+                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line,eventid=eventid)
                         new_function.update()   
 
                         with sqlite3.connect('database.db') as connection:
@@ -1344,7 +1374,6 @@ def editfunctionbooking():
 def booking(service, digest):
     try:
         if service == 'nikah':
-            try:
                 # searches for the Nikah row related to the Hash digest. We join the tables User, Nikah and Hash through the foreign key UserID and use the digest to see which UserID correlates to the digest.
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
@@ -1357,22 +1386,7 @@ def booking(service, digest):
                     return render_template("pages/error.html", errormsg = msg ) 
                 return render_template("tables/nikah_table.html", rows = rows) 
             
-            except sqlite3.OperationalError:
-                msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg ) 
-
-
-            except sqlite3.DatabaseError:
-                msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg )             
-            
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)        
-                
-
         elif service == 'madrasah':
-            try:
                 # searches for the Madrasah row related to the Hash digest. We join the tables User, Madrasah and Hash through the foreign key UserID and use the digest to see which UserID correlates to the digest.      
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
@@ -1383,24 +1397,10 @@ def booking(service, digest):
                 if len(rows) == 0:
                     msg = f"It seems like you don't have a valid booking. Please feel free to make a booking."
                     return render_template("pages/error.html", errormsg = msg ) 
-                return render_template("tables/madrasah_table.html", rows = rows)       
-            
-            except sqlite3.OperationalError:
-                msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg ) 
-
-
-            except sqlite3.DatabaseError:
-                msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg )            
-            
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)                     
+                return render_template("tables/madrasah_table.html", rows = rows)                         
 
 
         elif service == 'tour':
-            try:
                 # searches for the Tour row related to the Hash digest. We join the tables User, Tour and Hash through the foreign key UserID and use the digest to see which UserID correlates to the digest.  
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
@@ -1413,53 +1413,40 @@ def booking(service, digest):
                     return render_template("pages/error.html", errormsg = msg ) 
                 return render_template("tables/tour_table.html", rows = rows)    
 
-            except sqlite3.OperationalError:
-                msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg ) 
-
-
-            except sqlite3.DatabaseError:
-                msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg )          
-
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)                 
-
         elif service == 'function':
-            try:
                 # searches for the Function row related to the Hash digest. We join the tables User, Function and Hash through the foreign key UserID and use the digest to see which UserID correlates to the digest.                  
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
                     cursor = connection.cursor()
-                    cursor.execute(f"SELECT * FROM User JOIN Function ON User.UserID = Function.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
-                    rows = cursor.fetchall()
+                    cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'")                    
+                    # cursor.execute(f"SELECT * FROM User JOIN Function ON User.UserID = Function.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
+                    rows = cursor.fetchall()#
                 #if the digest never existed we return the error page
                 if len(rows) == 0:
                     msg = f"It seems like you don't have a valid booking. Please feel free to make a booking."
                     return render_template("pages/error.html", errormsg = msg ) 
                 return render_template("tables/function_table.html", rows = rows)  
             
-            except sqlite3.OperationalError:
-                msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg ) 
+    except sqlite3.OperationalError:
+        msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
+        return render_template("pages/error.html", errormsg = msg ) 
 
 
-            except sqlite3.DatabaseError:
-                msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
-                return render_template("pages/error.html", errormsg = msg )       
-                
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)               
-
-            finally:
-                cursor.close()
-                connection.close()         
-
+    except sqlite3.DatabaseError:
+        msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
+        return render_template("pages/error.html", errormsg = msg )       
+        
+    except Exception as e:
+        msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
+        return render_template('pages/error.html', errormsg = msg)               
+    
     except Exception as e:
         return render_template('pages/error.html', errormsg = f'Unknown error has occurred: {e}')
     
+    finally:
+        cursor.close()
+        connection.close()         
+
     return render_template('pages/index.html')
 
 #Route to the edit forms. Uses the dynamic URL to determin which service form it should redirect the user to.
@@ -1557,7 +1544,8 @@ def edit(service):
                 connection = sqlite3.connect("database.db")
                 connection.row_factory = sqlite3.Row
                 cursor = connection.cursor()
-                cursor.execute(f"SELECT * FROM User JOIN Function ON User.UserID = Function.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
+                cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'")                
+                # cursor.execute(f"SELECT * FROM User JOIN Function ON User.UserID = Function.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
                 rows = cursor.fetchall()
                 return render_template("forms/edit_forms/editfunction.html",rows=rows)     
                 
@@ -1590,41 +1578,23 @@ def delete(service):
     try:
         #The dynamic URL tells us which service Table the record needs to be deleted from.
         if (request.method == 'POST' and service =='nikah'):
-            try:
                 userid = request.form['userid']
                 deletebooking = Nikah.delete(userid=userid) # Nikah Class deletes the record.
-                return(f'{deletebooking}')
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)
         
         elif (request.method == 'POST' and service =='madrasah'):
-            try:
                 userid = request.form['userid']
                 deletebooking = Madrasah.delete(userid=userid) # Madrasah Class deletes the record.
-                return(f'{deletebooking}')
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)
 
         elif (request.method == 'POST' and service == 'tour'):
-            try:
                 userid = request.form['userid']   
                 deletebooking = Tours.delete(userid = userid) # Tour Class deletes the record.
-                return(f'{deletebooking}')
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)
+
 
         elif (request.method == 'POST' and service == 'function'):
-            try:
                 userid = request.form['userid']   
                 deletebooking = Functions.delete(userid = userid) # Function Class deletes the record.
-                return(f'{deletebooking}')
-            except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
-                return render_template('pages/error.html', errormsg = msg)
+        
     except Exception as e:
         return render_template('pages/error.html', errormsg = f'Unknown error has occurred: {e}')
     
-    return render_template('pages/index.html')
+    return render_template('pages/success.html')

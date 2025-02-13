@@ -50,7 +50,16 @@ Edit Your Function
             
             <br>Address Line: <input type="text" name="address_line" value="{{ row['AddressLine'] }}"/><br>
 
-            <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>            
+            <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>         
+            
+            <br>Choose an event:     <select id="event_type" name="event_type" onchange="toggleInput()">
+                <option value="{{ row['EventType'] }}"> {{ row['EventType'] }} </option>
+                <option value="Aqiqah">Aqiqah</option>
+                <option value="Walimah">Walimah</option>
+                <option value="Other">Other</option>
+            </select>
+            <br>            
+
 
             <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
 
