@@ -76,21 +76,19 @@ class User:
 
 #Nikah class which deals with Nikah Table
 class Nikah:
-    def __init__(self, user_id,groom_first_name, groom_last_name, bride_first_name, bride_last_name, post_code, address_line):
+    def __init__(self, user_id,groom_first_name, groom_last_name, bride_first_name, bride_last_name):
         self.user_id = user_id
         self.groom_first_name = groom_first_name
         self.groom_last_name = groom_last_name        
         self.bride_first_name = bride_first_name
         self.bride_last_name = bride_last_name
-        self.post_code = post_code
-        self.address_line = address_line
 
     #this adds the data to the Nikah Table
     def add_Nikah(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName,PostCode,AddressLine) VALUES (?,?,?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line))
+                cursor.execute('INSERT INTO  Nikah (UserID,GroomFirstName,GroomLastName,BrideFirstName,BrideLastName) VALUES (?,?,?,?,?)', (self.user_id, self.groom_first_name,self.groom_last_name, self.bride_first_name, self.bride_last_name))
                 connection.commit()  
 
         except sqlite3.OperationalError as e:
@@ -113,10 +111,10 @@ class Nikah:
                 cursor = connection.cursor()
                 query = '''
                 UPDATE Nikah
-                SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?,PostCode = ?, AddressLine = ?
+                SET GroomFirstName = ?, GroomLastName = ?, BrideFirstName = ?, BrideLastName = ?
                 WHERE UserID = ?
                 '''
-                parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.post_code, self.address_line, self.user_id)
+                parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.user_id)
                 cursor.execute(query, parameters)
                 connection.commit()
 
