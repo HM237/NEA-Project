@@ -863,6 +863,8 @@ def addtour():
                 phone_number = request.form["phone_number"]
                 date_of_birth = request.form["date_of_birth"]               
                 number_of_people = request.form["number_of_people"]
+                event_type = request.form.get('event_type')            
+
 
                 #calling the User Class and storing the data in the User Table
 
@@ -892,11 +894,14 @@ def addtour():
                             cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
                             result = cur.fetchone()
                             userid = result[0]
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]                            
                             con.commit()
                             cur.close()
                     
                     #Tour Class stores the data in the Tour Table.
-                    new_tour = Tours(user_id= userid, number_of_people=number_of_people)
+                    new_tour = Tours(user_id= userid, number_of_people=number_of_people, eventid  = eventid)
                     new_tour.add_Tour()  
                     
                 
@@ -970,6 +975,8 @@ def edittourbooking():
                 phone_number = request.form["phone_number"]
                 date_of_birth = request.form["date_of_birth"]               
                 number_of_people = request.form["number_of_people"]
+                event_type = request.form.get('event_type')            
+
 
     
                 data = {'First Name':first_name, 
@@ -982,6 +989,19 @@ def edittourbooking():
                 invalid = Validation.validate(data= data)
                 if invalid:
                     return jsonify({"message": f"{invalid}"}) 
+                
+
+                try:
+                    with sqlite3.connect('database.db') as con:
+                        cur = con.cursor()
+                        cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                        result = cur.fetchone()
+                        eventid = result[0]
+                        con.commit()
+                        cur.close()                   
+                except Exception as e:
+                    return jsonify({"message": f"Unfortunately this booking is unavailable. Please re-book for another time/date.'"})
+
 
                 #updating the digest since their time/date has changed
                 if (time != result[0]) or (date != result[1]):
@@ -1016,7 +1036,7 @@ def edittourbooking():
                         new_user.update(userid= userid)
 
                         #updating the booking by using Tours Class.
-                        new_tour = Tours(user_id= userid, number_of_people=number_of_people )
+                        new_tour = Tours(user_id= userid, number_of_people=number_of_people, eventid = eventid )
                         new_tour.update()  
 
                         return jsonify(redirect_url=url_for('routes.booking', service='tour', digest=f'{newdigest}'))
@@ -1039,7 +1059,7 @@ def edittourbooking():
                         
                         new_user.update(userid= userid) 
 
-                        new_tour = Tours(user_id= userid, number_of_people=number_of_people )
+                        new_tour = Tours(user_id= userid, number_of_people=number_of_people, eventid = eventid )
                         new_tour.update()  
 
                         with sqlite3.connect('database.db') as con:
@@ -1122,7 +1142,6 @@ def addfunction():
                 address_line = request.form["address_line"]             
                 payment_method = request.form.get('payment_method')     
                 event_type = request.form.get('event_type')            
-                print(event_type)
                 price = 130
 
                 data = {'First Name': first_name, 
@@ -1405,7 +1424,8 @@ def booking(service, digest):
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
                     cursor = connection.cursor()
-                    cursor.execute(f"SELECT * FROM User JOIN Tours ON User.UserID = Tours.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE Hash.Digest= '{digest}'")
+                    # f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'"
+                    cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'")
                     rows = cursor.fetchall()                
                 #if the digest never existed we return the error page
                 if len(rows) == 0:
@@ -1515,7 +1535,8 @@ def edit(service):
                 connection = sqlite3.connect("database.db")
                 connection.row_factory = sqlite3.Row
                 cursor = connection.cursor()
-                cursor.execute(f"SELECT * FROM User JOIN Tours ON User.UserID = Tours.UserID JOIN Hash ON User.UserID = Hash.UserID WHERE User.UserID = {userid}")
+                # f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'"
+                cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'")
                 rows = cursor.fetchall()
                 return render_template("forms/edit_forms/edittour.html",rows=rows)          
                 

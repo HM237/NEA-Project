@@ -237,15 +237,16 @@ class Madrasah:
 
 #Tours class which deals with Tours Table
 class Tours:
-    def __init__(self, user_id, number_of_people):
+    def __init__(self, user_id, number_of_people, eventid):
         self.user_id = user_id
         self.number_of_people= number_of_people
+        self.eventid = eventid
 
     def add_Tour(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople) VALUES (?,?)', (self.user_id,self.number_of_people))
+                cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople, EventTypeID) VALUES (?,?,?)', (self.user_id,self.number_of_people, self.eventid))
 
         except sqlite3.OperationalError as e:
                 if 'database is locked' in str(e):
@@ -264,10 +265,10 @@ class Tours:
             cursor = connection.cursor()
             query = '''
             UPDATE Tours
-            SET NumberOfPeople= ?
+            SET NumberOfPeople= ?, EventTypeID = ?
             WHERE UserID = ?
             '''
-            parameters = (self.number_of_people, self.user_id)
+            parameters = (self.number_of_people,self.eventid, self.user_id)
             cursor.execute(query, parameters)
             connection.commit()       
 

@@ -19,6 +19,19 @@
 <br>
 
 <div>
+
+    <label for="event_type">Event Type:</label>
+    <select id="event_type" name="event_type" onchange="toggleInput()">
+        <option value="">--Choose an option--</option>
+        <option value="Educational">Educational</option>
+        <option value="Community Engagement">Community Engagement</option>
+        <option value="Other">Other</option>
+    </select>
+</div>
+
+<br>
+
+<div>
     <label for ='address-line'>Address Line:</label>
     <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd" required>
 </div>
@@ -32,4 +45,19 @@
 
 <br>
 
+{%endblock%}
+{%block scripts %} 
+<script>
+    function validateForm() {
+        const selectedOption = document.getElementById('event_type').value;
+        let missingFields = [];
+
+        if (!selectedOption) {
+            alert('Please select an event option.');
+            return false; 
+        }
+
+        return true;
+    }    
+</script>
 {%endblock%}

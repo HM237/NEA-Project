@@ -29,6 +29,7 @@
 <table border="1px">
     <thead>
         <td><strong>Number Of People</strong></td>
+        <td><strong>Event Type</strong></td>
         <td><strong>Time</strong></td>
         <td><strong>Date</strong></td><br>
         <td></td>
@@ -38,6 +39,7 @@
     {% for row in rows %}
     <tr>
         <td>{{ row["NumberOfPeople"] }}</td>
+        <td>{{ row["EventType"] }}</td>
         <td>{{ row["Time"] }}</td>
         <td>{{ row["Date"] }}</td>
         <td><form action="/edit/tour" method="POST"><input type="hidden" name="userid" value="{{ row['UserID'] }}"><input type="submit" value="Edit"></form> </td>

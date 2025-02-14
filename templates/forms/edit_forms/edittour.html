@@ -50,6 +50,14 @@ Edit Your Tour
 
             <br>Number Of People: <input type="text" name="number_of_people" value="{{ row['NumberOfPeople'] }}"/><br>
 
+            <br>Choose an event:     <select id="event_type" name="event_type" onchange="toggleInput()">
+                <option value="{{ row['EventType'] }}"> {{ row['EventType'] }} </option>
+                <option value="Educational">Educational</option>
+                <option value="Community Engagement">Community Engagement</option>
+                <option value="Other">Other</option>
+            </select>
+            <br>                  
+
             <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
 
             <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
