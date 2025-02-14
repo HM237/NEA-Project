@@ -1454,11 +1454,12 @@ def booking(service, digest):
                     connection.row_factory = sqlite3.Row
                     cursor = connection.cursor()
                     cursor.execute(f""" 
-                        SELECT User.*, Hash.*, Function.*, EventType.*
+                        SELECT User.*, Hash.*, Function.*, Payment.*, EventType.*
                         FROM User
                         JOIN Hash ON User.UserID = Hash.UserID
                         INNER JOIN Function ON User.UserID = Function.UserID
                         INNER JOIN EventType ON Function.EventTypeID = EventType.EventTypeID
+                        INNER JOIN Payment ON User.UserID = Payment.UserID                                   
                         WHERE Hash.Digest = '{digest}' """)                    
                     # cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'")                    
                     rows = cursor.fetchall()#
@@ -1604,11 +1605,12 @@ def edit(service):
                 connection.row_factory = sqlite3.Row
                 cursor = connection.cursor()
                 cursor.execute(f""" 
-                    SELECT User.*, Hash.*, Function.*, EventType.*
+                    SELECT User.*, Hash.*, Function.*, Payment.*, EventType.*
                     FROM User
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     INNER JOIN Function ON User.UserID = Function.UserID
                     INNER JOIN EventType ON Function.EventTypeID = EventType.EventTypeID
+                    INNER JOIN Payment ON User.UserID = Payment.UserID                               
                     WHERE User.UserID = {userid} """)                            
                 # cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'")                
                 rows = cursor.fetchall()
