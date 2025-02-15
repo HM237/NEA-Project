@@ -32,25 +32,44 @@ def prayertime():
 #Route to the Nikah Page
 @bp.route('/nikah', methods = ['GET','POST'])
 def nikah():
-    if request.method == "POST":
-        filter = request.form.get('filter')  
-        if filter != 'Yearly':     
-            with sqlite3.connect('database.db') as con:
-                cur = con.cursor()
-                cur.execute(f""" 
-                    SELECT strftime('%m', Date) AS Month, COUNT(NikahID) AS NumberOfBookings
-                    FROM User
-                    INNER JOIN Nikah ON User.UserID = Nikah.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE strftime('%Y', Date) IN ('{filter}')
-                    GROUP BY strftime('%m', Date)
-                    ORDER BY Month """)
-                result = cur.fetchall()
-            number_of_bookings = [x[1] for x in result]
-            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+    try:
+        if request.method == "POST":
+            filter = request.form.get('filter')  
+            if filter != 'Yearly':     
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%m', Date) AS Month, COUNT(NikahID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('{filter}')
+                        GROUP BY strftime('%m', Date)
+                        ORDER BY Month """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
-        else: 
+            else: 
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%Y', Date) AS Year, COUNT(NikahID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('2025','2026')
+                        GROUP BY strftime('%Y', Date)
+                        ORDER BY Year; """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['2025', '2026']
+                return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+        else:
             with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f""" 
@@ -65,47 +84,51 @@ def nikah():
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
             return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
-
-
-
-    else:
-        with sqlite3.connect('database.db') as con:
-            cur = con.cursor()
-            cur.execute(f""" 
-                SELECT strftime('%Y', Date) AS Year, COUNT(NikahID) AS NumberOfBookings
-                FROM User
-                INNER JOIN Nikah ON User.UserID = Nikah.UserID
-                INNER JOIN Hash ON User.UserID = Hash.UserID
-                WHERE strftime('%Y', Date) IN ('2025','2026')
-                GROUP BY strftime('%Y', Date)
-                ORDER BY Year; """)
-            result = cur.fetchall()
-        number_of_bookings = [x[1] for x in result]
-        labels = ['2025', '2026']
-        return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+        
+    except Exception as e:
+            return render_template("pages/errors.html", errormsg = f'{e}')         
 
 #Route to the Madrasah Page
 @bp.route('/madrasah', methods = ['GET','POST'])
 def madrasah():
-    if request.method == "POST":
-        filter = request.form.get('filter')  
-        if filter != 'Yearly':     
-            with sqlite3.connect('database.db') as con:
-                cur = con.cursor()
-                cur.execute(f""" 
-                    SELECT strftime('%m', Date) AS Month, COUNT(MadrasahID) AS NumberOfBookings
-                    FROM User
-                    INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE strftime('%Y', Date) IN ('{filter}')
-                    GROUP BY strftime('%m', Date)
-                    ORDER BY Month """)
-                result = cur.fetchall()
-            number_of_bookings = [x[1] for x in result]
-            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+    try:
+        if request.method == "POST":
+            filter = request.form.get('filter')  
+            if filter != 'Yearly':     
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%m', Date) AS Month, COUNT(MadrasahID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('{filter}')
+                        GROUP BY strftime('%m', Date)
+                        ORDER BY Month """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
-        else: 
+            else: 
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%Y', Date) AS Year, COUNT(MadrasahID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('2025','2026')
+                        GROUP BY strftime('%Y', Date)
+                        ORDER BY Year; """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['2025', '2026']
+                return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+        else:
             with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f""" 
@@ -120,47 +143,51 @@ def madrasah():
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
             return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
-
-
-
-    else:
-        with sqlite3.connect('database.db') as con:
-            cur = con.cursor()
-            cur.execute(f""" 
-                SELECT strftime('%Y', Date) AS Year, COUNT(MadrasahID) AS NumberOfBookings
-                FROM User
-                INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
-                INNER JOIN Hash ON User.UserID = Hash.UserID
-                WHERE strftime('%Y', Date) IN ('2025','2026')
-                GROUP BY strftime('%Y', Date)
-                ORDER BY Year; """)
-            result = cur.fetchall()
-        number_of_bookings = [x[1] for x in result]
-        labels = ['2025', '2026']
-        return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+        
+    except Exception as e:
+            return render_template("pages/errors.html", errormsg = f'{e}')         
 
 #Route to the Tours Page
 @bp.route('/tours', methods = ['GET','POST'])
 def tours():
-    if request.method == "POST":
-        filter = request.form.get('filter')  
-        if filter != 'Yearly':     
-            with sqlite3.connect('database.db') as con:
-                cur = con.cursor()
-                cur.execute(f""" 
-                    SELECT strftime('%m', Date) AS Month, COUNT(TourID) AS NumberOfBookings
-                    FROM User
-                    INNER JOIN Tours ON User.UserID = Tours.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE strftime('%Y', Date) IN ('{filter}')
-                    GROUP BY strftime('%m', Date)
-                    ORDER BY Month """)
-                result = cur.fetchall()
-            number_of_bookings = [x[1] for x in result]
-            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+    try:
+        if request.method == "POST":
+            filter = request.form.get('filter')  
+            if filter != 'Yearly':     
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%m', Date) AS Month, COUNT(TourID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Tours ON User.UserID = Tours.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('{filter}')
+                        GROUP BY strftime('%m', Date)
+                        ORDER BY Month """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
-        else: 
+            else: 
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Tours ON User.UserID = Tours.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('2025','2026')
+                        GROUP BY strftime('%Y', Date)
+                        ORDER BY Year; """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['2025', '2026']
+                return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+        else:
             with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f""" 
@@ -174,47 +201,50 @@ def tours():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
 
-
-
-    else:
-        with sqlite3.connect('database.db') as con:
-            cur = con.cursor()
-            cur.execute(f""" 
-                SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
-                FROM User
-                INNER JOIN Tours ON User.UserID = Tours.UserID
-                INNER JOIN Hash ON User.UserID = Hash.UserID
-                WHERE strftime('%Y', Date) IN ('2025','2026')
-                GROUP BY strftime('%Y', Date)
-                ORDER BY Year; """)
-            result = cur.fetchall()
-        number_of_bookings = [x[1] for x in result]
-        labels = ['2025', '2026']
-        return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+    except Exception as e:
+            return render_template("pages/errors.html", errormsg = f'{e}') 
+             
 #Route to the Service Page
 @bp.route('/functions', methods = ['GET','POST'])
 def functions():
-    if request.method == "POST":
-        filter = request.form.get('filter')  
-        if filter != 'Yearly':     
-            with sqlite3.connect('database.db') as con:
-                cur = con.cursor()
-                cur.execute(f""" 
-                    SELECT strftime('%m', Date) AS Month, COUNT(FunctionID) AS NumberOfBookings
-                    FROM User
-                    INNER JOIN Function ON User.UserID = Function.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE strftime('%Y', Date) IN ('{filter}')
-                    GROUP BY strftime('%m', Date)
-                    ORDER BY Month """)
-                result = cur.fetchall()
-            number_of_bookings = [x[1] for x in result]
-            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+    try:
+        if request.method == "POST":
+            filter = request.form.get('filter')  
+            if filter != 'Yearly':     
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%m', Date) AS Month, COUNT(FunctionID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Function ON User.UserID = Function.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('{filter}')
+                        GROUP BY strftime('%m', Date)
+                        ORDER BY Month """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
-        else: 
+            else: 
+                with sqlite3.connect('database.db') as con:
+                    cur = con.cursor()
+                    cur.execute(f""" 
+                        SELECT strftime('%Y', Date) AS Year, COUNT(FunctionID) AS NumberOfBookings
+                        FROM User
+                        INNER JOIN Function ON User.UserID = Function.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE strftime('%Y', Date) IN ('2025','2026')
+                        GROUP BY strftime('%Y', Date)
+                        ORDER BY Year; """)
+                    result = cur.fetchall()
+                number_of_bookings = [x[1] for x in result]
+                labels = ['2025', '2026']
+                return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+        else:
             with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f""" 
@@ -229,36 +259,16 @@ def functions():
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
             return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+        
+    except Exception as e:
+            return render_template("pages/errors.html", errormsg = f'{e}') 
 
 
-
-    else:
-        with sqlite3.connect('database.db') as con:
-            cur = con.cursor()
-            cur.execute(f""" 
-                SELECT strftime('%Y', Date) AS Year, COUNT(FunctionID) AS NumberOfBookings
-                FROM User
-                INNER JOIN Function ON User.UserID = Function.UserID
-                INNER JOIN Hash ON User.UserID = Hash.UserID
-                WHERE strftime('%Y', Date) IN ('2025','2026')
-                GROUP BY strftime('%Y', Date)
-                ORDER BY Year; """)
-            result = cur.fetchall()
-        number_of_bookings = [x[1] for x in result]
-        labels = ['2025', '2026']
-        return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
-
-
-#Route to the Service Page
+#Route to the Error Page
 @bp.route('/errors/<errormsg>')
 def errors(errormsg):
     msg = f'The error that you ran into was: {errormsg}'
     return render_template("pages/error.html", errormsg = msg)
-
-
-
-
-
 
 
 ####################  Entire Verification Process ####################
@@ -462,14 +472,6 @@ def verification(service):
     return jsonify(redirect_url=url_for('routes.index'))
 
 
-
-
-
-
-
-
-
-
 ####################  Entire Nikah Process ####################
 
 # Route to the Nikah Form 
@@ -593,8 +595,6 @@ def addnikah():
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
     return jsonify(redirect_url=url_for('routes.nikah'))
-
-
 
 
 @bp.route("/editnikahbooking", methods=['POST','GET'])
@@ -733,14 +733,6 @@ def editnikahbooking():
     return jsonify(redirect_url=url_for('routes.nikah'))
 
 
-
-
-
-
-
-
-
-
 ####################  Entire Madrasah Process ####################
 
 #Route to the Madrasah Form
@@ -788,8 +780,6 @@ def addmadrasah():
                 child_lname = request.form["child_lname"]
                 child_date_of_birth = request.form["child_date_of_birth"]
 
-
-
                 #User Class stores the data in the User Table
 
                 data = {'First Name':first_name, 
@@ -804,7 +794,6 @@ def addmadrasah():
                 invalid = Validation.validate(data = data)
                 if invalid:
                     return jsonify({"message": f"{invalid}"}) #error message if they did not
-
 
                 try:
                     new_user = User(first_name = first_name, 
@@ -1003,19 +992,10 @@ def editmadrasahbooking():
                     except Exception as e:
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                         
 
-
     except Exception as e:
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
     return jsonify(redirect_url=url_for('routes.madrasah_booking'))
-
-
-
-
-
-
-
-
 
 
 ####################  Entire Tours Process ####################
@@ -1188,7 +1168,6 @@ def edittourbooking():
                 if invalid:
                     return jsonify({"message": f"{invalid}"}) 
                 
-
                 try:
                     with sqlite3.connect('database.db') as con:
                         cur = con.cursor()
@@ -1285,15 +1264,6 @@ def edittourbooking():
     return jsonify(redirect_url=url_for('routes.tours_booking'))
 
 
-
-
-
-
-
-
-
-
-
 ####################  Entire Functions Process ####################
 # Route to the Function Form 
 @bp.route("/functionbooking")
@@ -1303,7 +1273,6 @@ def function_booking():
     action_url = url_for('routes.addfunction')
     service = "function"
     return render_template("forms/function_form.html", form_id=form_id, action_url=action_url, service = service )
-
 
 #Process for Function Table which retrieves the input from the function_form.
 @bp.route("/process-function", methods=['GET','POST'])
@@ -1365,8 +1334,6 @@ def addfunction():
                     
                     new_user.add_User()
 
-                    print(f'this was the event: {event_type}')
-
                     with sqlite3.connect('database.db') as con:
                             cur = con.cursor()
                             cur.execute('SELECT seq FROM sqlite_sequence WHERE name="User"')
@@ -1378,7 +1345,6 @@ def addfunction():
                             con.commit()
                             cur.close()
 
-                    print(eventid)
                     #calling the Function Class to store the data for the Function Table
                     new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid= eventid)
                     new_function.add_Function()  
@@ -1418,7 +1384,6 @@ def addfunction():
                 except Exception:
                     return jsonify({"message": f"An unexpected error has occurred. Please contact the masjid and report this error."})  
 
-                
     except Exception as e:
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
@@ -1442,7 +1407,6 @@ def editfunctionbooking():
                         cur.close()           
             except Exception as e:
                 return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})    
-            
             
             #we are now checking whether or not they have changed their booking date because if they have we need to:
             # a) Check for any existing bookings that can clash whilst excluding the current booking they have
@@ -1506,7 +1470,6 @@ def editfunctionbooking():
                         
                         new_user.update(userid= userid)
 
-
                         with sqlite3.connect('database.db') as con:
                             cur = con.cursor()
                             cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
@@ -1514,8 +1477,6 @@ def editfunctionbooking():
                             eventid = result[0]
                             con.commit()
                             cur.close()
-
-                        print(f'the {eventid}')                        
 
                         #updating the booking by sending it to the Function Class.
                         new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid=eventid)
@@ -1549,8 +1510,6 @@ def editfunctionbooking():
                             con.commit()
                             cur.close()
 
-                        print(f'the {eventid}')                        
-
                         new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line,eventid=eventid)
                         new_function.update()   
 
@@ -1572,16 +1531,10 @@ def editfunctionbooking():
                     except Exception as e:
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                        
 
-
     except Exception as e:
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
     return jsonify(redirect_url=url_for('routes.function_booking'))
-
-
-
-
-
 
 
 ####################  Entire Booking/Editing Process ####################
@@ -1627,7 +1580,6 @@ def booking(service, digest):
                     return render_template("pages/error.html", errormsg = msg ) 
                 return render_template("tables/madrasah_table.html", rows = rows)                         
 
-
         elif service == 'tour':
                 # searches for the Tour row related to the Hash digest. We join the tables User, Tour and Hash through the foreign key UserID and use the digest to see which UserID correlates to the digest.  
                 with sqlite3.connect('database.db') as connection:
@@ -1672,7 +1624,6 @@ def booking(service, digest):
     except sqlite3.OperationalError:
         msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
         return render_template("pages/error.html", errormsg = msg ) 
-
 
     except sqlite3.DatabaseError:
         msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
@@ -1729,7 +1680,6 @@ def edit(service):
                 cursor.close()
                 connection.close()      
 
-            
         elif (request.method == 'POST' and service=='madrasah'):
             try:
                 userid = request.form['userid']
@@ -1748,7 +1698,6 @@ def edit(service):
             except sqlite3.OperationalError:
                 msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
                 return render_template("pages/error.html", errormsg = msg ) 
-
 
             except sqlite3.DatabaseError:
                 msg = f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."
@@ -1853,7 +1802,6 @@ def delete(service):
         elif (request.method == 'POST' and service == 'tour'):
                 userid = request.form['userid']   
                 Tours.delete(userid = userid) # Tour Class deletes the record.
-
 
         elif (request.method == 'POST' and service == 'function'):
                 userid = request.form['userid']   
