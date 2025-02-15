@@ -14,23 +14,6 @@
     </a>
 {%endblock%}
 {% block graph %}
-<style>
-    /* Center the graph container */
-    .graph-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 20px 0; /* Add some margin for spacing */
-    }
-
-    /* Make the canvas smaller */
-    #myChart {
-        width: 60% !important; /* Adjust the width as needed */
-        height: auto !important; /* Maintain aspect ratio */
-        max-width: 600px; /* Optional: Set a maximum width */
-    }
-</style>
-
 <form id="filter" action="{{ url_for('routes.functions') }}" method="POST">
     <br>Choose a filter:     <select id="filter" name="filter">
         <option value="Yearly"> All Years </option>
