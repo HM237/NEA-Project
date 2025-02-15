@@ -1,16 +1,15 @@
-/* Center the graph container */
 .graph-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0; /* Add some margin for spacing */
+    margin: 20px 0; 
 }
 
-/* Make the canvas smaller */
+
 #myChart {
-    width: 60% !important; /* Adjust the width as needed */
-    height: auto !important; /* Maintain aspect ratio */
-    max-width: 600px; /* Optional: Set a maximum width */
+    width: 60% !important;
+    height: auto !important; 
+    max-width: 600px; 
 }
 
 form{
