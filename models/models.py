@@ -456,6 +456,8 @@ class Hash:
                 arr[i] = value
         for byte in arr:
             digest += format(byte, '02x') #converting it into hexadecimal
+
+        print(f'{digest}')
         return digest
 
     def add_digest(self, digest):

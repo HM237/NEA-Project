@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
 from models import User, Nikah, Madrasah,Tours,Functions,Payment, Clashed, Email, Hash, Validation, DatabaseError, ServerError, UnboundLocalErrors, SocketError
 import sqlite3
+import json
 import random
 import re
 
@@ -29,24 +30,223 @@ def prayertime():
     return render_template("pages/prayertime.html")
 
 #Route to the Nikah Page
-@bp.route('/nikah')
+@bp.route('/nikah', methods = ['GET','POST'])
 def nikah():
-    return render_template("pages/nikah.html")
+    if request.method == "POST":
+        filter = request.form.get('filter')  
+        if filter != 'Yearly':     
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%m', Date) AS Month, COUNT(NikahID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('{filter}')
+                    GROUP BY strftime('%m', Date)
+                    ORDER BY Month """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+
+        else: 
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%Y', Date) AS Year, COUNT(NikahID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('2025','2026')
+                    GROUP BY strftime('%Y', Date)
+                    ORDER BY Year; """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['2025', '2026']
+            return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+    else:
+        with sqlite3.connect('database.db') as con:
+            cur = con.cursor()
+            cur.execute(f""" 
+                SELECT strftime('%Y', Date) AS Year, COUNT(NikahID) AS NumberOfBookings
+                FROM User
+                INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                INNER JOIN Hash ON User.UserID = Hash.UserID
+                WHERE strftime('%Y', Date) IN ('2025','2026')
+                GROUP BY strftime('%Y', Date)
+                ORDER BY Year; """)
+            result = cur.fetchall()
+        number_of_bookings = [x[1] for x in result]
+        labels = ['2025', '2026']
+        return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 #Route to the Madrasah Page
-@bp.route('/madrasah')
+@bp.route('/madrasah', methods = ['GET','POST'])
 def madrasah():
-    return render_template("pages/madrasah.html")
+    if request.method == "POST":
+        filter = request.form.get('filter')  
+        if filter != 'Yearly':     
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%m', Date) AS Month, COUNT(MadrasahID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('{filter}')
+                    GROUP BY strftime('%m', Date)
+                    ORDER BY Month """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+
+        else: 
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%Y', Date) AS Year, COUNT(MadrasahID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('2025','2026')
+                    GROUP BY strftime('%Y', Date)
+                    ORDER BY Year; """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['2025', '2026']
+            return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+    else:
+        with sqlite3.connect('database.db') as con:
+            cur = con.cursor()
+            cur.execute(f""" 
+                SELECT strftime('%Y', Date) AS Year, COUNT(MadrasahID) AS NumberOfBookings
+                FROM User
+                INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                INNER JOIN Hash ON User.UserID = Hash.UserID
+                WHERE strftime('%Y', Date) IN ('2025','2026')
+                GROUP BY strftime('%Y', Date)
+                ORDER BY Year; """)
+            result = cur.fetchall()
+        number_of_bookings = [x[1] for x in result]
+        labels = ['2025', '2026']
+        return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 #Route to the Tours Page
-@bp.route('/tours')
+@bp.route('/tours', methods = ['GET','POST'])
 def tours():
-    return render_template("pages/tours.html")
+    if request.method == "POST":
+        filter = request.form.get('filter')  
+        if filter != 'Yearly':     
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%m', Date) AS Month, COUNT(TourID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Tours ON User.UserID = Tours.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('{filter}')
+                    GROUP BY strftime('%m', Date)
+                    ORDER BY Month """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
+        else: 
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Tours ON User.UserID = Tours.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('2025','2026')
+                    GROUP BY strftime('%Y', Date)
+                    ORDER BY Year; """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['2025', '2026']
+            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+    else:
+        with sqlite3.connect('database.db') as con:
+            cur = con.cursor()
+            cur.execute(f""" 
+                SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
+                FROM User
+                INNER JOIN Tours ON User.UserID = Tours.UserID
+                INNER JOIN Hash ON User.UserID = Hash.UserID
+                WHERE strftime('%Y', Date) IN ('2025','2026')
+                GROUP BY strftime('%Y', Date)
+                ORDER BY Year; """)
+            result = cur.fetchall()
+        number_of_bookings = [x[1] for x in result]
+        labels = ['2025', '2026']
+        return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 #Route to the Service Page
-@bp.route('/functions')
+@bp.route('/functions', methods = ['GET','POST'])
 def functions():
-    return render_template("pages/functions.html")
+    if request.method == "POST":
+        filter = request.form.get('filter')  
+        if filter != 'Yearly':     
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%m', Date) AS Month, COUNT(FunctionID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Function ON User.UserID = Function.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('{filter}')
+                    GROUP BY strftime('%m', Date)
+                    ORDER BY Month """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+
+        else: 
+            with sqlite3.connect('database.db') as con:
+                cur = con.cursor()
+                cur.execute(f""" 
+                    SELECT strftime('%Y', Date) AS Year, COUNT(FunctionID) AS NumberOfBookings
+                    FROM User
+                    INNER JOIN Function ON User.UserID = Function.UserID
+                    INNER JOIN Hash ON User.UserID = Hash.UserID
+                    WHERE strftime('%Y', Date) IN ('2025','2026')
+                    GROUP BY strftime('%Y', Date)
+                    ORDER BY Year; """)
+                result = cur.fetchall()
+            number_of_bookings = [x[1] for x in result]
+            labels = ['2025', '2026']
+            return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+
+
+
+    else:
+        with sqlite3.connect('database.db') as con:
+            cur = con.cursor()
+            cur.execute(f""" 
+                SELECT strftime('%Y', Date) AS Year, COUNT(FunctionID) AS NumberOfBookings
+                FROM User
+                INNER JOIN Function ON User.UserID = Function.UserID
+                INNER JOIN Hash ON User.UserID = Hash.UserID
+                WHERE strftime('%Y', Date) IN ('2025','2026')
+                GROUP BY strftime('%Y', Date)
+                ORDER BY Year; """)
+            result = cur.fetchall()
+        number_of_bookings = [x[1] for x in result]
+        labels = ['2025', '2026']
+        return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 #Route to the Service Page

@@ -1,4 +1,5 @@
 {% extends "pages/base_page.html" %}
+{% block scripts %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {% endblock %}
 {% block title %} Tours {% endblock %}
 {% block head %} Tours at Masjid Al-Ansar {% endblock %}
 {% block content %}
@@ -12,3 +13,70 @@
         <button>Book Tours Now</button>
     </a>
 {%endblock%}
+{% block graph %}
+<style>
+    /* Center the graph container */
+    .graph-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0; /* Add some margin for spacing */
+    }
+
+    /* Make the canvas smaller */
+    #myChart {
+        width: 60% !important; /* Adjust the width as needed */
+        height: auto !important; /* Maintain aspect ratio */
+        max-width: 600px; /* Optional: Set a maximum width */
+    }
+</style>
+
+<form id="filter" action="{{ url_for('routes.tours') }}" method="POST">
+    <br>Choose a filter:     <select id="filter" name="filter">
+        <option value="Yearly"> All Years </option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+    </select>
+    <br><input type="submit" value="Submit" /><br>
+</form>
+
+<!-- Wrap the canvas in a centered container -->
+<div class="graph-container">
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+    let number_of_bookings = JSON.parse({{ number_of_bookings | tojson }});
+    let labels = JSON.parse({{ labels | tojson }});
+    const ctx = document.getElementById('myChart').getContext('2d');
+    let number_of_bookings_chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Bookings',
+                data: number_of_bookings,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1, 
+                    callback: function(value) {
+                        if (Number.isInteger(value)) {
+                            return value;
+                        }
+                    }
+                }
+                                    
+                }
+            },
+            responsive: true, // Make the chart responsive
+            maintainAspectRatio: false // Allow the chart to adjust its aspect ratio
+        }
+    });
+</script>
+{% endblock %}
