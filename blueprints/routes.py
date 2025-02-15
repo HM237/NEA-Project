@@ -1699,17 +1699,17 @@ def edit(service):
         if (request.method == 'POST' and service=='nikah'): #Checks the service and pre-fills the form based on the existing data.
             try:
                 userid = request.form['userid']
-                connection = sqlite3.connect("database.db")
-                connection.row_factory = sqlite3.Row
-                cursor = connection.cursor()
-                cursor.execute(f""" 
-                    SELECT Nikah.*, User.*, Payment.*, Hash.*
-                    FROM User
-                    INNER JOIN Nikah ON User.UserID = Nikah.UserID
-                    INNER JOIN Payment ON User.UserID = Payment.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE User.UserID = {userid} """)
-                rows = cursor.fetchall()
+                with sqlite3.connect('database.db') as connection:
+                    connection.row_factory = sqlite3.Row
+                    cursor = connection.cursor()
+                    cursor.execute(f""" 
+                        SELECT Nikah.*, User.*, Payment.*, Hash.*
+                        FROM User
+                        INNER JOIN Nikah ON User.UserID = Nikah.UserID
+                        INNER JOIN Payment ON User.UserID = Payment.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE User.UserID = {userid} """)
+                    rows = cursor.fetchall()
                 return render_template("forms/edit_forms/editnikah.html",rows=rows)     
                 
             except sqlite3.OperationalError:
@@ -1733,16 +1733,16 @@ def edit(service):
         elif (request.method == 'POST' and service=='madrasah'):
             try:
                 userid = request.form['userid']
-                connection = sqlite3.connect("database.db")
-                connection.row_factory = sqlite3.Row
-                cursor = connection.cursor()
-                cursor.execute(f""" 
-                    SELECT User.*,  Madrasah.*, Hash.*
-                    FROM User
-                    INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    WHERE User.UserID = {userid} """)
-                rows = cursor.fetchall()
+                with sqlite3.connect('database.db') as connection:
+                    connection.row_factory = sqlite3.Row
+                    cursor = connection.cursor()
+                    cursor.execute(f""" 
+                        SELECT User.*,  Madrasah.*, Hash.*
+                        FROM User
+                        INNER JOIN Madrasah ON User.UserID = Madrasah.UserID
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        WHERE User.UserID = {userid} """)
+                    rows = cursor.fetchall()
                 return render_template("forms/edit_forms/editmadrasah.html",rows=rows)
             
             except sqlite3.OperationalError:
@@ -1765,18 +1765,17 @@ def edit(service):
         elif (request.method == 'POST' and service=='tour'):
             try:
                 userid = request.form['userid']
-                connection = sqlite3.connect("database.db")
-                connection.row_factory = sqlite3.Row
-                cursor = connection.cursor()
-                cursor.execute(f""" 
-                    SELECT User.*, Hash.*, Tours.*, EventType.*
-                    FROM User
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    INNER JOIN Tours ON User.UserID = Tours.UserID
-                    INNER JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID
-                    WHERE User.UserID = {userid} """)                
-                # cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'")
-                rows = cursor.fetchall()
+                with sqlite3.connect('database.db') as connection:
+                    connection.row_factory = sqlite3.Row
+                    cursor = connection.cursor()
+                    cursor.execute(f""" 
+                        SELECT User.*, Hash.*, Tours.*, EventType.*
+                        FROM User
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        INNER JOIN Tours ON User.UserID = Tours.UserID
+                        INNER JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID
+                        WHERE User.UserID = {userid} """)                
+                    rows = cursor.fetchall()
                 return render_template("forms/edit_forms/edittour.html",rows=rows)          
                 
             except sqlite3.OperationalError:
@@ -1801,19 +1800,18 @@ def edit(service):
             #this is the edit form. We are inserting the current data into the form and will now allow the user to edit it.
             try:
                 userid = request.form['userid']
-                connection = sqlite3.connect("database.db")
-                connection.row_factory = sqlite3.Row
-                cursor = connection.cursor()
-                cursor.execute(f""" 
-                    SELECT User.*, Hash.*, Function.*, Payment.*, EventType.*
-                    FROM User
-                    INNER JOIN Hash ON User.UserID = Hash.UserID
-                    INNER JOIN Function ON User.UserID = Function.UserID
-                    INNER JOIN EventType ON Function.EventTypeID = EventType.EventTypeID
-                    INNER JOIN Payment ON User.UserID = Payment.UserID                               
-                    WHERE User.UserID = {userid} """)                            
-                # cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE User.UserID = '{userid}'")                
-                rows = cursor.fetchall()
+                with sqlite3.connect('database.db') as connection:
+                    connection.row_factory = sqlite3.Row
+                    cursor = connection.cursor()
+                    cursor.execute(f""" 
+                        SELECT User.*, Hash.*, Function.*, Payment.*, EventType.*
+                        FROM User
+                        INNER JOIN Hash ON User.UserID = Hash.UserID
+                        INNER JOIN Function ON User.UserID = Function.UserID
+                        INNER JOIN EventType ON Function.EventTypeID = EventType.EventTypeID
+                        INNER JOIN Payment ON User.UserID = Payment.UserID                               
+                        WHERE User.UserID = {userid} """)                            
+                    rows = cursor.fetchall()
                 return render_template("forms/edit_forms/editfunction.html",rows=rows)     
                 
             except sqlite3.OperationalError:
@@ -1846,20 +1844,20 @@ def delete(service):
         #The dynamic URL tells us which service Table the record needs to be deleted from.
         if (request.method == 'POST' and service =='nikah'):
                 userid = request.form['userid']
-                deletebooking = Nikah.delete(userid=userid) # Nikah Class deletes the record.
+                Nikah.delete(userid=userid) # Nikah Class deletes the record.
         
         elif (request.method == 'POST' and service =='madrasah'):
                 userid = request.form['userid']
-                deletebooking = Madrasah.delete(userid=userid) # Madrasah Class deletes the record.
+                Madrasah.delete(userid=userid) # Madrasah Class deletes the record.
 
         elif (request.method == 'POST' and service == 'tour'):
                 userid = request.form['userid']   
-                deletebooking = Tours.delete(userid = userid) # Tour Class deletes the record.
+                Tours.delete(userid = userid) # Tour Class deletes the record.
 
 
         elif (request.method == 'POST' and service == 'function'):
                 userid = request.form['userid']   
-                deletebooking = Functions.delete(userid = userid) # Function Class deletes the record.
+                Functions.delete(userid = userid) # Function Class deletes the record.
         
     except Exception as e:
         return render_template('pages/error.html', errormsg = f'Unknown error has occurred: {e}')
