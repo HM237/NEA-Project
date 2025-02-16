@@ -1,1 +1,12 @@
-<h1> Work in Progress </h1>
+{% extends "pages/base_page.html" %}
+{% block title %}  Prayer Times {% endblock %}
+{% block head %} Prayer Timetable{% endblock %}
+{% block content %}
+<p> Please click below to download the month's timetable</p>
+<a href="{{ url_for('static', filename='TimeTable.pdf') }}" download="PrayerTimeTable.pdf"> Trial Download </a>
+
+<br>
+
+<img src="{{ url_for('static', filename='Timetable.png') }}" height="800" width="1525">
+
+{%endblock%}
