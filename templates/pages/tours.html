@@ -1,17 +1,30 @@
 {% extends "pages/base_page.html" %}
 {% block scripts %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {% endblock %}
 {% block title %} Tours {% endblock %}
-{% block head %} Tours at Masjid Al-Ansar {% endblock %}
+{% block head %} Tours at Al-Ansar Mosque {% endblock %}
 {% block content %}
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel nunc magna. Donec augue dui, molestie eu finibus id, euismod sed lacus. Nullam quis scelerisque nulla. Curabitur elementum ac mi ac efficitur. Quisque elementum urna diam, consequat semper tortor ullamcorper a. Nulla facilisi. Proin non lacus vel velit blandit porta rutrum vitae purus. Phasellus a nunc at nisi porta volutpat. Quisque tincidunt dui eu dui pharetra posuere. Nunc id libero ultricies, faucibus tellus vitae, efficitur mi. Nunc sit amet metus lacinia, tempus ipsum eget, efficitur libero. Proin accumsan risus vitae gravida sodales. Nullam malesuada, velit sed lacinia semper, erat arcu semper tellus, ac viverra nunc turpis at enim. Fusce vehicula augue metus, nec fermentum metus commodo eget. Sed tortor enim, consequat non tempus quis, pulvinar vitae ligula. Duis hendrerit vulputate felis quis porttitor. 
-   </p>
-   <p>
-   Phasellus ornare sit amet nulla non posuere. Maecenas sodales ante rhoncus varius faucibus. Duis elit felis, ullamcorper mattis dolor sit amet, vulputate sollicitudin ipsum. Vivamus venenatis mollis leo, a tempus lectus aliquam a. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse convallis porta diam, et porttitor sem viverra a. Vivamus vestibulum porttitor turpis at consectetur.
-   </p>
-    <a href="http://127.0.0.1:5000/tourbooking">
-        <button>Book Tours Now</button>
-    </a>
+<div class="tour-message">
+    <h2> Tour of the Mosque </h2>
+    <p> Our mosque offers guided tours to those who are interested/learning about Islam.</p>
+    <p> We welcome everyone of different faiths and beliefs to visit our mosque to no expense. </p>
+    <p> The below chart shows the amount of tours we receive. </p>
+
+
+    <h3> What to Expect? </h3>
+    <p> Below are the list of matters that are discussed during the tour:</p>
+    <li>Welcome briefing</li>
+    <li>Guided tour of Ablution facilities</li>
+    <li>Guided tour of Educational facilities</li>
+    <li>Guided tour of prayer hall</li>
+    <li>Explanation of your selected topics (please notify us in advance)</li>
+    <li>Q &amp; A session</li>
+    <li>Refreshments</li>    
+
+    <h3> Book a Tour </h3>
+    <p> If you wish to book a tour of the mosque, please complete the form below to make an appointment. This will allow us to further discuss any necessary arrangements for your tour. A link will be sent to your email, which allow you to edit or delete your appointment. </p>   
+</div>
+<a href="http://127.0.0.1:5000/tourbooking"> <button>Make a Tour</button> </a>  
+<br> <hr>
 {%endblock%}
 {% block graph %}
 <form id="filter" action="{{ url_for('routes.tours') }}" method="POST">

@@ -1,3 +1,4 @@
+/* graph style to centre the graph in the middle and make it smaller */
 .graph-container {
     display: flex;
     justify-content: center;
@@ -11,10 +12,12 @@
     height: auto !important; 
     max-width: 600px; 
 }
+/* form style to centre text in the middle*/
 
 form{
     text-align: center;
 }
+/* navbar style to place it at the top and appear on the right*/
 
 *{
     padding: 0;
@@ -82,11 +85,28 @@ ul li:hover ul.dropdown{
     display: block;
 }
 
-h1{
+/* page style to place message to the middle */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(222, 211, 184);
+    color: #333;
+}
+h1 {
+    color: #2c3e50;
     text-align: center;
 }
 
-.center {
-    margin-left: auto;
-    margin-right: auto;
-  }
+h2 {
+    color: #2c3e50;
+
+}   
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+.welcome-message {
+    text-align: center;
+}
+

@@ -14,7 +14,7 @@
     </head>
     
     <body style="background-color: rgb(222, 211, 184);">
-        <nav>
+        <nav class="navbar">
             <ul>
                 <li> <a href="{{ url_for('routes.index') }}"> Home</a> </li>
                 <li>
@@ -34,15 +34,13 @@
 
         </div>
 
-        <hr>
         
         {%block content%}{%endblock%}
 
-        <hr>
 
         {%block graph%}{%endblock%}
-
-    
+        <hr>
+        <footer style="text-align: center;">Copyright © 2025 Al-Ansar Mosque | Designed By Hudaifa </footer>
     </body>
 
 </html>

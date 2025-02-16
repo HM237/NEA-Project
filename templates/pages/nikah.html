@@ -3,19 +3,37 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 {% block title %} Nikah {% endblock %}
-{% block head %} Nikah at Masjid Al-Ansar {% endblock %}
+{% block head %} Nikah at Al-Ansar Mosque {% endblock %}
 {% block content %}
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel nunc magna. Donec augue dui, molestie eu finibus id, euismod sed lacus. Nullam quis scelerisque nulla. Curabitur elementum ac mi ac efficitur. Quisque elementum urna diam, consequat semper tortor ullamcorper a. Nulla facilisi. Proin non lacus vel velit blandit porta rutrum vitae purus. Phasellus a nunc at nisi porta volutpat. Quisque tincidunt dui eu dui pharetra posuere. Nunc id libero ultricies, faucibus tellus vitae, efficitur mi. Nunc sit amet metus lacinia, tempus ipsum eget, efficitur libero. Proin accumsan risus vitae gravida sodales. Nullam malesuada, velit sed lacinia semper, erat arcu semper tellus, ac viverra nunc turpis at enim. Fusce vehicula augue metus, nec fermentum metus commodo eget. Sed tortor enim, consequat non tempus quis, pulvinar vitae ligula. Duis hendrerit vulputate felis quis porttitor. 
-   </p>
-   <p>
-   Phasellus ornare sit amet nulla non posuere. Maecenas sodales ante rhoncus varius faucibus. Duis elit felis, ullamcorper mattis dolor sit amet, vulputate sollicitudin ipsum. Vivamus venenatis mollis leo, a tempus lectus aliquam a. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse convallis porta diam, et porttitor sem viverra a. Vivamus vestibulum porttitor turpis at consectetur.
-   </p>
-   <hr>
-   <a href="http://127.0.0.1:5000/nikahbooking">
-       <button>Book Nikah Now</button>
-    </a>
+<div class="nikah-message">
+    <h2> What is a Nikah? </h2>
+    <p> Nikah is the Islamice ceremony for the marriage contracts. </p><br>
+
+    <h3> Documentation Required: </h3>
+    <li>Bride and Bridegroom’s birth certificates and passports.</li>
+    <li>If names have changed the original copy of the Deed Poll document.</li>
+    <li>If previously divorced the original copy of the ‘Decree Absolute’ or Islamic/Sharia ‘Talak’ document.</li>
+    <li>If widowed a copy of the former spouses death certificate.</li>
+    <li>Original copy of the Civil Marriage Certificate.</li>
+    <li>Nikah fee of £130 with your completed application form and relevant documentation.</li> <br>
+
+    <h3> Important Points: </h3>
+    <li>This pious act must be with the approval of parents and/or next of kin.</li>
+    <li>The bride or groom must reside in Leicester/Leicestershire.</li>
+    <li>Ensure you follow procedures carefully and provide accurate information.</li>
+    <li>We will not rebook another person's booking for your own convenience. </li> <br> 
+
+
+
+    <h3> Booking a Nikah </h3>
+    <p> When booking a Nikah, we recommend that an appointment is booked a week in advance.You may use the below bar chart to see whether or not your Nikah is booked in a busy time period. If a timeslot is unavailable, it means that another person has already booked it. You can still try and book an earlier or later slot if they are available. </p>
+    <p>If you appointment is successful, we will send you a link regarding your it which you can then decide to edit or delete.</p>
+
+</div>
+<a href="http://127.0.0.1:5000/nikahbooking"> <button>Book Nikah Now</button> </a>  
+<br> <hr>
 {%endblock%}
+
 {% block graph %}
 <form id="filter" action="{{ url_for('routes.nikah') }}" method="POST">
     <br>Choose a filter:     <select id="filter" name="filter">
@@ -26,7 +44,6 @@
     <br><input type="submit" value="Submit" /><br>
 </form>
 
-<!-- Wrap the canvas in a centered container -->
 <div class="graph-container">
     <canvas id="myChart"></canvas>
 </div>

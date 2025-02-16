@@ -3,16 +3,21 @@
 {% block title %} Madrasah {% endblock %}
 {% block head %} Madrasah at Masjid Al-Ansar {% endblock %}
 {% block content %}
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel nunc magna. Donec augue dui, molestie eu finibus id, euismod sed lacus. Nullam quis scelerisque nulla. Curabitur elementum ac mi ac efficitur. Quisque elementum urna diam, consequat semper tortor ullamcorper a. Nulla facilisi. Proin non lacus vel velit blandit porta rutrum vitae purus. Phasellus a nunc at nisi porta volutpat. Quisque tincidunt dui eu dui pharetra posuere. Nunc id libero ultricies, faucibus tellus vitae, efficitur mi. Nunc sit amet metus lacinia, tempus ipsum eget, efficitur libero. Proin accumsan risus vitae gravida sodales. Nullam malesuada, velit sed lacinia semper, erat arcu semper tellus, ac viverra nunc turpis at enim. Fusce vehicula augue metus, nec fermentum metus commodo eget. Sed tortor enim, consequat non tempus quis, pulvinar vitae ligula. Duis hendrerit vulputate felis quis porttitor. 
-   </p>
-   <p>
-   Phasellus ornare sit amet nulla non posuere. Maecenas sodales ante rhoncus varius faucibus. Duis elit felis, ullamcorper mattis dolor sit amet, vulputate sollicitudin ipsum. Vivamus venenatis mollis leo, a tempus lectus aliquam a. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse convallis porta diam, et porttitor sem viverra a. Vivamus vestibulum porttitor turpis at consectetur.
-   </p>
-   <hr>
-   <a href="http://127.0.0.1:5000/madrasahbooking">
-       <button>Book Madrasah Now</button>
-    </a>
+<div class="madrasah-message">
+    <h2> What is a Madrasah? </h2>
+    <p> A madrasah is the islamic classes that aim to teach Islamic beliefs </p><br>
+
+    <h3> Our Madrasah </h3>
+    <p> Currently our madrasah teaches both boys and girls between 10-18, the following courses: </p><br>
+    <li> Hifdh Class </li>
+    <li> Aadab Class </li> <br>
+
+    <h3> Erollement </h3>
+    <p> If you wish to enrol your child/children then please complete a form for each child. You will then have an appointment with the madrasah teacher to determine if the class is suitable for your child or if you need to raise any concerns with us about the madrasah or your child. A link will be sent regarding your appointment and will also allow you to edit/delete the appointment. </p>
+    <p>The below bar chart shows you how many madrasah appointments have been made so far. Please understand that sometimes it can become very busy when making an apppointment. </p>
+</div>
+<a href="http://127.0.0.1:5000/madrasahbooking"> <button>Enrol Your Child Now</button> </a>  
+<br> <hr>
 {%endblock%}
 {% block graph %}
 <form id="filter" action="{{ url_for('routes.madrasah') }}" method="POST">
