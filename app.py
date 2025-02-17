@@ -3,7 +3,7 @@ import sqlite3
 from flask import Flask
 from blueprints import bp
 
-# Define the database file path (in the same directory as the app)
+#Stating the database file path
 DATABASE = os.path.join(os.path.dirname(__file__), 'database.db')
 
 def initialize_database():
