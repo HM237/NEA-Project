@@ -83,7 +83,7 @@ def nikah():
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('2025','2026')
                         GROUP BY strftime('%Y', Date)
-                        ORDER BY Year; """)
+                        ORDER BY Year """)
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
@@ -101,7 +101,7 @@ def nikah():
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     WHERE strftime('%Y', Date) IN ('2025','2026')
                     GROUP BY strftime('%Y', Date)
-                    ORDER BY Year; """)
+                    ORDER BY Year """)
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
@@ -163,7 +163,7 @@ def madrasah():
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('2025','2026')
                         GROUP BY strftime('%Y', Date)
-                        ORDER BY Year; """)
+                        ORDER BY Year """)
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
@@ -181,7 +181,7 @@ def madrasah():
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     WHERE strftime('%Y', Date) IN ('2025','2026')
                     GROUP BY strftime('%Y', Date)
-                    ORDER BY Year; """)
+                    ORDER BY Year """)
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
@@ -243,7 +243,7 @@ def tours():
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('2025','2026')
                         GROUP BY strftime('%Y', Date)
-                        ORDER BY Year; """)
+                        ORDER BY Year """)
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
@@ -261,7 +261,7 @@ def tours():
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     WHERE strftime('%Y', Date) IN ('2025','2026')
                     GROUP BY strftime('%Y', Date)
-                    ORDER BY Year; """)
+                    ORDER BY Year """)
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
@@ -324,7 +324,7 @@ def functions():
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('2025','2026')
                         GROUP BY strftime('%Y', Date)
-                        ORDER BY Year; """)
+                        ORDER BY Year """)
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
@@ -340,7 +340,7 @@ def functions():
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     WHERE strftime('%Y', Date) IN ('2025','2026')
                     GROUP BY strftime('%Y', Date)
-                    ORDER BY Year; """)
+                    ORDER BY Year """)
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
@@ -1249,8 +1249,6 @@ def edittourbooking():
                 number_of_people = request.form["number_of_people"]
                 event_type = request.form.get('event_type')            
 
-
-    
                 data = {'First Name':first_name, 
                         'Last Name': last_name, 
                         'Number Of People':number_of_people, 
@@ -1707,8 +1705,7 @@ def booking(service, digest):
                         INNER JOIN Function ON User.UserID = Function.UserID
                         INNER JOIN EventType ON Function.EventTypeID = EventType.EventTypeID
                         INNER JOIN Payment ON User.UserID = Payment.UserID                                   
-                        WHERE Hash.Digest = '{digest}' """)                    
-                    # cursor.execute(f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Function ON User.UserID = Function.UserID LEFT JOIN EventType ON Function.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'")                    
+                        WHERE Hash.Digest = '{digest}' """)                                      
                     rows = cursor.fetchall()#
                 #if the digest never existed we return the error page
                 if len(rows) == 0:
