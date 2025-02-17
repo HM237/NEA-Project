@@ -684,8 +684,8 @@ class Validation:
                 else:
                     childdob = datetime.strptime(value, '%Y-%m-%d') 
 
-                    start_date = datetime.strptime('2000-01-01', '%Y-%m-%d')
-                    end_date = datetime.strptime('2020-12-31', '%Y-%m-%d')
+                    start_date = datetime.strptime('2006-01-01', '%Y-%m-%d')
+                    end_date = datetime.strptime('2016-12-31', '%Y-%m-%d')
 
                     if not (start_date <= childdob <= end_date):
                         errors.append(f"Child is too old to attend this madrasash.")
