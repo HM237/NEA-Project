@@ -27,7 +27,7 @@
 <br> <hr>
 {%endblock%}
 {% block graph %}
-<form id="filter" action="{{ url_for('routes.tours') }}" method="POST">
+<form id="filter" action="{{ url_for('routes.tour') }}" method="POST">
     <br>Choose a filter:     <select id="filter" name="filter">
         <option value="{{ option }}"> {{ option }} </option>
         <option value="Yearly"> Yearly </option>

@@ -225,7 +225,7 @@ class Tours:
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople, EventTypeID) VALUES (?,?,?)', (self.user_id,self.number_of_people, self.eventid))
+                cursor.execute('INSERT INTO  Tour (UserID,NumberOfPeople, EventTypeID) VALUES (?,?,?)', (self.user_id,self.number_of_people, self.eventid))
 
         except sqlite3.OperationalError as e:
             raise DatabaseError("There was an operational error.")
@@ -241,7 +241,7 @@ class Tours:
         with sqlite3.connect('database.db') as connection:
             cursor = connection.cursor()
             query = '''
-            UPDATE Tours
+            UPDATE Tour
             SET NumberOfPeople= ?, EventTypeID = ?
             WHERE UserID = ?
             '''
@@ -255,11 +255,10 @@ class Tours:
             with sqlite3.connect('database.db') as connection:
                     cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
-                    cursor.execute(f"DELETE FROM Tours WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Tour WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                                        
                     connection.commit()
-                    connection.close()
                     success = True 
             return success
         

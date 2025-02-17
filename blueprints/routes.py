@@ -108,7 +108,7 @@ def nikah():
             return render_template("pages/nikah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
-            return render_template("pages/errors.html", errormsg = f'{e}')         
+            return render_template("pages/error.html", errormsg = f'{e}')         
 
 #Route to the Madrasah Page
 @bp.route('/madrasah', methods = ['GET','POST'])
@@ -188,11 +188,11 @@ def madrasah():
             return render_template("pages/madrasah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
-            return render_template("pages/errors.html", errormsg = f'{e}')         
+            return render_template("pages/error.html", errormsg = f'{e}')         
 
 #Route to the Tours Page
-@bp.route('/tours', methods = ['GET','POST'])
-def tours():
+@bp.route('/tour', methods = ['GET','POST'])
+def tour():
     try:
         if request.method == "POST":
             months = {'01':0,
@@ -215,7 +215,7 @@ def tours():
                     cur.execute(f""" 
                         SELECT strftime('%m', Date) AS Month, COUNT(TourID) AS NumberOfBookings
                         FROM User
-                        INNER JOIN Tours ON User.UserID = Tours.UserID
+                        INNER JOIN Tour ON User.UserID = Tour.UserID
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('{filter}')
                         GROUP BY strftime('%m', Date)
@@ -231,7 +231,7 @@ def tours():
                     number_of_bookings.append(value)
 
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/tours.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/tour.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
             else: 
                 with sqlite3.connect('database.db') as con:
@@ -239,7 +239,7 @@ def tours():
                     cur.execute(f""" 
                         SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
                         FROM User
-                        INNER JOIN Tours ON User.UserID = Tours.UserID
+                        INNER JOIN Tour ON User.UserID = Tour.UserID
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE strftime('%Y', Date) IN ('2025','2026')
                         GROUP BY strftime('%Y', Date)
@@ -247,7 +247,7 @@ def tours():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/tours.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/tour.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -257,7 +257,7 @@ def tours():
                 cur.execute(f""" 
                     SELECT strftime('%Y', Date) AS Year, COUNT(TourID) AS NumberOfBookings
                     FROM User
-                    INNER JOIN Tours ON User.UserID = Tours.UserID
+                    INNER JOIN Tour ON User.UserID = Tour.UserID
                     INNER JOIN Hash ON User.UserID = Hash.UserID
                     WHERE strftime('%Y', Date) IN ('2025','2026')
                     GROUP BY strftime('%Y', Date)
@@ -265,10 +265,10 @@ def tours():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/tours.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
+            return render_template("pages/tour.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
 
     except Exception as e:
-            return render_template("pages/errors.html", errormsg = f'{e}') 
+            return render_template("pages/error.html", errormsg = f'{e}') 
              
 #Route to the Service Page
 @bp.route('/functions', methods = ['GET','POST'])
@@ -347,7 +347,7 @@ def functions():
             return render_template("pages/functions.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
-            return render_template("pages/errors.html", errormsg = f'{e}') 
+            return render_template("pages/error.html", errormsg = f'{e}') 
 
 
 #Route to the Error Page
@@ -1103,11 +1103,11 @@ def editmadrasahbooking():
 
 #Route to the Tours Form
 @bp.route("/tourbooking")
-def tours_booking():
+def tour_booking():
     form_id = "TourForm"
     action_url = url_for('routes.addtour')
     service = "tour"
-    return render_template("forms/tours_form.html", form_id=form_id, action_url=action_url, service = service)
+    return render_template("forms/tour_form.html", form_id=form_id, action_url=action_url, service = service)
 
 #Process for Tours Table which retrieves the user input from the tour_form
 @bp.route("/process-tour", methods=['GET','POST'])
@@ -1220,7 +1220,7 @@ def addtour():
     except Exception as e:
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
-    return jsonify(redirect_url=url_for('routes.tours_booking'))
+    return jsonify(redirect_url=url_for('routes.tour_booking'))
 
 
 @bp.route("/edittourbooking", methods=['POST','GET'])
@@ -1360,7 +1360,7 @@ def edittourbooking():
     except Exception as e:
         return jsonify(redirect_url=url_for('routes.errors', errormsg = f'{e}'))
     
-    return jsonify(redirect_url=url_for('routes.tours_booking'))
+    return jsonify(redirect_url=url_for('routes.tour_booking'))
 
 
 ####################  Entire Functions Process ####################
@@ -1685,13 +1685,12 @@ def booking(service, digest):
                 with sqlite3.connect('database.db') as connection:
                     connection.row_factory = sqlite3.Row
                     cursor = connection.cursor()
-                    # f"SELECT * FROM User JOIN Hash ON User.UserID = Hash.UserID LEFT JOIN Tours ON User.UserID = Tours.UserID LEFT JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID WHERE Hash.Digest ='{digest}'"
                     cursor.execute(f""" 
-                        SELECT User.*, Hash.*, Tours.*, EventType.*
+                        SELECT User.*, Hash.*, Tour.*, EventType.*
                         FROM User
                         JOIN Hash ON User.UserID = Hash.UserID
-                        INNER JOIN Tours ON User.UserID = Tours.UserID
-                        INNER JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID
+                        INNER JOIN Tour ON User.UserID = Tour.UserID
+                        INNER JOIN EventType ON Tour.EventTypeID = EventType.EventTypeID
                         WHERE Hash.Digest = '{digest}' """)
                     rows = cursor.fetchall()                
                 #if the digest never existed we return the error page
@@ -1817,11 +1816,11 @@ def edit(service):
                     connection.row_factory = sqlite3.Row
                     cursor = connection.cursor()
                     cursor.execute(f""" 
-                        SELECT User.*, Hash.*, Tours.*, EventType.*
+                        SELECT User.*, Hash.*, Tour.*, EventType.*
                         FROM User
                         INNER JOIN Hash ON User.UserID = Hash.UserID
-                        INNER JOIN Tours ON User.UserID = Tours.UserID
-                        INNER JOIN EventType ON Tours.EventTypeID = EventType.EventTypeID
+                        INNER JOIN Tour ON User.UserID = Tour.UserID
+                        INNER JOIN EventType ON Tour.EventTypeID = EventType.EventTypeID
                         WHERE User.UserID = {userid} """)                
                     rows = cursor.fetchall()
                 return render_template("forms/edit_forms/edittour.html",rows=rows)          
