@@ -6,7 +6,7 @@ from blueprints import bp
 #Stating the database file path
 DATABASE = os.path.join(os.path.dirname(__file__), 'database.db')
 
-def initialize_database():
+def database__init__():
     # Checks whether database exists in directory.
     if not os.path.exists(DATABASE):
         print("Database does not exist. Creating a new database...")
@@ -132,7 +132,7 @@ def app():
         DATABASE = DATABASE
     )
 
-    initialize_database()
+    database__init__()
 
     app.register_blueprint(bp)
 
