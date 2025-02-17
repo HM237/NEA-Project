@@ -110,3 +110,17 @@ p {
     text-align: center;
 }
 
+button {
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    background-color: rgb(205, 146, 146);
+    color: #2c3e50;
+    padding: 0.5rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+button:hover{
+    background-color: rgb(255, 255, 255);
+    color: #000000;    
+}

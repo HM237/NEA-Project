@@ -3,7 +3,7 @@
 {% block head %} Prayer Timetable{% endblock %}
 {% block content %}
 <p>Click below to download the month's timetable</p>
-<a href="{{ url_for('static', filename='TimeTable.pdf') }}" download="PrayerTimeTable.pdf"> Download Prayer Timetable </a>
+<a href="{{ url_for('static', filename='TimeTable.pdf') }}" download="PrayerTimeTable.pdf"> <button type="submit">Download Prayer Timetable</button></a>
 
 <br>
 
