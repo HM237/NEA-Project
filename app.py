@@ -115,7 +115,7 @@ def initialize_database():
             ('Other',)
         ]
         
-        cursor.executemany(''' INSERT INTO EventType (EventType) VALUES (?) ''', EventTypes)
+        cursor.executemany(""" INSERT INTO EventType (EventType) VALUES (?) """, EventTypes)
 
         # Commit changes and close the connection
         conn.commit()
