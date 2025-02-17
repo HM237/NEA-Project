@@ -36,10 +36,9 @@ class User:
                 connection.commit()
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            print(f'{e} in normal user')            
+            raise DatabaseError("There was an operational error.")
+
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -62,10 +61,8 @@ class User:
                 connection.commit()
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            print(f'{e} in user')                        
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -92,10 +89,8 @@ class Nikah:
                 connection.commit()  
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            print(f'{e} in normalnikah')            
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -119,10 +114,8 @@ class Nikah:
                 connection.commit()
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            print(f'{e} in updatenikah')            
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -144,10 +137,7 @@ class Nikah:
             return success
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -171,10 +161,7 @@ class Madrasah:
                 cursor.execute('INSERT INTO  Madrasah (UserID,ChildFirstName,ChildLastName ,ChildDoB) VALUES (?,?,?,?)', (self.user_id,self.child_fname,self.child_lname,self.child_date_of_birth ))
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -197,10 +184,7 @@ class Madrasah:
                 connection.commit()
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -221,10 +205,7 @@ class Madrasah:
             return success
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -247,10 +228,8 @@ class Tours:
                 cursor.execute('INSERT INTO  Tours (UserID,NumberOfPeople, EventTypeID) VALUES (?,?,?)', (self.user_id,self.number_of_people, self.eventid))
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
+        
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
 
@@ -285,10 +264,7 @@ class Tours:
             return success
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -310,10 +286,7 @@ class Functions:
                 cursor.execute('INSERT INTO  Function (UserID,EventTypeID) VALUES (?,?)', (self.user_id,self.eventid))    
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -336,10 +309,7 @@ class Functions:
                 connection.commit()     
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -360,10 +330,7 @@ class Functions:
             return success
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -390,10 +357,7 @@ class Payment:
                 connection.commit()
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -421,10 +385,7 @@ class Clashed:
                     return False
                 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -468,10 +429,7 @@ class Hash:
             return digest
         
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
+            raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
             raise DatabaseError(f"Database error: {e}")
@@ -494,12 +452,11 @@ class Hash:
                 connection.commit()        
 
         except sqlite3.OperationalError as e:
-                if 'database is locked' in str(e):
-                    raise DatabaseError("The database is locked.")
-                else:
-                    raise
-
+            print(f'{e}')
+            raise DatabaseError("There was an operational error.")
+        
         except sqlite3.DatabaseError as e:
+            print(f'{e}')
             raise DatabaseError(f"Database error: {e}")
 
         finally:
@@ -565,15 +522,15 @@ class Email:
             # Sending the email
             server.sendmail(sender_email, receiver_email, msg.as_string())
             print("Email sent successfully!")
+
         except UnboundLocalError as e:
             raise UnboundLocalErrors(f"Unbound local error: {e}")
         
         except (socket.gaierror, socket.herror, socket.timeout, smtplib.SMTPException) as e:
-                print(f'error was caught here: {e}')
                 raise SocketError("The email server could not connect.")
+        
         except Exception as e:
-            print(f'The Error was is this even updating: {e}')
-            raise ServerError("Unexpected error")
+            raise ServerError("Unexpected error: {e}")
     
     def send_summary_email(self, service):
         #using os so that personal details aren't shown
@@ -633,11 +590,10 @@ class Email:
             raise UnboundLocalErrors(f"Unbound local error: {e}")
         
         except (socket.gaierror, socket.herror, socket.timeout, smtplib.SMTPException) as e:
-                print(f'error was caught here: {e}')
                 raise SocketError("The email server could not connect.")
+        
         except Exception as e:
-            print(f'Unexpected error: {e}')
-            raise ServerError("Unexpected error")
+            raise ServerError("Unexpected error: {e}")
 
 class Validation:
     @classmethod

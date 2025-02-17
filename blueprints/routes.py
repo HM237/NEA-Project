@@ -372,7 +372,7 @@ def verification(service):
             match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", email) #this regular expression is used to identify if the email is in a valid format.
             if not match:
                 session.pop('random_number', None) #if the email is invalid, we will pop the verification code stored in Flask session and prompt the user to enter a valid email.
-                return jsonify({"message": f"PLease enter a valid email before trying to send a verification code."})
+                return jsonify({"message": f"Please enter a valid email before trying to send a verification code."})
 
             time = request.form.get('time')
             date = request.form.get('date')
@@ -659,14 +659,13 @@ def addnikah():
                     digest = hashvalue.hash_algorithm()
                     digest = hashvalue.add_digest(digest) #Adding the digest to the Hash Table
 
-                except sqlite3.OperationalError:
-                        return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                except sqlite3.DatabaseError:
-                    return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
+                except DatabaseError as e:
+                    print(f'AddNikah/DatabaseError/Error: {e}')                        
+                    return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                              
                 
                 except Exception as e:
-                    return jsonify({"message": f"This error: {e} has occured. Please try again later to submit this booking or inform the masjid."})                     
+                    print(f'AddNikah/Exception/Error: {e}')                                            
+                    return jsonify({"message": f"{e} has occured. Please try again later to submit this booking or inform the masjid."})                     
 
                 try:
                     #sending the summary email after inserting all data to database. 
@@ -674,15 +673,20 @@ def addnikah():
                     user_email.send_summary_email(service='nikah') #Fills in the dynamic URL for the booking URL.
                     return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #notifies the user that the booking was a success    
                 
-                except UnboundLocalErrors:
+                except UnboundLocalErrors as e:
+                    print(f'AddNikah/UnboundLocalErrors/Error: {e}')                        
                     return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
                 
-                except SocketError:
+                except SocketError as e:
+                    print(f'AddNikah/SocketError/Error: {e}')                        
                     return jsonify({"message": f"Unfortunately the form could not send the summary email. Please try again later."}) 
 
-                except ServerError:
-                    return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})                
-                except Exception:
+                except ServerError as  e:
+                    print(f'AddNikah/ServerError/Error: {e}')                        
+                    return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})      
+                          
+                except Exception as e:
+                    print(f'AddNikah/Exception/Error: {e}')                        
                     return jsonify({"message": f"An unexpected error has occurred. Please contact the masjid and report this error."})                 
 
     except Exception as e:
@@ -759,14 +763,19 @@ def editnikahbooking():
                         user_email.send_summary_email(service = 'nikah')
                         
                     except UnboundLocalErrors:
+                        print(f'EditNikahBook/UnboundLocalErrors/Error: {e}')                        
                         return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
                     
                     except SocketError:
+                        print(f'EditNikahBook/SocketError/Error: {e}')                        
                         return jsonify({"message": f"Unfortunately the form could not send the summary email. Please try again later."}) 
 
                     except ServerError:
-                        return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})                
+                        print(f'EditNikahBook/ServerError/Error: {e}')                        
+                        return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})    
+                                
                     except Exception:
+                        print(f'EditNikahBook/Exception/Error: {e}')                        
                         return jsonify({"message": f"An unexpected error has occurred. Please contact the masjid and report this error."})                      
 
                     try:
@@ -779,13 +788,12 @@ def editnikahbooking():
 
                         return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}')) #Rerouting the user to the new editing/viewing page with the new digest.
 
-                    except sqlite3.OperationalError:
-                            return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                    except sqlite3.DatabaseError:
-                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
+                    except DatabaseError as e:
+                        print(f'EditNikahBook/DatabaseError/Error: {e}')                        
+                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                                 
                     
                     except Exception as e:
+                        print(f'EditNikahBook/Exception/Error: {e}')                        
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                         
                 else:
 
@@ -812,11 +820,9 @@ def editnikahbooking():
 
                         return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{digest}'))
 
-                    except sqlite3.OperationalError:
-                            return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                    except sqlite3.DatabaseError:
-                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
+                    except DatabaseError as e:
+                        print(f'EditNikahBook/DatabaseError/Error: {e}')                        
+                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                                 
                     
                     except Exception as e:
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})     
@@ -919,13 +925,12 @@ def addmadrasah():
                     digest = hashvalue.hash_algorithm()
                     digest = hashvalue.add_digest(digest)
 
-                except sqlite3.OperationalError:
-                        return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                except sqlite3.DatabaseError:
-                    return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
-                
+                except DatabaseError as e:
+                    print(f'AddMad/DatabaseError/Error: {e}')                        
+                    return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                                
+            
                 except Exception as e:
+                    print(f'AddMad/Exception/Error: {e}')                        
                     return jsonify({"message": f"This error: {e} has occured. Please try again later to submit this booking or inform the masjid."})                     
 
                 try:
@@ -934,15 +939,19 @@ def addmadrasah():
                     user_email.send_summary_email(service='madrasah')
                     return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
                 
-                except UnboundLocalErrors:
+                except UnboundLocalErrors as e:
+                    print(f'AddMad/UnboundLocalErrors/Error: {e}')                        
                     return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
                 
-                except SocketError:
+                except SocketError as e:
+                    print(f'AddMad/SocketError/Error: {e}')                        
                     return jsonify({"message": f"Unfortunately the form could not send the summary email. Please try again later."}) 
 
-                except ServerError:
-                    return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})                
-                except Exception:
+                except ServerError as e:
+                    print(f'AddMad/ServerError/Error: {e}')                        
+                    return jsonify({"message": f"Unfortunately the server could not connect. Please check that you are connected to the Internet or try again later."})       
+                         
+                except Exception as e:
                     return jsonify({"message": f"An unexpected error has occurred. Please contact the masjid and report this error."}) 
                  
     except Exception as e:
@@ -1040,13 +1049,12 @@ def editmadrasahbooking():
 
                         return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}'))
 
-                    except sqlite3.OperationalError:
-                            return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                    except sqlite3.DatabaseError:
-                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
+                    except DatabaseError as e:
+                        print(f'EditMadBook/DatabaseError/Error: {e}')                        
+                        return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                                
                     
                     except Exception as e:
+                        print(f'EditMadBook/Execption/Error: {e}')                        
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})     
 
                 else:
@@ -1077,13 +1085,12 @@ def editmadrasahbooking():
 
                         return jsonify(redirect_url=url_for('routes.booking', service='madrasah', digest=f'{digest}'))
 
-                    except sqlite3.OperationalError:
-                            return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
-
-                    except sqlite3.DatabaseError:
+                    except DatabaseError as e:
+                        print(f'EditMadBook/DatabaseError/Error: {e}')                        
                         return jsonify({"message": f"An unexpected error has occured with the database. Please try again later. If the issue still persists, please inform the masjid."})                               
                     
                     except Exception as e:
+                        print(f'EditMadBook/Exception/Error: {e}')                        
                         return jsonify({"message": f"This error: {e} has occured. Please try again later to delete this booking or inform the masjid."})                         
 
     except Exception as e:
