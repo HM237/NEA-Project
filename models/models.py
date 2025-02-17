@@ -299,17 +299,15 @@ class Tours:
 
 #Functions class which deals with Functions Table
 class Functions:
-    def __init__(self, user_id,post_code, address_line, eventid):
+    def __init__(self, user_id,eventid):
         self.user_id = user_id
-        self.post_code = post_code
-        self.address_line = address_line
         self.eventid = eventid
 
     def add_Function(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Function (UserID,PostCode, AddressLine, EventTypeID) VALUES (?,?,?,?)', (self.user_id,self.post_code, self.address_line, self.eventid))    
+                cursor.execute('INSERT INTO  Function (UserID,EventTypeID) VALUES (?,?)', (self.user_id,self.eventid))    
 
         except sqlite3.OperationalError as e:
                 if 'database is locked' in str(e):
@@ -330,10 +328,10 @@ class Functions:
                 cursor = connection.cursor()
                 query = '''
                 UPDATE Function
-                SET PostCode = ?, AddressLine = ?, EventTypeID= ?
+                SET EventTypeID= ?
                 WHERE UserID = ?
                 '''
-                parameters = (self.post_code, self.address_line, self.eventid, self.user_id)
+                parameters = (self.eventid, self.user_id)
                 cursor.execute(query, parameters)
                 connection.commit()     
 
@@ -444,15 +442,17 @@ class Hash:
 
 
     def hash_algorithm(self):
-        #joining the time,date and userid to make the hash value. Imporant to use the id to make the digest more specific
         string = f'{self.date}{self.time}{self.userid}'
         string = re.sub(r'[-:]', '', string)
-        arr = [0] * 20 #creating a 160 bit array
+        arr = [0] * 20
+        initial_values = [5,17,23,31]
         digest = ''
         for index, character in enumerate(string):
             ascii_value = ord(character)
             for i in range (20):
-                value = ((arr[i] + ascii_value * (index + 1) + i ) * 17) % 256  #multiplying by 17 makes the pattern more random
+                initial_index = i % len(initial_values)
+                initial_value = initial_values[initial_index]
+                value = ((arr[i] + ascii_value * (index + 1) + i ) * initial_value) % 256  
                 arr[i] = value
         for byte in arr:
             digest += format(byte, '02x') #converting it into hexadecimal
@@ -668,6 +668,10 @@ class Validation:
 
                 if not (start_date <= bookingdate <= end_date):
                     errors.append(f"Booking date must be between 01/01/2025 and 31/12/2030.")
+            
+            elif key == 'Event Type' or key == 'Payment Method':
+                if value == '':
+                    errors.append(f'Please select one of the {key} option.')
 
             elif key == 'Number Of People':
                 if not value.isnumeric():
@@ -693,9 +697,8 @@ class Validation:
 
 
             elif key == 'Post Code' or key == 'Address Line':
-                match = re.match(r"""(\w+\s\w+)""", value)
-                if not match:
-                    errors.append(f"{key} must be a valid post code.")
+                if not (value.replace(' ','')).isalnum():
+                    errors.append(f"{key} must not contain special characters.")
 
             else:
                 match = re.match(r"""^(?![\s.]+$)[a-zA-Z\s.]+$""", value)

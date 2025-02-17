@@ -34,7 +34,20 @@ def prayertime():
 def nikah():
     try:
         if request.method == "POST":
-            filter = request.form.get('filter')  
+            filter = request.form.get('filter')
+            months = {'01':0,
+                    '02':0,
+                    '03':0,
+                    '04':0,
+                    '05':0,
+                    '06':0,
+                    '07':0,
+                    '08':0,
+                    '09':0,
+                    '10':0,
+                    '11':0,
+                    '12':0,
+                    }              
             if filter != 'Yearly':     
                 with sqlite3.connect('database.db') as con:
                     cur = con.cursor()
@@ -47,9 +60,18 @@ def nikah():
                         GROUP BY strftime('%m', Date)
                         ORDER BY Month """)
                     result = cur.fetchall()
-                number_of_bookings = [x[1] for x in result]
+            
+                number_of_bookings = []
+
+                for month in months:
+                    for row in result:
+                        months[row[0]] = row[1]
+
+                for key,value in months.items():
+                    number_of_bookings.append(value)
+
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/nikah.html",option = filter ,number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
             else: 
                 with sqlite3.connect('database.db') as con:
@@ -65,7 +87,7 @@ def nikah():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/nikah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -83,7 +105,7 @@ def nikah():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/nikah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/nikah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/errors.html", errormsg = f'{e}')         
@@ -93,6 +115,19 @@ def nikah():
 def madrasah():
     try:
         if request.method == "POST":
+            months = {'01':0,
+                    '02':0,
+                    '03':0,
+                    '04':0,
+                    '05':0,
+                    '06':0,
+                    '07':0,
+                    '08':0,
+                    '09':0,
+                    '10':0,
+                    '11':0,
+                    '12':0,
+                    }                
             filter = request.form.get('filter')  
             if filter != 'Yearly':     
                 with sqlite3.connect('database.db') as con:
@@ -106,9 +141,17 @@ def madrasah():
                         GROUP BY strftime('%m', Date)
                         ORDER BY Month """)
                     result = cur.fetchall()
-                number_of_bookings = [x[1] for x in result]
+                number_of_bookings = []
+
+                for month in months:
+                    for row in result:
+                        months[row[0]] = row[1]
+
+                for key,value in months.items():
+                    number_of_bookings.append(value)
+
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/madrasah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
             else: 
                 with sqlite3.connect('database.db') as con:
@@ -124,7 +167,7 @@ def madrasah():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/madrasah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -142,7 +185,7 @@ def madrasah():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/madrasah.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/madrasah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/errors.html", errormsg = f'{e}')         
@@ -152,6 +195,19 @@ def madrasah():
 def tours():
     try:
         if request.method == "POST":
+            months = {'01':0,
+                    '02':0,
+                    '03':0,
+                    '04':0,
+                    '05':0,
+                    '06':0,
+                    '07':0,
+                    '08':0,
+                    '09':0,
+                    '10':0,
+                    '11':0,
+                    '12':0,
+                    }                
             filter = request.form.get('filter')  
             if filter != 'Yearly':     
                 with sqlite3.connect('database.db') as con:
@@ -165,9 +221,17 @@ def tours():
                         GROUP BY strftime('%m', Date)
                         ORDER BY Month """)
                     result = cur.fetchall()
-                number_of_bookings = [x[1] for x in result]
+                number_of_bookings = []
+
+                for month in months:
+                    for row in result:
+                        months[row[0]] = row[1]
+
+                for key,value in months.items():
+                    number_of_bookings.append(value)
+
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/tours.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
             else: 
                 with sqlite3.connect('database.db') as con:
@@ -183,7 +247,7 @@ def tours():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/tours.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -201,7 +265,7 @@ def tours():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/tours.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
+            return render_template("pages/tours.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
 
     except Exception as e:
             return render_template("pages/errors.html", errormsg = f'{e}') 
@@ -211,6 +275,19 @@ def tours():
 def functions():
     try:
         if request.method == "POST":
+            months = {'01':0,
+                    '02':0,
+                    '03':0,
+                    '04':0,
+                    '05':0,
+                    '06':0,
+                    '07':0,
+                    '08':0,
+                    '09':0,
+                    '10':0,
+                    '11':0,
+                    '12':0,
+                    }                
             filter = request.form.get('filter')  
             if filter != 'Yearly':     
                 with sqlite3.connect('database.db') as con:
@@ -224,9 +301,18 @@ def functions():
                         GROUP BY strftime('%m', Date)
                         ORDER BY Month """)
                     result = cur.fetchall()
-                number_of_bookings = [x[1] for x in result]
+        
+                number_of_bookings = []
+
+                for month in months:
+                    for row in result:
+                        months[row[0]] = row[1]
+
+                for key,value in months.items():
+                    number_of_bookings.append(value)
+
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/functions.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
 
             else: 
                 with sqlite3.connect('database.db') as con:
@@ -242,7 +328,7 @@ def functions():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/functions.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
         else:
             with sqlite3.connect('database.db') as con:
@@ -258,7 +344,7 @@ def functions():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/functions.html", number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/functions.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/errors.html", errormsg = f'{e}') 
@@ -305,6 +391,7 @@ def verification(service):
                 email = request.form["email"]                            
                 post_code = request.form["post_code"]            
                 address_line = request.form["address_line"]              
+                payment_method = request.form.get('payment_method')                            
 
                 #below we are storing the data in a dictionary to pass on to the Validation Class.
                 data = {'First Name': first_name, 
@@ -315,6 +402,7 @@ def verification(service):
                         'Bride Last Name': bride_last_name,
                         'Email':email ,
                         'Address Line':address_line, 
+                        'Payment Method': payment_method,                        
                         'Post Code':post_code, 
                         'Time':time, 
                         'Date': date}
@@ -391,7 +479,8 @@ def verification(service):
                 email = request.form["email"]      
                 post_code = request.form["post_code"]            
                 address_line = request.form["address_line"]  
-                number_of_people = request.form["number_of_people"]  
+                number_of_people = request.form["number_of_people"] 
+                event_type = request.form.get('event_type')            
 
                 #below we are storing the data in a dictionary to pass on to the Validation Class.
 
@@ -400,6 +489,7 @@ def verification(service):
                         'Email':email,
                         'Address Line':address_line, 
                         'Post Code':post_code, 
+                        'Event Type': event_type,
                         'Number Of People':number_of_people,
                         'Time':time, 
                         'Date': date}
@@ -432,12 +522,16 @@ def verification(service):
                 email = request.form["email"]        
                 post_code = request.form["post_code"]            
                 address_line = request.form["address_line"]     
+                payment_method = request.form.get('payment_method')                            
+                event_type = request.form.get('event_type')            
 
                 #below we are storing the data in a dictionary to pass on to the Validation Class.
                 data = {'First Name':first_name, 
                         'Last Name': last_name, 
+                        'Event Type': event_type,
                         'Address Line':address_line, 
                         'Post Code':post_code, 
+                        'Payment Method': payment_method,                        
                         'Email':email,
                         'Time': time, 
                         'Date':date}
@@ -1346,7 +1440,7 @@ def addfunction():
                             cur.close()
 
                     #calling the Function Class to store the data for the Function Table
-                    new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid= eventid)
+                    new_function = Functions(user_id= userid,eventid= eventid)
                     new_function.add_Function()  
                     
                     #calling the class Payment to store the data for the Payment Table
@@ -1358,7 +1452,8 @@ def addfunction():
                     digest = hashvalue.hash_algorithm()
                     digest = hashvalue.add_digest(digest)
 
-                except sqlite3.OperationalError:
+                except sqlite3.OperationalError as e:
+                        print(f'error: {e}')
                         return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
 
                 except sqlite3.DatabaseError:
@@ -1479,7 +1574,7 @@ def editfunctionbooking():
                             cur.close()
 
                         #updating the booking by sending it to the Function Class.
-                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line, eventid=eventid)
+                        new_function = Functions(user_id= userid,eventid=eventid)
                         new_function.update()
                         return jsonify(redirect_url=url_for('routes.booking', service='function', digest=f'{newdigest}'))
                     
@@ -1510,7 +1605,7 @@ def editfunctionbooking():
                             con.commit()
                             cur.close()
 
-                        new_function = Functions(user_id= userid,post_code= post_code, address_line= address_line,eventid=eventid)
+                        new_function = Functions(user_id= userid,eventid=eventid)
                         new_function.update()   
 
                         with sqlite3.connect('database.db') as connection:
