@@ -33,9 +33,9 @@ def prayertime():
 @bp.route('/nikah', methods = ['GET','POST'])
 def nikah():
     try:
-        if request.method == "POST":
+        if request.method == "POST": #when the user decides to filters the graph for 1 year.
             filter = request.form.get('filter')
-            months = {'01':0,
+            months = {'01':0, # a dictionary of months and the number of bookings all set to 0 is created.
                     '02':0,
                     '03':0,
                     '04':0,
@@ -49,7 +49,7 @@ def nikah():
                     '12':0,
                     }              
             if filter != 'Yearly':     
-                with sqlite3.connect('database.db') as con:
+                with sqlite3.connect('database.db') as con: #counts the number of bookings made according to the year and orders by months
                     cur = con.cursor()
                     cur.execute(f""" 
                         SELECT strftime('%m', Date) AS Month, COUNT(NikahID) AS NumberOfBookings
@@ -63,18 +63,18 @@ def nikah():
             
                 number_of_bookings = []
 
-                for month in months:
+                for month in months: #updating the dictionary so that the number of bookings correlates to the month
                     for row in result:
-                        months[row[0]] = row[1]
+                        months[row[0]] = row[1] 
 
                 for key,value in months.items():
                     number_of_bookings.append(value)
 
                 labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                return render_template("pages/nikah.html",option = filter ,number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))       
+                return render_template("pages/nikah.html",option = filter ,number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) #returning to chart.js the labels for the x-axis and the number of bookings for the y-axis.      
 
-            else: 
-                with sqlite3.connect('database.db') as con:
+            else: #when the user decides to filters the graph for both years.
+                with sqlite3.connect('database.db') as con:#counts the number of bookings made according to the year and orders by year.
                     cur = con.cursor()
                     cur.execute(f""" 
                         SELECT strftime('%Y', Date) AS Year, COUNT(NikahID) AS NumberOfBookings
@@ -85,13 +85,13 @@ def nikah():
                         GROUP BY strftime('%Y', Date)
                         ORDER BY Year """)
                     result = cur.fetchall()
-                number_of_bookings = [x[1] for x in result]
+                number_of_bookings = [x[1] for x in result]# doesn't require a dictionary since we will only end up with 2 values.
                 labels = ['2025', '2026']
-                return render_template("pages/nikah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/nikah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) #returning to chart.js the labels for the x-axis and the number of bookings for the y-axis.
 
 
 
-        else:
+        else: #the page is just being rendered and so we will by default have the graph show both years.
             with sqlite3.connect('database.db') as con:
                 cur = con.cursor()
                 cur.execute(f""" 
@@ -105,7 +105,7 @@ def nikah():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/nikah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/nikah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
         
     except Exception as e:
             return render_template("pages/error.html", errormsg = f'{e}')         
