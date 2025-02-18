@@ -678,3 +678,80 @@ class Validation:
         if errors:
             errors = '\n'.join(errors)
             return errors 
+
+
+# CREATE TABLE "User" (
+#     "UserID"	INTEGER,
+#     "FirstName"	VARCHAR(50) NOT NULL,
+#     "LastName"	VARCHAR(50) NOT NULL,
+#     "Email"	VARCHAR(255) NOT NULL,
+#     "PhoneNumber"	VARCHAR(11) NOT NULL,
+#     "DoB"	DATE,
+#     PRIMARY KEY("UserID" AUTOINCREMENT)
+# );
+
+# CREATE TABLE "Hash" (
+#     "Digest"	TEXT NOT NULL UNIQUE,
+#     "UserID"	INTEGER NOT NULL,
+#     "Time"	TEXT NOT NULL,
+#     "Date"	DATE NOT NULL,
+#     PRIMARY KEY("Digest"),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );                                
+
+# CREATE TABLE "Nikah" (
+#     "NikahID"	INTEGER,
+#     "UserID"	INTEGER NOT NULL,
+#     "GroomFirstName"	VARCHAR(50) NOT NULL,
+#     "GroomLastName"	VARCHAR(50) NOT NULL,
+#     "BrideFirstName"	VARCHAR(50) NOT NULL,
+#     "BrideLastName"	VARCHAR(50) NOT NULL,
+#     PRIMARY KEY("NikahID" AUTOINCREMENT),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );
+
+# CREATE TABLE "Madrasah" (
+#     "MadrasahID"	INTEGER,
+#     "UserID"	INTEGER NOT NULL,
+#     "ChildFirstName"	VARCHAR(50) NOT NULL,
+#     "ChildLastName"	VARCHAR(50) NOT NULL,
+#     "ChildDoB"	DATE NOT NULL,
+#     PRIMARY KEY("MadrasahID" AUTOINCREMENT),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );
+
+# CREATE TABLE "Tours" (
+#     "TourID"	INTEGER,
+#     "UserID"	INTEGER NOT NULL,
+#     "NumberOfPeople"	INTEGER NOT NULL,
+#     "EventTypeID"	INTEGER NOT NULL,
+#     PRIMARY KEY("TourID" AUTOINCREMENT),
+#     FOREIGN KEY("EventTypeID") REFERENCES "EventType"("EventTypeID"),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );    
+
+# CREATE TABLE "Function" (
+#     "FunctionID"	INTEGER,
+#     "UserID"	INTEGER NOT NULL,
+#     "EventTypeID"	INTEGER NOT NULL,
+#     PRIMARY KEY("FunctionID" AUTOINCREMENT),
+#     FOREIGN KEY("EventTypeID") REFERENCES "EventType"("EventTypeID"),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );        
+
+# CREATE TABLE "Payment" (
+#     "PaymentID"	INTEGER,
+#     "UserID"	INTEGER NOT NULL,
+#     "PaymentMethod"	VARCHAR(10) NOT NULL,
+#     "AddressLine"	VARCHAR(25) NOT NULL,
+#     "PostCode"	VARCHAR(25) NOT NULL,
+#     "Price"	INTEGER NOT NULL,
+#     PRIMARY KEY("PaymentID" AUTOINCREMENT),
+#     FOREIGN KEY("UserID") REFERENCES "User"("UserID")
+# );
+
+# CREATE TABLE "EventType" (
+#     "EventTypeID"	INTEGER,
+#     "EventType"	VARCHAR(50),
+#     PRIMARY KEY("EventTypeID")
+# );
