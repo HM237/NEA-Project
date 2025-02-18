@@ -16,7 +16,7 @@
     <p> If you wish to enrol your child/children then please complete a form for each child. You will then have an appointment with the madrasah teacher to determine if the class is suitable for your child or if you need to raise any concerns with us about the madrasah or your child. A link will be sent regarding your appointment and will also allow you to edit/delete the appointment. </p>
     <p>The below bar chart shows you how many madrasah appointments have been made so far. Please understand that sometimes it can become very busy when making an apppointment. </p>
 </div>
-<a href="http://127.0.0.1:5000/madrasahbooking"> <button>Enrol Your Child Now</button> </a>  
+<a href="{{ url_for('routes.madrasah_booking') }}"> <button>Enrol Your Child Now</button> </a>  
 <br> <hr>
 {%endblock%}
 {% block graph %}

@@ -20,12 +20,12 @@
                 <li>
                     <a href="/"> Menu </a>
                     <ul class="dropdown">
-                        <li> <a href="/prayer-timetable" > Prayer Timetable </a></li>
-                        <li> <a href="/nikah" > Nikah </a></li>
-                        <li> <a href="/madrasah" > Madrasah </a></li>
-                        <li> <a href="/functions" > Functions </a></li>
-                        <li> <a href="/tour" > Tour </a></li>
-                        <li> <a href="/about-us" > About Us </a></li>
+                        <li> <a href="{{ url_for('routes.prayertime') }}" > Prayer Timetable </a></li>
+                        <li> <a href="{{ url_for('routes.nikah') }}" > Nikah </a></li>
+                        <li> <a href="{{ url_for('routes.madrasah') }}" > Madrasah </a></li>
+                        <li> <a href="{{ url_for('routes.functions') }}" > Functions </a></li>
+                        <li> <a href="{{ url_for('routes.tour') }}" > Tour </a></li>
+                        <li> <a href="{{ url_for('routes.aboutus') }}" > About Us </a></li>
                     </ul>
                 </li>
             </ul>

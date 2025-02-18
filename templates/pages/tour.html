@@ -23,7 +23,7 @@
     <h3> Book a Tour </h3>
     <p> If you wish to book a tour of the mosque, please complete the form below to make an appointment. This will allow us to further discuss any necessary arrangements for your tour. A link will be sent to your email, which allow you to edit or delete your appointment. </p>   
 </div>
-<a href="http://127.0.0.1:5000/tourbooking"> <button>Make a Tour</button> </a>  
+<a href="{{ url_for('routes.tour_booking') }}"> <button>Make a Tour</button> </a>  
 <br> <hr>
 {%endblock%}
 {% block graph %}
