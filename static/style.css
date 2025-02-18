@@ -39,7 +39,7 @@ nav a{
     color: black;
 }
 
-nav  li:first-child{
+nav  li:first-child{ /* Moves the Home to the left hand side at the top*/
     margin-right: auto;
 }
 

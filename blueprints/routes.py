@@ -105,7 +105,7 @@ def nikah():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/nikah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/nikah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/error.html", errormsg = f'{e}')         
@@ -185,7 +185,7 @@ def madrasah():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/madrasah.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/madrasah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/error.html", errormsg = f'{e}')         
@@ -265,7 +265,7 @@ def tour():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/tour.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
+            return render_template("pages/tour.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels))
 
     except Exception as e:
             return render_template("pages/error.html", errormsg = f'{e}') 
@@ -344,7 +344,7 @@ def functions():
                 result = cur.fetchall()
             number_of_bookings = [x[1] for x in result]
             labels = ['2025', '2026']
-            return render_template("pages/functions.html",option = 'Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+            return render_template("pages/functions.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
         
     except Exception as e:
             return render_template("pages/error.html", errormsg = f'{e}') 
