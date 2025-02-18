@@ -6,7 +6,7 @@ from blueprints import bp
 #Stating the database file path
 DATABASE = os.path.join(os.path.dirname(__file__), 'database.db')
 
-def database__init__():
+def database():
     # Checks whether database exists in directory.
     if not os.path.exists(DATABASE):
         print("Database does not exist. Creating a new database...")
@@ -30,7 +30,7 @@ def database__init__():
         # Creating Hash Table
         cursor.execute("""
             CREATE TABLE "Hash" (
-                "Digest"	TEXT NOT NULL,
+                "Digest"	TEXT NOT NULL UNIQUE,
                 "UserID"	INTEGER NOT NULL,
                 "Time"	TEXT NOT NULL,
                 "Date"	DATE NOT NULL,
@@ -132,7 +132,7 @@ def app():
         DATABASE = DATABASE
     )
 
-    database__init__()
+    database()
 
     app.register_blueprint(bp)
 

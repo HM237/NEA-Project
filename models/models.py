@@ -423,8 +423,23 @@ class Hash:
             #storing the digest in the Hash Table along with UserID,Time and Date
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
-                connection.commit()
+                cursor.execute(f"""SELECT Time,Date FROM Hash WHERE Digest = '{digest}' """)
+                existing = cursor.fetchone()
+                if existing is not None:
+                    cursor.execute(f"""
+                        UPDATE Hash 
+                        SET UserID = {self.userid}, Time = {self.time}, Date = {self.date} 
+                        WHERE Digest = '{digest}' AND Date < CURRENT_DATE """)
+                    row_deleted = cursor.rowcount()
+                    if row_deleted < 0:
+                        rehash = Hash(time = self.time, date = self.date, userid = digest)
+                        digest = rehash.hash_algorithm()
+                        digest = rehash.add_digest(digest)
+                    else:
+                        print('Hash updated.')
+                else:
+                    cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
+                    connection.commit()
             return digest
         
         except sqlite3.OperationalError as e:
@@ -643,7 +658,7 @@ class Validation:
                     end_date = datetime.strptime('2016-12-31', '%Y-%m-%d')
 
                     if not (start_date <= childdob <= end_date):
-                        errors.append(f"Child is too old to attend this madrasash.")
+                        errors.append(f"Child is cannot attend this madrasash.")
 
             elif key == 'Email':
                 match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", value)
