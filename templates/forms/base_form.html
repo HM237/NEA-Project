@@ -12,6 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        // script which sends verification email after making sure the required attributes are filled out except for verification code.
         $(document).ready(function() {
             $('#send_email').click(function(event) {
                 event.preventDefault(); 
@@ -49,7 +50,7 @@
                 }
             });
         
-
+        // script which submits the entire form including the verification code.
             $('#submit_form').click(function(event) {
                 event.preventDefault(); 
         
@@ -165,7 +166,6 @@
         
         <button type="submit" id="submit_form" formaction="{{ action_url }}" >Submit Form</button>
 
-    </form>
-    {% block scripts %} {% endblock %}       
+    </form>    
 </body>    
 </html>
