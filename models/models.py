@@ -475,8 +475,7 @@ class Hash:
                     row_deleted = cursor.rowcount()
                     if row_deleted < 0:
                         rehash = Hash(time = self.time, date = self.date, userid = digest)
-                        digest = rehash.hash_algorithm()
-                        digest = rehash.add_digest(digest)
+                        rehash.update()
                     else:
                         print('Hash updated.')
                 else:
@@ -496,16 +495,30 @@ class Hash:
     
     def update(self):
         newdigest = self.__hash_algorithm()
-        try:#
+        try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
-                query = '''
-                UPDATE Hash
-                SET Digest = ?, Time = ?, Date = ?
-                WHERE UserID = ? 
-                '''
-                parameters = (newdigest, self.time, self.date, self.userid)
-                cursor.execute(query, parameters)
+                cursor.execute(f"""SELECT Time,Date FROM Hash WHERE Digest = '{newdigest}' """)
+                existing = cursor.fetchone()
+                if existing is not None:
+                    cursor.execute(f"""
+                        UPDATE Hash 
+                        SET UserID = {self.userid}, Time = {self.time}, Date = {self.date} 
+                        WHERE Digest = '{newdigest}' AND Date < CURRENT_DATE """)
+                    row_deleted = cursor.rowcount()
+                    if row_deleted < 0:
+                        rehash = Hash(time = self.time, date = self.date, userid = newdigest)
+                        rehash.update()
+                    else:
+                        print('Hash updated.')
+                else:
+                    query = '''
+                    UPDATE Hash
+                    SET Digest = ?, Time = ?, Date = ?
+                    WHERE UserID = ? 
+                    '''
+                    parameters = (newdigest, self.time, self.date, self.userid)
+                    cursor.execute(query, parameters)
                 connection.commit()        
 
         except sqlite3.OperationalError as e:
