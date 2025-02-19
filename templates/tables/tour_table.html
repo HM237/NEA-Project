@@ -5,6 +5,7 @@
 {% block content %}
 <table border="1px">
     <thead>
+        <td><strong>TourID</strong></td>
         <td><strong>Number Of People</strong></td>
         <td><strong>Event Type</strong></td>
         <td><strong>Time</strong></td>
@@ -15,6 +16,7 @@
 
     {% for row in rows %}
     <tr>
+        <td>{{ row["TourID"] }}</td>
         <td>{{ row["NumberOfPeople"] }}</td>
         <td>{{ row["EventType"] }}</td>
         <td>{{ row["Time"] }}</td>

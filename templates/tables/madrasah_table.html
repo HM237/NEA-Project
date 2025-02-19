@@ -5,6 +5,7 @@
 {% block content %}
 <table border="1px">
     <thead>
+        <td><strong>MadrasahID</strong></td>
         <td><strong>Child First Name</strong></td>
         <td><strong>Child Last Name</strong></td>
         <td><strong>Child Date of Birth</strong></td>
@@ -16,6 +17,7 @@
 
     {% for row in rows %}
     <tr>
+        <td>{{ row["MadrasahID"] }}</td>
         <td>{{ row["ChildFirstName"] }}</td>
         <td>{{ row["ChildLastName"] }}</td>
         <td>{{ row["ChildDoB"] }}</td>

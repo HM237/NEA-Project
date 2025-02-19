@@ -5,6 +5,7 @@
 {% block content %}
 <table border="1px">
     <thead>
+        <td><strong>NikahID</strong></td>
         <td><strong>Groom First Name</strong></td>
         <td><strong>Groom Last Name</strong></td>
         <td><strong>Bride First Name</strong></td>
@@ -19,6 +20,7 @@
 
     {% for row in rows %}
     <tr>
+        <td>{{ row["NikahID"] }}</td>        
         <td>{{ row["GroomFirstName"] }}</td>
         <td>{{ row["GroomLastName"] }}</td>
         <td>{{ row["BrideFirstName"] }}</td>
