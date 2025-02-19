@@ -100,7 +100,7 @@ class Nikah:
             connection.close()                      
 
     #this updates  a specific row in the Nikah Table
-    def update(self):
+    def update(self, address_line, post_code):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -111,6 +111,13 @@ class Nikah:
                 '''
                 parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.user_id)
                 cursor.execute(query, parameters)
+                query = '''
+                UPDATE Payment
+                SET AddressLine= ?, PostCode = ?
+                WHERE UserID = ?
+                '''
+                parameters = (address_line, post_code, self.user_id)
+                cursor.execute(query, parameters)                
                 connection.commit()
 
         except sqlite3.OperationalError as e:
@@ -257,7 +264,6 @@ class Tours:
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Tour WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
-                    cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                                        
                     connection.commit()
                     success = True 
             return success
@@ -294,7 +300,7 @@ class Functions:
             cursor.close()
             connection.close()                      
 
-    def update(self):
+    def update(self, address_line ,post_code):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -305,6 +311,15 @@ class Functions:
                 '''
                 parameters = (self.eventid, self.user_id)
                 cursor.execute(query, parameters)
+
+                query = '''
+                UPDATE Payment
+                SET AddressLine= ?, PostCode = ?
+                WHERE UserID = ?
+                '''
+                parameters = (address_line, post_code, self.user_id)
+                cursor.execute(query, parameters)
+
                 connection.commit()     
 
         except sqlite3.OperationalError as e:
@@ -324,6 +339,7 @@ class Functions:
                     cursor = connection.cursor()
                     cursor.execute(f"DELETE FROM User WHERE UserID = {userid}")
                     cursor.execute(f"DELETE FROM Function WHERE UserID = {userid}")
+                    cursor.execute(f"DELETE FROM Payment WHERE UserID = {userid}")                                        
                     cursor.execute(f"DELETE FROM Hash WHERE UserID = {userid}")
                     success = True 
             return success
@@ -363,7 +379,31 @@ class Payment:
 
         finally:
             cursor.close()
-            connection.close()                      
+            connection.close()                     
+
+
+    def update(self):
+        try:
+            with sqlite3.connect('database.db') as connection:
+                cursor = connection.cursor()
+                query = '''
+                UPDATE Payment
+                SET AddressLine= ?, PostCode = ?
+                WHERE UserID = ?
+                '''
+                parameters = (self.address_line,self.post_code, self.user_id)
+                cursor.execute(query, parameters)
+                connection.commit()     
+
+        except sqlite3.OperationalError as e:
+            raise DatabaseError("There was an operational error.")
+
+        except sqlite3.DatabaseError as e:
+            raise DatabaseError(f"Database error: {e}")
+
+        finally:
+            cursor.close()
+            connection.close()                  
 
 #Clashed class which checks for unavailable bookings
 class Clashed:

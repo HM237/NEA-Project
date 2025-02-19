@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, session, flash
 from models import User, Nikah, Madrasah,Tours,Functions,Payment, Clashed, Email, Hash, Validation, DatabaseError, ServerError, UnboundLocalErrors, SocketError
 import sqlite3
 import json
@@ -549,7 +549,7 @@ def verification(service):
                         #if invalid = False, we can send the Verification Email to the user 
                         user_email = Email(email= email, number = random_number)
                         user_email.send_verification_email()
-                        return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"}) #notifies the user to check their inbox     
+                        return jsonify({"message": f"Verification email sent successfully, please check your email inbox!"}) #notifies the user to check their inbox     
                     
                     except UnboundLocalErrors:
                         return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
@@ -602,6 +602,7 @@ def addnikah():
                 #now verifying if the user submiited the right verification code
                 verification_code = request.form["verification-code"]
                 if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
+                    flash('Verification successful!', 'success')
                     return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
                 else:
                     session.pop('random_number', None) # we will remove the number from session as it is now void
@@ -789,7 +790,7 @@ def editnikahbooking():
 
                         #updating the booking by sending it to the Nikah Class
                         new_nikah = Nikah(groom_first_name = groom_first_name, groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name, user_id=userid)
-                        new_nikah.update()  
+                        new_nikah.update(address_line = address_line, post_code = post_code)  
 
                         return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}')) #Rerouting the user to the new editing/viewing page with the new digest.
 
@@ -813,7 +814,7 @@ def editnikahbooking():
                                         bride_last_name=bride_last_name , 
                                         user_id=userid)
                         
-                        new_nikah.update()  
+                        new_nikah.update(address_line = address_line, post_code = post_code)  
 
                         with sqlite3.connect('database.db') as con:
                                 cur = con.cursor()
@@ -1271,18 +1272,6 @@ def edittourbooking():
                 invalid = Validation.validate(data= data)
                 if invalid:
                     return jsonify({"message": f"{invalid}"}) 
-                
-                try:
-                    with sqlite3.connect('database.db') as con:
-                        cur = con.cursor()
-                        cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
-                        result = cur.fetchone()
-                        eventid = result[0]
-                        con.commit()
-                        cur.close()                   
-                except Exception as e:
-                    return jsonify({"message": f"Unfortunately this booking is unavailable. Please re-book for another time/date.'"})
-
 
                 #updating the digest since their time/date has changed
                 if (time != result[0]) or (date != result[1]):
@@ -1316,6 +1305,15 @@ def edittourbooking():
                         
                         new_user.update(userid= userid)
 
+
+                        with sqlite3.connect('database.db') as con:
+                            cur = con.cursor()
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]
+                            con.commit()
+                            cur.close()                   
+
                         #updating the booking by using Tours Class.
                         new_tour = Tours(user_id= userid, number_of_people=number_of_people, eventid = eventid )
                         new_tour.update()  
@@ -1339,6 +1337,14 @@ def edittourbooking():
                                         date_of_birth= date_of_birth )
                         
                         new_user.update(userid= userid) 
+
+                        with sqlite3.connect('database.db') as con:
+                            cur = con.cursor()
+                            cur.execute(f"SELECT EventTypeID FROM EventType WHERE EventType = '{event_type}'")
+                            result = cur.fetchone()
+                            eventid = result[0]
+                            con.commit()
+                            cur.close()  
 
                         new_tour = Tours(user_id= userid, number_of_people=number_of_people, eventid = eventid )
                         new_tour.update()  
@@ -1585,7 +1591,7 @@ def editfunctionbooking():
 
                         #updating the booking by sending it to the Function Class.
                         new_function = Functions(user_id= userid,eventid=eventid)
-                        new_function.update()
+                        new_function.update(address_line=address_line, post_code=post_code)
                         return jsonify(redirect_url=url_for('routes.booking', service='function', digest=f'{newdigest}'))
                     
                     except sqlite3.OperationalError:
@@ -1616,7 +1622,7 @@ def editfunctionbooking():
                             cur.close()
 
                         new_function = Functions(user_id= userid,eventid=eventid)
-                        new_function.update()   
+                        new_function.update(address_line=address_line, post_code=post_code)
 
                         with sqlite3.connect('database.db') as connection:
                                 cursor = connection.cursor()

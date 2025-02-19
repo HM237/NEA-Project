@@ -10,75 +10,85 @@
     <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='icon.jpg') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        $(document).ready(function () {
-            $('#sendEmail').click(function (e) {
-                e.preventDefault();  
-    
-                var formData = $('#{{ form_id }}').serialize(); 
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '/verification/{{ service }}',  
-                    data: formData,
-                    success: function (response) {
-                        if (response.redirect_url) {
-                            window.location.href = response.
-                            redirect_url;
-                        } else {
-                            alert(response.message)
-                        } 
-                    },
-                    error: function () {
-                        alert('There was an error sending the verification email. Please try again later.');
+        $(document).ready(function() {
+            $('#send_email').click(function(event) {
+                event.preventDefault(); 
+        
+                var form = $('form')[0];
+                var verification_code = $('#verification-code')[0];
+                var required_attributes = verification_code.hasAttribute('required');
+                verification_code.removeAttribute('required');
+                
+                if (form.checkValidity()) { 
+                    if (required_attributes) {
+                        verification_code.setAttribute('required', 'required');
                     }
-                });
+        
+
+                    var formData = $(form).serialize(); 
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '/verification/{{ service }}',
+                        data: formData,
+                        success: function(response) {
+                            if (response.redirect_url) {
+                                window.location.href = response.redirect_url; 
+                            } else {
+                                alert(response.message); 
+                            }
+                        },
+                        error: function() {
+                            alert('There was an error sending the verification email. Please try again later.');
+                        }
+                    });
+                } else {
+                    form.reportValidity();
+                }
             });
-    
-            $('#submitForm').click(function (e) {
-                e.preventDefault();  
-    
-                var formData = $('#{{ form_id }}').serialize();  
-    
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ action_url }}',  
-                    data: formData,
-                    success: function (response) {
-                        if (response.redirect_url) {
-                            window.location.href = response.
-                            redirect_url;
-                        } else [
-                            alert(response.message)
-                        ]
-                        
-                    },
-                    error: function () {
-                        alert('Error submitting form');
-                    }
-                });
+        
+
+            $('#submit_form').click(function(event) {
+                event.preventDefault(); 
+        
+                var form = $('form')[0]; 
+                var verification_code = $('#verification-code')[0];
+        
+                if (!verification_code.value) {
+                    alert("Please enter the verification code.");
+                    verification_code.focus(); 
+                    return;
+                }
+        
+                if (form.checkValidity()) {
+                    var formData = $('#{{ form_id }}').serialize();  
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ action_url }}',  
+                        data: formData,
+                        success: function (response) {
+                            if (response.redirect_url) {
+                                window.location.href = response.
+                                redirect_url;
+                            } else [
+                                alert(response.message)
+                            ]
+                            
+                        },
+                        error: function () {
+                            alert('Error submitting the form');
+                        }
+                    });
+                } else {
+                    form.reportValidity();
+                }
             });
         });
-
-        function validateForm(e) {
-            var VerificationCode = document.getElementById('verification-code');
-            var submitButton = e.target;
-
-            if (submitButton.name === 'verification-email') {
-                VerificationCode.removeAttribute('required');
-            } else {
-                VerificationCode.setAttribute('required', 'required');
-            }
-        }
-    </script>
-    
+        </script>
 </head>
-<!-- Below is the script for allowing the user to press the 'send verification email' without having the input box for 'verification code' (it skips the input box)
- being required. However it will add the required attribute should the user try and submit the entire form-->
-<script>
-
-</script>
-
 <body style="background-color: rgb(222, 211, 184);">
 
     <nav>
@@ -87,50 +97,39 @@
             <li>
                 <a href="#"> Menu </a>
                 <ul class="dropdown">
-                    <li> <a href="/nikah" > Nikah </a></li>
-                    <li> <a href="/madrasah" > Madrasah </a></li>
-                    <li> <a href="/functions" > Functions </a></li>
-                    <li> <a href="/tour" > Tour </a></li>
-                    <li> <a href="/about-us" > About Us </a></li>
+                    <li> <a href="{{ url_for('routes.prayertime') }}" > Prayer Timetable </a></li>
+                    <li> <a href="{{ url_for('routes.nikah') }}" > Nikah </a></li>
+                    <li> <a href="{{ url_for('routes.madrasah') }}" > Madrasah </a></li>
+                    <li> <a href="{{ url_for('routes.functions') }}" > Functions </a></li>
+                    <li> <a href="{{ url_for('routes.tour') }}" > Tour </a></li>
+                    <li> <a href="{{ url_for('routes.aboutus') }}" > About Us </a></li>
                 </ul>
             </li>
         </ul>
     </nav>   
     
     <h1> {%block head%} {%endblock%} </h1>
-    
-    <div id="responseMessage">
-        {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-                <ul>
-                {% for category, message in messages %}
-                    <h3>{{ message }}</h3>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}        
-    </div>
 
     <!--REMOVE ALL TESTING VALUE AFTER COMPLETION-->
     <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
 
         <div>
             <label for='first-name'>{%block label1 %}{%endblock%}</label>
-            <input type = 'text' id="first-name" name="first_name" value="Testing Value" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <input type = 'text' id="first-name" name="first_name" value="Testing Value" required>
         </div>
 
         <br>
 
         <div>
             <label for='last-name'>{%block label2%} {%endblock%}</label>
-            <input type = 'text' id= "last-name" name="last_name" value="Testing Value" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required>
+            <input type = 'text' id= "last-name" name="last_name" value="Testing Value" required>
         </div>
 
         <br>
         
         <div>
             <label for ='email'> Email: </label>
-            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" value="verificationmasjidalansar@proton.me" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" required>
+            <input type="email" id="email" name="email" placeholder="youremail@gmail.com" value="verificationmasjidalansar@proton.me" required>
         </div>
 
         <br>
@@ -146,7 +145,7 @@
         
         <div>
             <label for=" date"> Date of Booking: </label>
-            <input type="date" id="date" name="date" min="2025-01-01" max="2030-12-31" required>
+            <input type="date" id="date" name="date" min="2025-01-01" max="2026-12-31" required>
         </div>
 
         <br>
@@ -158,13 +157,13 @@
         
         <br>
         
-        <button type="button" id="sendEmail" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
+        <button type="submit" id="send_email" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
         <br><br>
 
         <label for="verification-code">Verification Code:</label>
         <input type="number" id="verification-code" name="verification-code" required><br><br>
         
-        <button type="submit" id="submitForm" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
+        <button type="submit" id="submit_form" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
 
     </form>
     {% block scripts %} {% endblock %}       

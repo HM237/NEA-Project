@@ -1,31 +1,8 @@
-{% extends "pages/base_page.html" %}
+{% extends "tables/base_table.html" %}
 {% block title %} Your Nikah Booking {% endblock %}
 {% block head %} Editing Your Nikah Booking {% endblock %}
+{% block id %} NikahID {% endblock %}
 {% block content %}
-<table border="1px">
-    <thead>
-        <td><strong>UserID</strong></td>
-        <td><strong>NikahID</strong></td>
-        <td><strong>First Name of Organiser</strong></td>
-        <td><strong>Last Name of Organiser</strong></td>
-        <td><strong>Email</strong></td>
-        <td><strong>Phone Number</strong></td>
-        <td><strong>Date of Birth</strong></td>
-    </thead>
-
-    {% for row in rows %}
-    <tr>
-        <td>{{ row["UserID"] }}</td>
-        <td>{{ row["NikahID"] }}</td>
-        <td>{{ row["FirstName"]}}</td>
-        <td>{{ row["LastName"] }}</td>
-        <td>{{ row["Email"] }}</td>
-        <td>{{ row["PhoneNumber"] }}</td>
-        <td>{{ row["DoB"] }}</td>
-    </tr>
-    {% endfor %}
-</table> <br>
-
 <table border="1px">
     <thead>
         <td><strong>Groom First Name</strong></td>
