@@ -442,12 +442,12 @@ class Hash:
 
 
     def __hash_algorithm(self):
-        string = f'{self.date}{self.userid}{self.time}'
-        string = re.sub(r'[-:]', '', string)
+        hashvalue = f'{self.date}{self.userid}{self.time}'
+        hashvalue = re.sub(r'[-:]', '', hashvalue)
         arr = [0] * 20
         initial_values = [2,3]
         digest = ''
-        for index, character in enumerate(string):
+        for index, character in enumerate(hashvalue):
             ascii_value = ord(character)
             for i in range (20):
                 initial_index = i % len(initial_values)
