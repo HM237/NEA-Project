@@ -368,15 +368,15 @@ def errors(errormsg):
 @bp.route("/verification/<service>", methods = ['GET','POST'])
 def verification(service):
     #here we are generating a random 6 digit number which will act as our verification code. We then use Flask session to store this number for this session. This will allow me to compare the verification-code later on, to determine if the code is correct or incorrect.
-    random_number = random.randint(111111,999999)
-    print(f'Verification Code: {random_number}')
-    session['random_number'] = random_number
+    verification_number = random.randint(111111,999999)
+    print(f'Verification Code: {verification_number}')
+    session['verification_number'] = verification_number
     try:
         if request.method == 'POST':
             email = request.form.get('email')
             match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", email) #this regular expression is used to identify if the email is in a valid format.
             if not match:
-                session.pop('random_number', None) #if the email is invalid, we will pop the verification code stored in Flask session and prompt the user to enter a valid email.
+                session.pop('verification_number', None) #if the email is invalid, we will pop the verification code stored in Flask session and prompt the user to enter a valid email.
                 return jsonify({"message": f"Please enter a valid email before trying to send a verification code."})
 
             time = request.form.get('time')
@@ -420,7 +420,7 @@ def verification(service):
                     
                     try:
                         #if invalid = False, we can send the Verification Email to the user 
-                        user_email = Email(email= email, number = random_number)
+                        user_email = Email(email= email, number = verification_number)
                         user_email.send_verification_email()
                         return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"}) #notifies the user to check their inbox     
                     
@@ -462,7 +462,7 @@ def verification(service):
                     
                     try:
                         #if invalid = False, we can send the Verification Email to the user 
-                        user_email = Email(email= email, number = random_number)
+                        user_email = Email(email= email, number = verification_number)
                         user_email.send_verification_email()
                         return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"}) #notifies the user to check their inbox     
                     
@@ -505,7 +505,7 @@ def verification(service):
                 else:
                     #if invalid = False, we can send the Verification Email to the user 
                     try:
-                        user_email = Email(email= email, number = random_number)
+                        user_email = Email(email= email, number = verification_number)
                         user_email.send_verification_email()
                         return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})#notifies the user to check their inbox
                                     
@@ -547,7 +547,7 @@ def verification(service):
                 else:
                     try:
                         #if invalid = False, we can send the Verification Email to the user 
-                        user_email = Email(email= email, number = random_number)
+                        user_email = Email(email= email, number = verification_number)
                         user_email.send_verification_email()
                         return jsonify({"message": f"Verification email sent successfully, please check your email inbox!"}) #notifies the user to check their inbox     
                     
@@ -586,9 +586,10 @@ def nikah_booking():
 #Process for Nikah Table which retrieves the input from the nikah_form.
 @bp.route("/process-nikah", methods=['GET','POST'])
 def addnikah():
-    random_number = session.get('random_number') # Retrieves the stored random number in our Flask session.
-    if random_number: #if the session has no value, we will prompt the user to press the 'Send Verification'  button.
-        print(f'The verification code was generated: {random_number}')
+    verification_number = session.get('verification_number') # Retrieves the stored random number in our Flask session.
+    #if the session has no value, we will prompt the user to press the 'Send Verification'  button.    
+    if verification_number: 
+        print(f'The verification code was generated: {verification_number}')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})
     try:
@@ -601,11 +602,11 @@ def addnikah():
             else:
                 #now verifying if the user submiited the right verification code
                 verification_code = request.form["verification-code"]
-                if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
+                if (not verification_code.isnumeric()) or (int(verification_code) != verification_number):
                     flash('Verification successful!', 'success')
                     return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"}) #error message if they did not
                 else:
-                    session.pop('random_number', None) # we will remove the number from session as it is now void
+                    session.pop('verification_number', None) # we will remove the number from session as it is now void
                 
                 #retrieving data from the nikah_form
                 first_name = request.form["first_name"]
@@ -660,10 +661,10 @@ def addnikah():
                     new_payment = Payment(user_id= userid, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
                     new_payment.add_Payment()
 
-                    #calculating the digest from the hash values. We are sending this to the Hash Class, and receiving the digest in return.
+                    #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
                     hashvalue = Hash(time = time, date = date, userid = userid)
-                    digest = hashvalue.hash_algorithm()
-                    digest = hashvalue.add_digest(digest) #Adding the digest to the Hash Table
+                    #Adding the digest to the Hash Table
+                    digest = hashvalue.add_digest()
 
                 except DatabaseError as e:
                     print(f'AddNikah/DatabaseError/Error: {e}')                        
@@ -757,11 +758,9 @@ def editnikahbooking():
                     return jsonify({"message": f"{invalid}"}) #return the fields that need a valid input.
 
                 #updating the digest if their booking time/date has changed
-                if (time != result[0]) or (date != result[1]):
-                    hashvalue = Hash(time = time, date = date, userid = userid)
-                    newdigest = hashvalue.hash_algorithm()     
+                if (time != result[0]) or (date != result[1]):  
                     updatehash = Hash(time = time, date=date, userid = userid)
-                    updatehash.update(newdigest= newdigest)       
+                    newdigest = updatehash.update()  
                                         
                     try:                                    
                         #sending them a new booking link
@@ -854,9 +853,9 @@ def madrasah_booking():
 @bp.route("/process-madrasah", methods=['GET','POST'])
 def addmadrasah():
     #same steps that were explain on line 196 just changed for the Madrasah Process.
-    random_number = session.get('random_number') 
-    if random_number:
-        print(f'The verification code generated: {random_number}')
+    verification_number = session.get('verification_number') 
+    if verification_number:
+        print(f'The verification code generated: {verification_number}')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})    
     try:
@@ -870,11 +869,11 @@ def addmadrasah():
             else:
                 verification_code = request.form["verification-code"]
                 #checks the verification code is all numbers/ if it even is the right code
-                if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
-                    session.pop('random_number', None)
+                if (not verification_code.isnumeric()) or (int(verification_code) != verification_number):
+                    session.pop('verification_number', None)
                     return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"})
                 else:
-                    session.pop('random_number', None)
+                    session.pop('verification_number', None)
                 
                 #retrieving data from the madrasah_form             
                 first_name = request.form["first_name"]
@@ -926,10 +925,10 @@ def addmadrasah():
                     
                     new_madrasah.add_Madrasah()  
                     
-                    #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.            
+                    #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
                     hashvalue = Hash(time = time, date = date, userid = userid)
-                    digest = hashvalue.hash_algorithm()
-                    digest = hashvalue.add_digest(digest)
+                    #Adding the digest to the Hash Table
+                    digest = hashvalue.add_digest()
 
                 except DatabaseError as e:
                     print(f'AddMad/DatabaseError/Error: {e}')                        
@@ -1016,10 +1015,8 @@ def editmadrasahbooking():
 
                 #updating the digest since their time/date has changed
                 if (time != result[0]) or (date != result[1]):
-                    hashvalue = Hash(time = time, date = date, userid = userid)
-                    newdigest = hashvalue.hash_algorithm()     
                     updatehash = Hash(time = time, date=date, userid = userid)
-                    updatehash.update(newdigest= newdigest)       
+                    newdigest = updatehash.update()   
                                         
                     try:                                    
                         #sending them a new booking link
@@ -1119,9 +1116,9 @@ def tour_booking():
 @bp.route("/process-tour", methods=['GET','POST'])
 def addtour():
     #same comments as line 192
-    random_number = session.get('random_number') # Retrieve and remove the stored random number
-    if random_number:
-        print(f'The verification code generated: {random_number}')
+    verification_number = session.get('verification_number') # Retrieve and remove the stored random number
+    if verification_number:
+        print(f'The verification code generated: {verification_number}')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})    
     try:
@@ -1135,11 +1132,11 @@ def addtour():
             else:
                 verification_code = request.form["verification-code"]
                 #checks the verification code is all numbers/ if it even is the right code
-                if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
-                    session.pop('random_number', None)
+                if (not verification_code.isnumeric()) or (int(verification_code) != verification_number):
+                    session.pop('verification_number', None)
                     return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"})
                 else:
-                    session.pop('random_number', None)
+                    session.pop('verification_number', None)
                 
                 #retrieving data from the tour_form             
                 first_name = request.form["first_name"]
@@ -1190,10 +1187,10 @@ def addtour():
                     new_tour.add_Tour()  
                     
                 
-                    #calculating the digest from the hash values. We are sending this to the Hash Class, and receiving the digest in return.            
+                    #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
                     hashvalue = Hash(time = time, date = date, userid = userid)
-                    digest = hashvalue.hash_algorithm()
-                    digest = hashvalue.add_digest(digest)
+                    #Adding the digest to the Hash Table
+                    digest = hashvalue.add_digest()
 
                 except sqlite3.OperationalError:
                         return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
@@ -1275,10 +1272,8 @@ def edittourbooking():
 
                 #updating the digest since their time/date has changed
                 if (time != result[0]) or (date != result[1]):
-                    hashvalue = Hash(time = time, date = date, userid = userid)
-                    newdigest = hashvalue.hash_algorithm()     
                     updatehash = Hash(time = time, date=date, userid = userid)
-                    updatehash.update(newdigest= newdigest)       
+                    newdigest = updatehash.update()  
                                         
                     try:                                            
                         #sending them a new booking link
@@ -1387,8 +1382,8 @@ def function_booking():
 #Process for Function Table which retrieves the input from the function_form.
 @bp.route("/process-function", methods=['GET','POST'])
 def addfunction():
-    random_number = session.get('random_number') # Retrieve the stored random number in our session and if not prompt user to create one    
-    if random_number:
+    verification_number = session.get('verification_number') # Retrieve the stored random number in our session and if not prompt user to create one    
+    if verification_number:
         print(f'Retrieved verification code.')
     else:
         return jsonify({"message": f"Please press the 'Send Verifcation' button to send the code to your box first!"})
@@ -1403,11 +1398,11 @@ def addfunction():
                 #now verifying if the user submiited the right verification code
                 verification_code = request.form["verification-code"]
 
-                if (not verification_code.isnumeric()) or (int(verification_code) != random_number):
-                    session.pop('random_number', None) # we will remove the number from session as it is now void
+                if (not verification_code.isnumeric()) or (int(verification_code) != verification_number):
+                    session.pop('verification_number', None) # we will remove the number from session as it is now void
                     return jsonify({"message": f"Unfortunately this was not the correct code. Please try again!"})
                 else:
-                    session.pop('random_number', None) # we will remove the number from session as it is now void
+                    session.pop('verification_number', None) # we will remove the number from session as it is now void
                 
                 #retrieving data from the function form
                 first_name = request.form["first_name"]
@@ -1463,10 +1458,10 @@ def addfunction():
                     new_payment = Payment(user_id= userid, post_code= post_code, address_line= address_line, payment_method= payment_method, price = price)
                     new_payment.add_Payment()
 
-                    #calculating the digest from the hash values. We are sending this to the class Hash, and receiving the digest in return.
+                    #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
                     hashvalue = Hash(time = time, date = date, userid = userid)
-                    digest = hashvalue.hash_algorithm()
-                    digest = hashvalue.add_digest(digest)
+                    #Adding the digest to the Hash Table
+                    digest = hashvalue.add_digest()
 
                 except sqlite3.OperationalError as e:
                         print(f'error: {e}')
@@ -1550,10 +1545,8 @@ def editfunctionbooking():
 
                 #updating the digest since their time/date has changed
                 if (time != result[0]) or (date != result[1]):
-                    hashvalue = Hash(time = time, date = date, userid = userid)
-                    newdigest = hashvalue.hash_algorithm()     
                     updatehash = Hash(time = time, date=date, userid = userid)
-                    updatehash.update(newdigest= newdigest)       
+                    newdigest = updatehash.update()      
                                         
                     try:                                    
                         #sending them a new booking link

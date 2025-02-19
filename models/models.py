@@ -89,7 +89,7 @@ class Nikah:
                 connection.commit()  
 
         except sqlite3.OperationalError as e:
-            print(f'{e} in normalnikah')            
+            print(f'{e} in nikah')            
             raise DatabaseError("There was an operational error.")
 
         except sqlite3.DatabaseError as e:
@@ -433,7 +433,7 @@ class Clashed:
             cursor.close()
             connection.close()      
 
-#Hash class which performs the hash algorithm
+#Hash class which performs the hash algorithm and deals with the Hash Table
 class Hash:    
     def __init__(self, time,date, userid):
         self.time = time 
@@ -441,7 +441,7 @@ class Hash:
         self.userid = userid
 
 
-    def hash_algorithm(self):
+    def __hash_algorithm(self):
         string = f'{self.date}{self.userid}{self.time}'
         string = re.sub(r'[-:]', '', string)
         arr = [0] * 20
@@ -458,8 +458,10 @@ class Hash:
             digest += format(byte, '02x') #converting it into hexadecimal
         return digest
 
-    def add_digest(self, digest):
+    def add_digest(self):
+        digest = self.__hash_algorithm()
         try:
+            print('we got the digest')
             #storing the digest in the Hash Table along with UserID,Time and Date
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -492,8 +494,10 @@ class Hash:
             cursor.close()
             connection.close()              
     
-    def update(self,newdigest):
-        try:
+    def update(self):
+        newdigest = self.__hash_algorithm()
+        try:#
+            print('we got the newdigest lol')
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
                 query = '''
@@ -516,6 +520,7 @@ class Hash:
         finally:
             cursor.close()
             connection.close()      
+        return newdigest
             
 #Email class which will execute the verification/summary processs
 class Email:
