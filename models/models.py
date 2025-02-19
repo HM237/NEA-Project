@@ -462,7 +462,6 @@ class Hash:
     def add_digest(self):
         digest = self.__hash_algorithm()
         try:
-            print('we got the digest')
             #storing the digest in the Hash Table along with UserID,Time and Date
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -498,7 +497,6 @@ class Hash:
     def update(self):
         newdigest = self.__hash_algorithm()
         try:#
-            print('we got the newdigest lol')
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
                 query = '''
