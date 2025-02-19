@@ -444,18 +444,19 @@ class Hash:
     def __hash_algorithm(self):
         hashvalue = f'{self.date}{self.userid}{self.time}'
         hashvalue = re.sub(r'[-:]', '', hashvalue)
-        arr = [0] * 20
+        array = [0] * 20
         initial_values = [2,3]
         digest = ''
         for index, character in enumerate(hashvalue):
             ascii_value = ord(character)
             for i in range (20):
-                initial_index = i % len(initial_values)
-                initial_value = initial_values[initial_index]
-                value = ((arr[i] + ascii_value * (index + 1) + i ) * initial_value) % 256  
-                arr[i] = value
-        for byte in arr:
-            digest += format(byte, '02x') #converting it into hexadecimal
+                initial_value = initial_values[i % len(initial_values)]
+                value = (array[i] + ascii_value * (index + 1) + i )   
+                value = (value * initial_value) % 256
+                array[i] = value
+        #converting into hexadecimal whilst removing the 0x at the front
+        for number in array:
+            digest += f'{number:x}'
         return digest
 
     def add_digest(self):
