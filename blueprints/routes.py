@@ -1882,7 +1882,7 @@ def edit(service):
                 return render_template("pages/error.html", errormsg = msg )        
             
             except Exception as e:
-                msg = f'This error: {e} has occured. Please try again later to delete this booking or inform the masjid.'
+                msg = f'This error: {e} has occured. Please try again later to edit this booking and inform the masjid.'
                 return render_template('pages/error.html', errormsg = msg)        
 
             finally:
