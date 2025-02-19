@@ -111,7 +111,7 @@
     <h1> {%block head%} {%endblock%} </h1>
 
     <!--REMOVE ALL TESTING VALUE AFTER COMPLETION-->
-    <form id = "{{ form_id }}" method = 'POST' onsubmit=" return validateForm()" action="{{ action_url }}" autocomplete="off">
+    <form id = "{{ form_id }}" method = 'POST' action="{{ action_url }}" autocomplete="off">
 
         <div>
             <label for='first-name'>{%block label1 %}{%endblock%}</label>
@@ -157,13 +157,13 @@
         
         <br>
         
-        <button type="submit" id="send_email" name="verification-email" formaction="/verification" onclick="validateForm(event)">Send Verification Email</button>
+        <button type="submit" id="send_email" name="verification-email" formaction="/verification" >Send Verification Email</button>
         <br><br>
 
         <label for="verification-code">Verification Code:</label>
         <input type="number" id="verification-code" name="verification-code" required><br><br>
         
-        <button type="submit" id="submit_form" formaction="{{ action_url }}" onclick="validateForm(event)">Submit Form</button>
+        <button type="submit" id="submit_form" formaction="{{ action_url }}" >Submit Form</button>
 
     </form>
     {% block scripts %} {% endblock %}       

@@ -6,10 +6,10 @@ Edit Your Function
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#submitForm').click(function (e) {
+        $('#submit_form').click(function (e) {
             e.preventDefault();
 
-            var formData = $('#editFunction').serialize();
+            var formData = $('#EditFunctionForm').serialize();
 
             $.ajax({
                 type: 'POST',
@@ -33,7 +33,7 @@ Edit Your Function
 {% block content %}
         <h1>Editing Your Function Form </h1>
         {% for row in rows %}
-        <form id="editFunction" action="{{ url_for('routes.editfunctionbooking') }}" method="POST">
+        <form id="EditFunctionForm" action="{{ url_for('routes.editfunctionbooking') }}" method="POST">
             <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
 
             <input type="hidden" name="FunctionID" value="{{ row['FunctionID'] }}"/>
@@ -65,7 +65,7 @@ Edit Your Function
 
             <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
 
-            <br><input id="submitForm" type="submit" value="Submit" /><br>
+            <br><input id="submit_form" type="submit" value="Submit" /><br>
         </form>
         {% endfor %}
 {% endblock %}

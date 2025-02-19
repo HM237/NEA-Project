@@ -6,10 +6,10 @@ Edit Your Madrasah
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#submitForm').click(function (e) {
+        $('#submit_form').click(function (e) {
             e.preventDefault();
 
-            var formData = $('#editMadrasah').serialize();
+            var formData = $('#EditMadrasahForm').serialize();
 
             $.ajax({
                 type: 'POST',
@@ -33,7 +33,7 @@ Edit Your Madrasah
 {% block content %}
         <h1>Editing Your Madrasah Form </h1>
         {% for row in rows %}
-        <form id="editMadrasah" action="{{ url_for('routes.editmadrasahbooking') }}" method="POST">
+        <form id="EditMadrasahForm" action="{{ url_for('routes.editmadrasahbooking') }}" method="POST">
             <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
 
             <input type="hidden" name="MadrasahID" value="{{ row['MadrasahID'] }}"/>
@@ -58,7 +58,7 @@ Edit Your Madrasah
 
             <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
 
-            <br><input id="submitForm" type="submit" value="Submit" /><br>
+            <br><input id="submit_form" type="submit" value="Submit" /><br>
         </form>
         {% endfor %}
 {% endblock %}
