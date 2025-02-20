@@ -699,7 +699,7 @@ class Validation:
                     end_date = datetime.strptime('2016-12-31', '%Y-%m-%d')
 
                     if not (start_date <= childdob <= end_date):
-                        errors.append(f"Child is cannot attend this madrasash.")
+                        errors.append(f"Child cannot attend this madrasash.")
 
             elif key == 'Email':
                 match = re.match(r"""^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""", value)
