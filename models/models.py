@@ -100,7 +100,7 @@ class Nikah:
             connection.close()                      
 
     #this updates  a specific row in the Nikah Table
-    def update(self, address_line, post_code):
+    def update(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -110,14 +110,7 @@ class Nikah:
                 WHERE UserID = ?
                 '''
                 parameters = (self.groom_first_name, self.groom_last_name, self.bride_first_name, self.bride_last_name,self.user_id)
-                cursor.execute(query, parameters)
-                query = '''
-                UPDATE Payment
-                SET AddressLine= ?, PostCode = ?
-                WHERE UserID = ?
-                '''
-                parameters = (address_line, post_code, self.user_id)
-                cursor.execute(query, parameters)                
+                cursor.execute(query, parameters)            
                 connection.commit()
 
         except sqlite3.OperationalError as e:
@@ -300,7 +293,7 @@ class Functions:
             cursor.close()
             connection.close()                      
 
-    def update(self, address_line ,post_code):
+    def update(self):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -311,15 +304,6 @@ class Functions:
                 '''
                 parameters = (self.eventid, self.user_id)
                 cursor.execute(query, parameters)
-
-                query = '''
-                UPDATE Payment
-                SET AddressLine= ?, PostCode = ?
-                WHERE UserID = ?
-                '''
-                parameters = (address_line, post_code, self.user_id)
-                cursor.execute(query, parameters)
-
                 connection.commit()     
 
         except sqlite3.OperationalError as e:
@@ -381,8 +365,8 @@ class Payment:
             cursor.close()
             connection.close()                     
 
-
-    def update(self):
+    @classmethod
+    def update(cls, address_line, post_code, userid):
         try:
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
@@ -391,7 +375,7 @@ class Payment:
                 SET AddressLine= ?, PostCode = ?
                 WHERE UserID = ?
                 '''
-                parameters = (self.address_line,self.post_code, self.user_id)
+                parameters = (address_line,post_code, userid)
                 cursor.execute(query, parameters)
                 connection.commit()     
 

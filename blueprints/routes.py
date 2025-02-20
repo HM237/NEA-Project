@@ -789,7 +789,8 @@ def editnikahbooking():
 
                         #updating the booking by sending it to the Nikah Class
                         new_nikah = Nikah(groom_first_name = groom_first_name, groom_last_name= groom_last_name , bride_first_name=bride_first_name , bride_last_name=bride_last_name, user_id=userid)
-                        new_nikah.update(address_line = address_line, post_code = post_code)  
+                        new_nikah.update()  
+                        Payment.update(address_line, post_code, userid)
 
                         return jsonify(redirect_url=url_for('routes.booking', service='nikah', digest=f'{newdigest}')) #Rerouting the user to the new editing/viewing page with the new digest.
 
@@ -813,8 +814,8 @@ def editnikahbooking():
                                         bride_last_name=bride_last_name , 
                                         user_id=userid)
                         
-                        new_nikah.update(address_line = address_line, post_code = post_code)  
-
+                        new_nikah.update()  
+                        Payment.update(address_line, post_code, userid)
                         with sqlite3.connect('database.db') as con:
                                 cur = con.cursor()
                                 cur.execute(f'SELECT Digest FROM Hash WHERE UserID={userid}')
@@ -1584,7 +1585,8 @@ def editfunctionbooking():
 
                         #updating the booking by sending it to the Function Class.
                         new_function = Functions(user_id= userid,eventid=eventid)
-                        new_function.update(address_line=address_line, post_code=post_code)
+                        new_function.update()
+                        Payment.update(address_line, post_code, userid)
                         return jsonify(redirect_url=url_for('routes.booking', service='function', digest=f'{newdigest}'))
                     
                     except sqlite3.OperationalError:
@@ -1615,7 +1617,8 @@ def editfunctionbooking():
                             cur.close()
 
                         new_function = Functions(user_id= userid,eventid=eventid)
-                        new_function.update(address_line=address_line, post_code=post_code)
+                        new_function.update()
+                        Payment.update(address_line, post_code, userid)
 
                         with sqlite3.connect('database.db') as connection:
                                 cursor = connection.cursor()
