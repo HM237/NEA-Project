@@ -1,71 +1,103 @@
-{% extends "pages/base_page.html" %}
-{% block title %}
-Edit Your Nikah
-{% endblock %}
-{%block scripts%}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
- // script which sends the form data to Flask route and waits for redirection or message
- $(document).ready(function () {
-        $('#submit_form').click(function (e) {
-            e.preventDefault();
+{% extends "forms/edit_forms/base_edit_form.html" %}
+{% block title %} Edit Your Nikah {% endblock %}
+{% block head %} Your Nikah Form {% endblock %}
 
-            var formData = $('#EditNikahForm').serialize();
-
-            $.ajax({
-                type: 'POST',
-                url: '/editnikahbooking',  
-                data: formData,
-                success: function (response) {
-                    if (response.redirect_url) {
-                        window.location.href = response.redirect_url;
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('Error submitting form');
-                }
-            });
-        });
-    });
-</script>
-{%endblock%}
 {% block content %}
-        <h1>Editing Your Nikah </h1>
-        {% for row in rows %}
-        <form id="EditNikahForm" action="{{ url_for('routes.editnikahbooking') }}" method="POST">
-            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
+{% for row in rows %}
+<form id = "{{ form_id }}" method = 'POST' action="{{ action_url }}" autocomplete="off">
 
-            <input type="hidden" name="NikahID" value="{{ row['NikahID'] }}"/>
+    <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
+    
+    <input type="hidden" name="NikahID" value="{{ row['NikahID'] }}"/>
 
-            <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
+    <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
 
-            <br>First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
+    <div>
+        <label for='first-name'> Organiser's First Name: </label>
+        <input type = 'text' id="first-name" name="first_name" value="{{row['FirstName']}}" required>
+    </div>
 
-            <br>Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
+    <br>
 
-            <br>Phone Number: <input type="text" name="phone_number" value="{{ row['PhoneNumber'] }}"/><br>
+    <div>
+        <label for='last-name'> Organiser's Last Name: </label>
+        <input type = 'text' id= "last-name" name="last_name" value="{{ row['LastName'] }}" required>
+    </div>
 
-            <br>Date of Birth: <input type="date" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}"/><br>
+    <br>
+    
 
-            <br>Groom First Name: <input type="text" name="groom_first_name" value="{{ row['GroomFirstName'] }}"/><br>
-            
-            <br>Groom Last Name: <input type="text" name="groom_last_name" value="{{ row['GroomLastName'] }}"/><br>
+    <div>
+        <label for='phone-number'>Phone Number:</label>
+        <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926" value="{{ row['PhoneNumber'] }}" pattern="[0-9]{10}">
+    </div>
 
-            <br>Bride First Name: <input type="text" name="bride_first_name" value="{{ row['BrideFirstName'] }}"/><br>
+    <br>
 
-            <br>Bride Last Name: <input type="text" name="bride_last_name" value="{{ row['BrideLastName'] }}"/><br>
+    <div>
+        <label for="date-of-birth"> Organiser's Date of Birth: </label>
+        <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}" placeholder="NOT REQUIRED">
+    </div>
+    
+    <br>    
+    
+    <div>
+        <label for='groom-first-name'>Groom's First Name:</label>
+        <input type = 'text' id= "groom-first-name" name="groom_first_name" placeholder="Groom's First Name"value="{{ row['GroomFirstName'] }}" required>
+    </div>
+    
+    <br>    
+    
+    <div>
+        <label for='groom-last-name'>Groom's Last Name:</label>
+        <input type = 'text' id= "groom-last-name" name="groom_last_name" placeholder="Groom's Last Name"  value="{{ row['GroomLastName'] }}" required>
+    </div>
+    
+    <br>    
+    
+    <div>
+        <label for='bride-first-name'>Bride's First Name:</label>
+        <input type = 'text' id= "bride-first-name" name="bride_first_name" placeholder="Bride's First Name" value="{{ row['BrideFirstName'] }}" required>
+    </div>
+    
+    <br>    
+    
+    <div>
+        <label for='bride-last-name'>Bride's Last Name:</label>
+        <input type = 'text' id= "bride-last-name" name="bride_last_name" placeholder="Bride's Last Name" value="{{ row['BrideLastName'] }}" required>
+    </div>
+    
+    <br>
+    
+    <div>
+        <label for ='address-line'> Organiser's Address Line:</label>
+        <input type = 'text' id="address-line" name="address_line" placeholder="39 Edgehill Rd"  value="{{ row['AddressLine'] }}" required>
+    </div>
+    
+    <br>
+    
+    <div>
+        <label for ='post-code'> Organiser's Post Code:</label>
+        <input type = 'text' id="post-code" name="post_code" placeholder="LE4 9EA" value="{{ row['PostCode'] }}" required>
+    </div>
+    
+    <br>
 
-            <br>Address Line: <input type="text" name="address_line" value="{{ row['AddressLine'] }}"/><br>
+    <div>
+        <label for=" date"> Date of Booking: </label>
+        <input type="date" id="date" name="date" min="2025-01-01" max="2026-12-31" value="{{ row['Date'] }}"required>
+    </div>
 
-            <br>Post Code: <input type="text" name="post_code" value="{{ row['PostCode'] }}"/><br>
+    <br>
 
-            <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
+    <div>
+        <label for=" time"> Time of Booking: </label>
+        <input type="time" id="time" name="time" step= "900" min="16:30:00" max="21:00:00" value="{{ row['Time'] }}"  required>
+    </div>
+    
+    <button type="submit" id="submit_form" formaction="{{ action_url }}" >Submit Form</button>
 
-            <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
+</form>  
+{% endfor %}
 
-            <br><input id="submit_form" type="submit" value="Submit" /><br>
-        </form>
-        {% endfor %}
 {% endblock %}

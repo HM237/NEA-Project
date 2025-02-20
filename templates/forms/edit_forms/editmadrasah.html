@@ -1,35 +1,105 @@
-{% extends "pages/base_page.html" %}
-{% block title %}
-Edit Your Madrasah
+{% extends "forms/edit_forms/base_edit_form.html" %}
+{% block title %} Edit Your Madrasah {% endblock %}
+{% block head %} Your Form {% endblock %}
+
+{% block content %}
+{% for row in rows %}
+<form id = "{{ form_id }}" method = 'POST' action="{{ action_url }}" autocomplete="off">
+
+    <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
+    
+    <input type="hidden" name="MadrasahID" value="{{ row['MadrasahID'] }}"/>
+
+    <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
+
+    <div>
+        <label for='first-name'> Parent's First Name: </label>
+        <input type = 'text' id="first-name" name="first_name" value="{{row['FirstName']}}" required>
+    </div>
+
+    <br>
+
+    <div>
+        <label for='last-name'> Parent's Last Name: </label>
+        <input type = 'text' id= "last-name" name="last_name" value="{{ row['LastName'] }}" required>
+    </div>
+
+    <br>
+    
+
+    <div>
+        <label for='phone-number'>Phone Number:</label>
+        <input type="tel" id="phone-number" name="phone_number" placeholder="+447627256926" value="{{ row['PhoneNumber'] }}" pattern="[0-9]{10}">
+    </div>
+
+    <br>
+
+    <div>
+        <label for="date-of-birth"> Parent's Date of Birth: </label>
+        <input type="date" id="date-of-birth" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}" placeholder="NOT REQUIRED">
+    </div>
+    
+    <br>    
+    
+    <div>
+        <label for ='child_fname'>Child First Name:</label>
+        <<input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}" required>
+    </div>
+    
+    <br>
+    
+    <div>
+        <label for ='child_lname'>Child Last Name:</label>
+        <input type="text" name="child_lname" value="{{ row['ChildLastName'] }}" required>
+    </div>  
+    
+    <br>
+
+        <div>
+            <label for ='child_date_of_birth'>Child's Date of Birth:</label>
+            <input type="date" name="child_date_of_birth" min="2000-01-01" max="2020-12-31" value="{{ row['ChildDoB'] }}" required>
+        </div>  
+
+    <br>    
+    
+    <br> <div>
+        <label for=" date"> Date of Booking: </label>
+        <input type="date" id="date" name="date" min="2025-01-01" max="2026-12-31" value="{{ row['Date'] }}" required>
+    </div>
+
+    <br>
+
+    <div>
+        <label for=" time"> Time of Booking: </label>
+        <input type="time" id="time" name="time" step= "900" min="16:30:00" max="21:00:00" value="{{ row['Time'] }}"required>
+    </div>
+    
+    <br>
+    
+    <button type="submit" id="submit_form" formaction="{{ action_url }}" >Submit Form</button>
+
+</form>  
+{% endfor %}
+
 {% endblock %}
-{%block scripts%}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-// script which sends the form data to Flask route and waits for redirection or message
-$(document).ready(function () {
-        $('#submit_form').click(function (e) {
-            e.preventDefault();
 
-            var formData = $('#EditMadrasahForm').serialize();
 
-            $.ajax({
-                type: 'POST',
-                url: '/editmadrasahbooking',  
-                data: formData,
-                success: function (response) {
-                    if (response.redirect_url) {
-                        window.location.href = response.redirect_url;
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('Error submitting form');
-                }
-            });
-        });
-    });
-</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {%endblock%}
 {% block content %}
         <h1>Editing Your Madrasah Form </h1>

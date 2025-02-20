@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+    <title> {%block title%}{%endblock%} </title>
+    {% block style %} {% endblock %}
+    <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='icon.jpg') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // script which validates form and then sends form data to route.
+        $(document).ready(function() {    
+            $('#submit_form').click(function(event) {
+                event.preventDefault(); 
+        
+                var form = $('form')[0]; 
+                if (form.checkValidity()) {
+                    var formData = $('#{{ form_id }}').serialize();  
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ action_url }}',  
+                        data: formData,
+                        success: function (response) {
+                            if (response.redirect_url) {
+                                window.location.href = response.
+                                redirect_url;
+                            } else [
+                                alert(response.message)
+                            ]
+                            
+                        },
+                        error: function () {
+                            alert('Error submitting the form');
+                        }
+                    });
+                } else {
+                    form.reportValidity();
+                }
+            });
+        });
+    </script>
+</head>
+<body style="background-color: rgb(222, 211, 184);">
+
+    <nav>
+        <ul>
+            <li> <a href="{{ url_for('routes.index') }}"> Home</a> </li>
+            <li>
+                <a href="#"> Menu </a>
+                <ul class="dropdown">
+                    <li> <a href="{{ url_for('routes.prayertime') }}" > Prayer Timetable </a></li>
+                    <li> <a href="{{ url_for('routes.nikah') }}" > Nikah </a></li>
+                    <li> <a href="{{ url_for('routes.madrasah') }}" > Madrasah </a></li>
+                    <li> <a href="{{ url_for('routes.functions') }}" > Functions </a></li>
+                    <li> <a href="{{ url_for('routes.tour') }}" > Tour </a></li>
+                    <li> <a href="{{ url_for('routes.aboutus') }}" > About Us </a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>   
+    
+    <h1> {%block head%} {%endblock%} </h1>
+
+
+        {% block content %} {%endblock%}
+
+</body>    
+</html>

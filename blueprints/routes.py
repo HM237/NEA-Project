@@ -1766,7 +1766,7 @@ def edit(service):
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE User.UserID = {userid} """)
                     rows = cursor.fetchall()
-                return render_template("forms/edit_forms/editnikah.html",rows=rows)     
+                return render_template("forms/edit_forms/editnikah.html",form_id = "EditNikahForm", action_url = url_for('routes.editnikahbooking'), rows=rows)     
                 
             except sqlite3.OperationalError:
                 msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
@@ -1798,7 +1798,7 @@ def edit(service):
                         INNER JOIN Hash ON User.UserID = Hash.UserID
                         WHERE User.UserID = {userid} """)
                     rows = cursor.fetchall()
-                return render_template("forms/edit_forms/editmadrasah.html",rows=rows)
+                return render_template("forms/edit_forms/editmadrasah.html",form_id = "EditMadrasahForm", action_url = url_for('routes.editmadrasahbooking'), rows=rows)
             
             except sqlite3.OperationalError:
                 msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
@@ -1830,7 +1830,7 @@ def edit(service):
                         INNER JOIN EventType ON Tour.EventTypeID = EventType.EventTypeID
                         WHERE User.UserID = {userid} """)                
                     rows = cursor.fetchall()
-                return render_template("forms/edit_forms/edittour.html",rows=rows)          
+                return render_template("forms/edit_forms/edittour.html",form_id = "EditTourBooking", action_url = url_for('routes.edittourbooking'), rows=rows)          
                 
             except sqlite3.OperationalError:
                 msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
@@ -1866,7 +1866,7 @@ def edit(service):
                         INNER JOIN Payment ON User.UserID = Payment.UserID                               
                         WHERE User.UserID = {userid} """)                            
                     rows = cursor.fetchall()
-                return render_template("forms/edit_forms/editfunction.html",rows=rows)     
+                return render_template("forms/edit_forms/editfunction.html",form_id = "EditFunctionForm", action_url = url_for('routes.editfunctionbooking'),rows=rows)     
                 
             except sqlite3.OperationalError:
                 msg = f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."
