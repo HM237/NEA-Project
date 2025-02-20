@@ -1,6 +1,6 @@
 {% extends "forms/edit_forms/base_edit_form.html" %}
 {% block title %} Edit Your Madrasah {% endblock %}
-{% block head %} Your Form {% endblock %}
+{% block head %} Your Madrasah Form {% endblock %}
 
 {% block content %}
 {% for row in rows %}
@@ -43,8 +43,8 @@
     
     <div>
         <label for ='child_fname'>Child First Name:</label>
-        <<input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}" required>
-    </div>
+        <input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}" required>
+    </div>  
     
     <br>
     
@@ -81,55 +81,4 @@
 </form>  
 {% endfor %}
 
-{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{%endblock%}
-{% block content %}
-        <h1>Editing Your Madrasah Form </h1>
-        {% for row in rows %}
-        <form id="EditMadrasahForm" action="{{ url_for('routes.editmadrasahbooking') }}" method="POST">
-            <input type="hidden" id="UserID" name="UserID" value="{{ row['UserID']}}"/>
-
-            <input type="hidden" name="MadrasahID" value="{{ row['MadrasahID'] }}"/>
-
-            <input type="hidden" name="email" value="{{ row['Email'] }}"/><br>
-
-            <br>Parent's First Name: <input type="text" id="first_name" name="first_name" value="{{row['FirstName']}}"/><br>
-
-            <br>Parent's Last Name: <input type="text" name="last_name" value="{{ row['LastName'] }}"/><br>
-
-            <br>Phone Number: <input type="text" name="phone_number" value="{{ row['PhoneNumber'] }}"/><br>
-
-            <br>Parent's Date of Birth: <input type="date" name="date_of_birth" min="1950-01-01" max="2005-01-01" value="{{ row['DoB'] }}"/><br>
-
-            <br>Child First Name: <input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}"/><br>
-            
-            <br>Child Last Name: <input type="text" name="child_lname" value="{{ row['ChildLastName'] }}"/><br>
-
-            <br>Child's Date of Birth: <input type="date" name="child_date_of_birth" min="2000-01-01" max="2020-12-31" value="{{ row['ChildDoB'] }}"/><br>
-
-            <br>Time: <input type="time" name="time" step= "900" min="16:00:00" max="19:30:00" value="{{ row['Time'] }}"/><br>
-
-            <br>Date: <input type="date" name="date" min="2025-01-02" max="2030-12-31" value="{{ row['Date'] }}"/><br>
-
-            <br><input id="submit_form" type="submit" value="Submit" /><br>
-        </form>
-        {% endfor %}
 {% endblock %}
