@@ -432,10 +432,9 @@ class Hash:
         initial_values = [2,3]
         digest = ''
         for index, character in enumerate(hashvalue):
-            ascii_value = ord(character)
             for i in range (20):
                 initial_value = initial_values[i % len(initial_values)]
-                value = (array[i] + ascii_value * (index + 1) + i )   
+                value = (array[i] + ord(character) * (index + 1) + i )   
                 value = (value * initial_value) % 256
                 array[i] = value
         #converting into hexadecimal whilst removing the 0x at the front
