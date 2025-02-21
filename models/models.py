@@ -429,17 +429,17 @@ class Hash:
         hashvalue = f'{self.date}{self.userid}{self.time}'
         hashvalue = re.sub(r'[-:]', '', hashvalue)
         array = [0] * 20
-        initial_values = [2,3]
+        primes = [2,3]
         digest = ''
         for index, character in enumerate(hashvalue):
             for i in range (20):
-                initial_value = initial_values[i % len(initial_values)]
+                prime_number = primes[i % len(primes)]
                 value = (array[i] + ord(character) * (index + 1) + i )   
-                value = (value * initial_value) % 256
+                value = (value * prime_number) % 256
                 array[i] = value
-        #converting into hexadecimal whilst removing the 0x at the front
+        #converting into hexadecimal whilst removing the 0x at the front and keeping digest to 40 char
         for number in array:
-            digest += f'{number:x}'
+            digest += format(number, '02x')
         return digest
 
     def add_digest(self):
