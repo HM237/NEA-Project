@@ -448,20 +448,24 @@ class Hash:
             #storing the digest in the Hash Table along with UserID,Time and Date
             with sqlite3.connect('database.db') as connection:
                 cursor = connection.cursor()
+                #checking if the digest already exists
                 cursor.execute(f"""SELECT Time,Date FROM Hash WHERE Digest = '{digest}' """)
                 existing = cursor.fetchone()
                 if existing is not None:
+                    #first try to update the existing digest record if outdated
                     cursor.execute(f"""
                         UPDATE Hash 
                         SET UserID = {self.userid}, Time = {self.time}, Date = {self.date} 
                         WHERE Digest = '{digest}' AND Date < CURRENT_DATE """)
                     row_deleted = cursor.rowcount()
                     if row_deleted < 0:
+                        #if we can't then we rehash
                         rehash = Hash(time = self.time, date = self.date, userid = digest)
                         rehash.update()
                     else:
                         print('Hash updated.')
                 else:
+                    #if digest doesn't exist then we insert
                     cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
                     connection.commit()
             return digest
