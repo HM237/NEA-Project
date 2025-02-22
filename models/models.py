@@ -465,7 +465,7 @@ class Hash:
                     else:
                         print('Hash updated.')
                 else:
-                    #if digest doesn't exist then we insert
+                    #if digest doesn't exist then we can insert a new record
                     cursor.execute('INSERT INTO  Hash (UserID,Digest,Time,Date) VALUES (?,?,?,?)', (self.userid, digest, self.time, self.date))
                     connection.commit()
             return digest
