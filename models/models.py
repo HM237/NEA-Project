@@ -487,6 +487,7 @@ class Hash:
                 cursor = connection.cursor()
                 cursor.execute(f"""SELECT Time,Date FROM Hash WHERE Digest = '{newdigest}' """)
                 existing = cursor.fetchone()
+                #same process as before of checking, updating or inserting
                 if existing is not None:
                     cursor.execute(f"""
                         UPDATE Hash 
