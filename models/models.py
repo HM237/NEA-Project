@@ -554,16 +554,16 @@ class Email:
             <title>Email Example</title>
         </head>
         <body>
-            <h1 style="font-size: 30px;">Masjid Al-Ansar Verification Code!</h1>
+            <h1 style="font-size: 30px;">Al-Ansar Mosque Verification Code!</h1>
             <p style="font-size: 18px;">Hello,<br>
-            Please use the verification code below for your booking at Masjid Al-Ansar. The code will be valid for 2 minutes.</p>
+            Please use the verification code below for your booking at Al-Ansar Mosque. The code will be valid become invalid after one try.</p>
             
             <p style="font-size: 20px; font-weight: bold;">Verification Code: {code}</p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this code, someone else might be trying to use you email account.</p>
-            <p style="font-size: 18px;">Thanks,<br> Masjid Al-Ansar Team </p>
-            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/about-us">Masjid Al-Ansar</a> </p>
+            <p style="font-size: 18px;">Thanks,<br> Al-Ansar Mosque Team </p>
+            <p> <a title="Al-Ansar Mosque" href="http://127.0.0.1:5000/about-us">Al-Ansar Mosque</a> </p>
         </body>
         </html>
         """
@@ -617,16 +617,16 @@ class Email:
             <title> Summary Email </title>
         </head>
         <body>
-            <h1 style="font-size: 30px;">Masjid Al-Ansar Summary Email!</h1>
-            <p style="font-size: 18px;">Hello,<br>
-            Please click the below link to find a summary of your booking at Masjid Al-Ansar</p>
+            <h1 style="font-size: 30px;">Al-Ansar Mosque Summary Email!</h1>
+            <p style="font-size: 18px;">Thank you for booking an appoinment with us.<br>
+            Please click the below link to find a summary of your booking at Al-Ansar Mosque</p>
             
             <p style="font-size: 20px; font-weight: bold;">Summary Link: <a href="http://127.0.0.1:5000/booking/{service}/{link}">Click This</a> </p>
             
             
             <p style="font-size: 16px; color: red;">If you didn't generate this link, someone else might be trying to use you email account.</p>
-            <p style="font-size: 18px;">Thanks,<br> Masjid Al-Ansar Team </p>
-            <p> <a title="Masjid Al-Ansar" href="http://127.0.0.1:5000/about-us">Masjid Al-Ansar</a> </p>
+            <p style="font-size: 18px;">Thanks,<br> Al-Ansar Mosque Team </p>
+            <p> <a title="Al-Ansar Mosque" href="http://127.0.0.1:5000/about-us">Al-Ansar Mosque</a> </p>
         </body>
         </html>
         """
