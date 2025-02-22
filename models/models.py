@@ -439,7 +439,7 @@ class Hash:
                 array[i] = value
         #converting into hexadecimal whilst removing the 0x at the front and keeping digest to 40 char
         for number in array:
-            digest += f'{number: 02x}'
+            digest += f'{number:02x}'
         return digest
 
     def add_digest(self):
