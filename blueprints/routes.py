@@ -4,6 +4,7 @@ import sqlite3
 import json
 import random
 import re
+#------------------------------
 
 
 bp = Blueprint('routes', __name__)
@@ -1371,6 +1372,7 @@ def edittourbooking():
 
 
 ####################  Entire Functions Process ####################
+
 # Route to the Function Form 
 @bp.route("/functionbooking")
 def function_booking():
@@ -1644,9 +1646,9 @@ def editfunctionbooking():
     return jsonify(redirect_url=url_for('routes.function_booking'))
 
 
-####################  Entire Booking/Editing Process ####################
+####################  Entire Viewing and Editing Process ####################
 
-#Route to show the User their booking information. The dynamic URL first checks which service and then the digest.
+#Route to let the user view their booking information. The dynamic URL first checks which service and then the digest.
 @bp.route('/booking/<service>/<digest>')
 def booking(service, digest):
     try:
@@ -1890,7 +1892,8 @@ def edit(service):
     
     return render_template('pages/index.html')
            
-###### DELETING THE BOOKING #####
+####################  Deletion Process ####################
+
 #Route to delete the booking from a Table.
 @bp.route("/delete/<service>", methods=['POST','GET'])
 def delete(service):

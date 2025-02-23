@@ -2,6 +2,7 @@ import os
 import sqlite3
 from flask import Flask
 from blueprints import bp
+#------------------------------
 
 #Stating the database file path
 DATABASE = os.path.join(os.path.dirname(__file__), 'database.db')
