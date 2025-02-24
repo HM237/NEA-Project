@@ -427,8 +427,10 @@ class Hash:
 
 
     def __hash_algorithm(self):
+        #concatenate and remove the dash and semi-colon
         hash_value = f'{self.date}{self.userid}{self.time}'
         hash_value = re.sub(r'[-:]', '', hash_value)
+        #create an array of 20, filled with 0s
         array = [0] * 20
         primes = [2,3]
         digest = ''
