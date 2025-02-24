@@ -427,12 +427,12 @@ class Hash:
 
 
     def __hash_algorithm(self):
-        hashvalue = f'{self.date}{self.userid}{self.time}'
-        hashvalue = re.sub(r'[-:]', '', hashvalue)
+        hash_value = f'{self.date}{self.userid}{self.time}'
+        hash_value = re.sub(r'[-:]', '', hash_value)
         array = [0] * 20
         primes = [2,3]
         digest = ''
-        for index, character in enumerate(hashvalue):
+        for index, character in enumerate(hash_value):
             for i in range (20):
                 prime_number = primes[i % len(primes)]
                 value = (array[i] + ord(character) * (index + 1) + i )   
