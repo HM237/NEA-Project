@@ -508,7 +508,7 @@ def verification(service):
                     try:
                         user_email = Email(email= email, number = verification_number)
                         user_email.send_verification_email()
-                        return jsonify({"message": f"Verification email sent successfully, please check your email inbox!'"})#notifies the user to check their inbox
+                        return jsonify({"message": f"Verification email sent successfully, please check your email inbox!"})#notifies the user to check their inbox
                                     
                     except UnboundLocalErrors:
                         return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
@@ -679,7 +679,7 @@ def addnikah():
                     #sending the summary email after inserting all data to database. 
                     user_email = Email(email= email, number=(digest))
                     user_email.send_summary_email(service='nikah') #Fills in the dynamic URL for the booking URL.
-                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #notifies the user that the booking was a success    
+                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!"}) #notifies the user that the booking was a success    
                 
                 except UnboundLocalErrors as e:
                     print(f'AddNikah/UnboundLocalErrors/Error: {e}')                        
@@ -944,7 +944,7 @@ def addmadrasah():
                     #sending the summary email after inserting all data to database    
                     user_email = Email(email= email, number=(digest))
                     user_email.send_summary_email(service='madrasah')
-                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
+                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!"})
                 
                 except UnboundLocalErrors as e:
                     print(f'AddMad/UnboundLocalErrors/Error: {e}')                        
@@ -1208,7 +1208,7 @@ def addtour():
                     #sending the summary email after inserting all data to database    
                     user_email = Email(email= email, number=(digest))
                     user_email.send_summary_email(service='tour')
-                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!'"})
+                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email! Feel free to make another booking as well!"})
 
                 except UnboundLocalErrors:
                     return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
@@ -1480,7 +1480,7 @@ def addfunction():
                     #sending the summary email after inserting all data to database
                     user_email = Email(email= email, number=(digest))
                     user_email.send_summary_email(service='function')
-                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!!'"}) #success message 
+                    return jsonify({"message": f"Booking was successful, please check your email inbox for summary email!"}) #success message 
 
                 except UnboundLocalErrors:
                     return jsonify({"message": f"A value could not be attributed. Please try again later."}) 
