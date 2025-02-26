@@ -480,14 +480,11 @@ def verification(service):
 
 
             elif service == 'tour':
-                print(f'we reached here')
                 first_name = request.form["first_name"]
                 last_name = request.form["last_name"]      
                 email = request.form["email"]      
                 number_of_people = request.form["number_of_people"] 
-                print(f'we reached here {number_of_people}')
                 event_type = request.form.get('event_type')            
-                print(f'we reached here {event_type}')
 
                 #below we are storing the data in a dictionary to pass on to the Validation Class.
 
@@ -501,8 +498,8 @@ def verification(service):
                 
                 invalid = Validation.validate(data= data)
                 if invalid:
-                    return jsonify({"message": f"{invalid}"}
-                    )#If Invalid = True, that means one of the user-input was invalid, and so we prompt the user enter a valid input.
+                    return jsonify({"message": f"{invalid}"})
+                #If Invalid = True, that means one of the user-input was invalid, and so we prompt the user enter a valid input.
                 else:
                     #if invalid = False, we can send the Verification Email to the user 
                     try:
