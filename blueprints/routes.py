@@ -93,7 +93,7 @@ def nikah():
                 # doesn't require a dictionary since we will only end up with 2 values.                    
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/nikah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) #returning to chart.js the labels for the x-axis and the number of bookings for the y-axis.
+                return render_template("pages/nikah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) #returning to chart.js the labels for the x-axis and the number of bookings for the y-axis.
 
 
 
@@ -173,7 +173,7 @@ def madrasah():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/madrasah.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/madrasah.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -253,7 +253,7 @@ def tour():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/tour.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/tour.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
 
 
@@ -334,7 +334,7 @@ def functions():
                     result = cur.fetchall()
                 number_of_bookings = [x[1] for x in result]
                 labels = ['2025', '2026']
-                return render_template("pages/functions.html",option = filter, number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
+                return render_template("pages/functions.html",option = 'Total Yearly', number_of_bookings=json.dumps(number_of_bookings), labels=json.dumps(labels)) 
 
         else:
             with sqlite3.connect('database.db') as con:
