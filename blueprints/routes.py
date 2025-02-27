@@ -660,9 +660,9 @@ def addnikah():
                     new_payment.add_Payment()
 
                     #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
-                    hashvalue = Hash(time = time, date = date, userid = userid)
+                    hash_input = Hash(time = time, date = date, userid = userid)
                     #Adding the digest to the Hash Table
-                    digest = hashvalue.add_digest()
+                    digest = hash_input.add_digest()
 
                 except DatabaseError as e:
                     print(f'AddNikah/DatabaseError/Error: {e}')                        
@@ -925,9 +925,9 @@ def addmadrasah():
                     new_madrasah.add_Madrasah()  
                     
                     #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
-                    hashvalue = Hash(time = time, date = date, userid = userid)
+                    hash_input = Hash(time = time, date = date, userid = userid)
                     #Adding the digest to the Hash Table
-                    digest = hashvalue.add_digest()
+                    digest = hash_input.add_digest()
 
                 except DatabaseError as e:
                     print(f'AddMad/DatabaseError/Error: {e}')                        
@@ -1187,9 +1187,9 @@ def addtour():
                     
                 
                     #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
-                    hashvalue = Hash(time = time, date = date, userid = userid)
+                    hash_input = Hash(time = time, date = date, userid = userid)
                     #Adding the digest to the Hash Table
-                    digest = hashvalue.add_digest()
+                    digest = hash_input.add_digest()
 
                 except sqlite3.OperationalError:
                         return jsonify({"message": f"The database is currently locked. Please try again later. If the issue still persists, please inform the masjid."})  
@@ -1459,9 +1459,9 @@ def addfunction():
                     new_payment.add_Payment()
 
                     #calculating the digest from the hash values. We are sending this to the Hash Class and receiving the digest in return.
-                    hashvalue = Hash(time = time, date = date, userid = userid)
+                    hash_input = Hash(time = time, date = date, userid = userid)
                     #Adding the digest to the Hash Table
-                    digest = hashvalue.add_digest()
+                    digest = hash_input.add_digest()
 
                 except sqlite3.OperationalError as e:
                         print(f'error: {e}')

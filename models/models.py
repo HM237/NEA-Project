@@ -428,13 +428,13 @@ class Hash:
 
     def __hash_algorithm(self):
         #concatenate and remove the dash and semi-colon
-        hash_value = f'{self.date}{self.userid}{self.time}'
-        hash_value = re.sub(r'[-:]', '', hash_value)
+        hash_input = f'{self.date}{self.userid}{self.time}'
+        hash_input = re.sub(r'[-:]', '', hash_input)
         #create an array of 20, filled with 0s
         array = [0] * 20
         primes = [2,3]
         digest = ''
-        for index, character in enumerate(hash_value):
+        for index, character in enumerate(hash_input):
             for i in range (20):
                 prime_number = primes[i % len(primes)]
                 value = (array[i] + ord(character) * (index + 1) + i )   
