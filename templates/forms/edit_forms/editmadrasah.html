@@ -43,21 +43,21 @@
     
     <div>
         <label for ='child_fname'>Child First Name:</label>
-        <input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}" required>
+        <input type="text" name="child_fname" value="{{ row['ChildFirstName'] }}"  required>
     </div>  
     
     <br>
     
     <div>
         <label for ='child_lname'>Child Last Name:</label>
-        <input type="text" name="child_lname" value="{{ row['ChildLastName'] }}" required>
+        <input type="text" name="child_lname" value="{{ row['ChildLastName'] }}" min="2006-01-01" max="2016-12-31"required>
     </div>  
     
     <br>
 
         <div>
             <label for ='child_date_of_birth'>Child's Date of Birth:</label>
-            <input type="date" name="child_date_of_birth" min="2000-01-01" max="2020-12-31" value="{{ row['ChildDoB'] }}" required>
+            <input type="date" name="child_date_of_birth" min="2006-01-01" max="2014-12-31" value="{{ row['ChildDoB'] }}" required>
         </div>  
 
     <br>    
