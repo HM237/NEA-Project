@@ -5,8 +5,8 @@ This repository contains my A-Level Computer Science NEA project - a website bui
 ## About
 This website was created for my Computer Science A-Level non-exam assessment. It demonstrates an understanding of front and backend systems as well as utilising a database.
 
-## Technologies
-- Python,HTML, CSS, JavaScript
+## Languages
+- Python,HTML, CSS
 - SQLite
 
 ## Features
